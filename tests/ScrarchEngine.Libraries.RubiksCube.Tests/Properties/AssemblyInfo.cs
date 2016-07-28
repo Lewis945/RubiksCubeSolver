@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ScrarchEngine.Libraries.RubiksCube.Models.Tests")]
+[assembly: AssemblyTitle("ScrarchEngine.Libraries.RubiksCube.Tests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("ScrarchEngine.Libraries.RubiksCube.Models.Tests")]
+[assembly: AssemblyProduct("ScrarchEngine.Libraries.RubiksCube.Tests")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("84a226c5-7515-4b8d-a88a-463a73029947")]
+[assembly: Guid("cd927821-974e-4abb-b7a8-b33327c52ddf")]
 
 // Version information for an assembly consists of the following four values:
 //

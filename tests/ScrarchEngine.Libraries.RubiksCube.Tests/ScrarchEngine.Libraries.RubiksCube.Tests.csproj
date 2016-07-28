@@ -3,11 +3,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{84A226C5-7515-4B8D-A88A-463A73029947}</ProjectGuid>
+    <ProjectGuid>{CD927821-974E-4ABB-B7A8-B33327C52DDF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ScrarchEngine.Libraries.RubiksCube.Models.Tests</RootNamespace>
-    <AssemblyName>ScrarchEngine.Libraries.RubiksCube.Models.Tests</AssemblyName>
+    <RootNamespace>ScrarchEngine.Libraries.RubiksCube.Tests</RootNamespace>
+    <AssemblyName>ScrarchEngine.Libraries.RubiksCube.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -82,22 +82,21 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Models\RubiksCubeModelTests.cs" />
+    <Compile Include="Models\UtilitiesTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RubiksCubeModelTests.cs" />
-    <Compile Include="UtilitiesTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\ScrarchEngine.Libraries.RubiksCube.Models\ScrarchEngine.Libraries.RubiksCube.Models.csproj">
-      <Project>{c34059ce-911f-4944-bb61-129319c8a468}</Project>
-      <Name>ScrarchEngine.Libraries.RubiksCube.Models</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\ScrarchEngine.Libraries.WindowsUtilities\ScrarchEngine.Libraries.WindowsUtilities.csproj">
-      <Project>{6647bac0-2a3a-4466-b01c-b8d903040fe5}</Project>
-      <Name>ScrarchEngine.Libraries.WindowsUtilities</Name>
-    </ProjectReference>
+    <Folder Include="Solver\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\ScrarchEngine.Libraries.RubiksCube\ScrarchEngine.Libraries.RubiksCube.csproj">
+      <Project>{24838B82-43E2-45EF-80AC-1BD7E3D2700B}</Project>
+      <Name>ScrarchEngine.Libraries.RubiksCube</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

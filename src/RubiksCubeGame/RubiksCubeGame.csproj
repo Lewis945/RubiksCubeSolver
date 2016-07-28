@@ -49,12 +49,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ScrarchEngine.Libraries.RubiksCube.Models\ScrarchEngine.Libraries.RubiksCube.Models.csproj">
-      <Project>{c34059ce-911f-4944-bb61-129319c8a468}</Project>
-      <Name>ScrarchEngine.Libraries.RubiksCube.Models</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

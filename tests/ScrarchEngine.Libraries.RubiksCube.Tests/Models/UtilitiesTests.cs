@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using ScrarchEngine.Libraries.RubiksCube.Models;
 
-namespace ScrarchEngine.Libraries.RubiksCube.Models.Tests
+namespace ScrarchEngine.Libraries.RubiksCube.Tests.Models
 {
     [TestFixture]
     public class UtilitiesTests
