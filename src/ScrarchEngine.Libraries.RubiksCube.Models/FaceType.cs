@@ -1,4 +1,4 @@
-﻿namespace RubiksCubeGame.RubiksCube
+﻿namespace ScrarchEngine.Libraries.RubiksCube.Models
 {
     /// <summary>
     /// Defines a face type

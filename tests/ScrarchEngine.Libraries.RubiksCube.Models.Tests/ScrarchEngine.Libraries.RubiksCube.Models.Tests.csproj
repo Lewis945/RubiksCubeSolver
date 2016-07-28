@@ -3,11 +3,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{29064A20-F9B8-470F-A0E0-F3F813EE0512}</ProjectGuid>
+    <ProjectGuid>{84A226C5-7515-4B8D-A88A-463A73029947}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RubiksCubeGame.Tests</RootNamespace>
-    <AssemblyName>RubiksCubeGame.Tests</AssemblyName>
+    <RootNamespace>ScrarchEngine.Libraries.RubiksCube.Models.Tests</RootNamespace>
+    <AssemblyName>ScrarchEngine.Libraries.RubiksCube.Models.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -83,15 +83,21 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RubiksCubeModelTests.cs" />
+    <Compile Include="UtilitiesTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\ScrarchEngine.Libraries.RubiksCube.Models\ScrarchEngine.Libraries.RubiksCube.Models.csproj">
+      <Project>{c34059ce-911f-4944-bb61-129319c8a468}</Project>
+      <Name>ScrarchEngine.Libraries.RubiksCube.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\ScrarchEngine.Libraries.WindowsUtilities\ScrarchEngine.Libraries.WindowsUtilities.csproj">
+      <Project>{6647bac0-2a3a-4466-b01c-b8d903040fe5}</Project>
+      <Name>ScrarchEngine.Libraries.WindowsUtilities</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\RubiksCubeGame\RubiksCubeGame.csproj">
-      <Project>{b354a196-7266-49c5-919d-4a49edd01068}</Project>
-      <Name>RubiksCubeGame</Name>
-    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

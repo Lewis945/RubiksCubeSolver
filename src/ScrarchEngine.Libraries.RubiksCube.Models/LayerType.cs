@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RubiksCubeGame.RubiksCube
+namespace ScrarchEngine.Libraries.RubiksCube.Models
 {
     /// <summary>
 	/// Defines the layers of a cube

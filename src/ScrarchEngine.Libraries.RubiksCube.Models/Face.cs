@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace RubiksCubeGame.RubiksCube
+namespace ScrarchEngine.Libraries.RubiksCube.Models
 {
     public class Face
     {

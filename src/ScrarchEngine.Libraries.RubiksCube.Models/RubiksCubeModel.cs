@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RubiksCubeGame.RubiksCube
+namespace ScrarchEngine.Libraries.RubiksCube.Models
 {
     public class RubiksCubeModel
     {
