@@ -7,7 +7,7 @@ namespace RubiksCubeGame.Tests.RubiksCube
     public class UtilitiesTests
     {
         [Test]
-        public void RotateMatrixClockwise()
+        public void Rotate_Matrix_Clockwise()
         {
             var arr = new int[,]
             {
@@ -23,7 +23,7 @@ namespace RubiksCubeGame.Tests.RubiksCube
         }
 
         [Test]
-        public void RotateMatrixCounterClockwise()
+        public void Rotate_Matrix_CounterClockwise()
         {
             var arr = new int[,]
             {

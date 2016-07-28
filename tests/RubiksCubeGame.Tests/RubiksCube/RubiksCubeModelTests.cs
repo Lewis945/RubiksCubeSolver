@@ -38,7 +38,7 @@ namespace RubiksCubeGame.Tests.RubiksCube
         #region Default tests
 
         [Test]
-        public void RubiksCubeDefaultSetup()
+        public void RubiksCube_Default_Setup()
         {
             Assert.AreEqual(6, _cube.Faces.Length);
             Assert.AreEqual(FaceType.Front, _cube.Faces[0].Type);
@@ -61,7 +61,7 @@ namespace RubiksCubeGame.Tests.RubiksCube
         #region Top Layer
 
         [Test]
-        public void RotateTopLayer90DegreesClockwise()
+        public void Rotate_Top_Layer_90_Degrees_Clockwise()
         {
             _cube.Rotate90Degrees(LayerType.Top, RotationType.Clockwise);
 
@@ -88,7 +88,7 @@ namespace RubiksCubeGame.Tests.RubiksCube
         }
 
         [Test]
-        public void RotateTopLayer90DegreesCounterClockwise()
+        public void Rotate_Top_Layer_90_Degrees_CounterClockwise()
         {
             _cube.Rotate90Degrees(LayerType.Top, RotationType.CounterClockwise);
 
@@ -119,7 +119,7 @@ namespace RubiksCubeGame.Tests.RubiksCube
         #region Bottom Layer
 
         [Test]
-        public void RotateBottomLayer90DegreesClockwise()
+        public void Rotate_Bottom_Layer_90_Degrees_Clockwise()
         {
             _cube.Rotate90Degrees(LayerType.Bottom, RotationType.Clockwise);
 
@@ -146,7 +146,7 @@ namespace RubiksCubeGame.Tests.RubiksCube
         }
 
         [Test]
-        public void RotateBottomLayer90DegreesCounterClockwise()
+        public void Rotate_Bottom_Layer_90_Degrees_CounterClockwise()
         {
             _cube.Rotate90Degrees(LayerType.Bottom, RotationType.CounterClockwise);
 
@@ -177,7 +177,7 @@ namespace RubiksCubeGame.Tests.RubiksCube
         #region Left Layer
 
         [Test]
-        public void RotateLeftLayer90DegreesClockwise()
+        public void Rotate_Left_Layer_90_Degrees_Clockwise()
         {
             _cube.Rotate90Degrees(LayerType.Left, RotationType.Clockwise);
 
@@ -204,7 +204,7 @@ namespace RubiksCubeGame.Tests.RubiksCube
         }
 
         [Test]
-        public void RotateLeftLayer90DegreesCounterClockwise()
+        public void Rotate_Left_Layer_90_Degrees_CounterClockwise()
         {
             _cube.Rotate90Degrees(LayerType.Left, RotationType.CounterClockwise);
 
@@ -235,7 +235,7 @@ namespace RubiksCubeGame.Tests.RubiksCube
         #region Right Layer
 
         [Test]
-        public void RotateRightLayer90DegreesClockwise()
+        public void Rotate_Right_Layer_90_Degrees_Clockwise()
         {
             _cube.Rotate90Degrees(LayerType.Right, RotationType.Clockwise);
 
@@ -262,7 +262,7 @@ namespace RubiksCubeGame.Tests.RubiksCube
         }
 
         [Test]
-        public void RotateRightLayer90DegreesCounterClockwise()
+        public void Rotate_Right_Layer_90_Degrees_CounterClockwise()
         {
             _cube.Rotate90Degrees(LayerType.Right, RotationType.CounterClockwise);
 
@@ -293,7 +293,7 @@ namespace RubiksCubeGame.Tests.RubiksCube
         #region Front Layer
 
         [Test]
-        public void RotateFrontLayer90DegreesClockwise()
+        public void Rotate_Front_Layer_90_Degrees_Clockwise()
         {
             _cube.Rotate90Degrees(LayerType.Front, RotationType.Clockwise);
 
@@ -320,7 +320,7 @@ namespace RubiksCubeGame.Tests.RubiksCube
         }
 
         [Test]
-        public void RotateFrontLayer90DegreesCounterClockwise()
+        public void Rotate_Front_Layer_90_Degrees_CounterClockwise()
         {
             _cube.Rotate90Degrees(LayerType.Front, RotationType.CounterClockwise);
 
@@ -351,7 +351,7 @@ namespace RubiksCubeGame.Tests.RubiksCube
         #region Back Layer
 
         [Test]
-        public void RotateBackLayer90DegreesClockwise()
+        public void Rotate_Back_Layer_90_Degrees_Clockwise()
         {
             _cube.Rotate90Degrees(LayerType.Back, RotationType.Clockwise);
 
@@ -378,7 +378,7 @@ namespace RubiksCubeGame.Tests.RubiksCube
         }
 
         [Test]
-        public void RotateBackLayer90DegreesCounterClockwise()
+        public void Rotate_Back_Layer_90_Degrees_CounterClockwise()
         {
             _cube.Rotate90Degrees(LayerType.Back, RotationType.CounterClockwise);
 
