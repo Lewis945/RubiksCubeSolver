@@ -1,0 +1,10 @@
+﻿// vs folders
+.vs/
+bin/
+obj/
+packages/
+
+// vs files
+*.config
+*.csproj.*
+*.sln
