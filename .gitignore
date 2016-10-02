@@ -8,3 +8,11 @@ packages/
 *.config
 *.csproj.*
 *.sln
+
+// Exceptions
+!packages.config
+!App.config
+
+// Custom
+Images/
+Videos/

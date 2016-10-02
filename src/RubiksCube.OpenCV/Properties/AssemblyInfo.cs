@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("RubiksCubeGame.Tests")]
+[assembly: AssemblyTitle("RubiksCube.OpenCV")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("RubiksCubeGame.Tests")]
+[assembly: AssemblyProduct("RubiksCube.OpenCV")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("29064a20-f9b8-470f-a0e0-f3f813ee0512")]
+[assembly: Guid("f0b87e5e-e1e7-417d-9771-cc37ac2999f5")]
 
 // Version information for an assembly consists of the following four values:
 //
