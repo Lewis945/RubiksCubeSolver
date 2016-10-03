@@ -15,8 +15,10 @@ namespace RubiksCube.OpenCV.TestCase
     {
         public static void Init()
         {
-            var pattern = CvInvoke.Imread("Images\\Screen-Shot-2013-11-04-at-14.08.39.png", Emgu.CV.CvEnum.LoadImageType.Grayscale);
-            var img = CvInvoke.Imread("Images\\KQWtX4GlUa4.jpg", Emgu.CV.CvEnum.LoadImageType.Grayscale);
+            var pattern = CvInvoke.Imread("Images\\PyramidPattern.jpg", Emgu.CV.CvEnum.LoadImageType.AnyColor);
+            var img = CvInvoke.Imread("Images\\PyramidPatternTest.bmp", Emgu.CV.CvEnum.LoadImageType.AnyColor);
+
+            CvInvoke.Resize(img, img, new Size(1024, 768));
 
             long time = 0;
             var mat = DrawMatches.Draw(pattern, img, out time);

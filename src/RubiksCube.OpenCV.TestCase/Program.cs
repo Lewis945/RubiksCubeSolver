@@ -4,6 +4,7 @@ using Emgu.CV.Features2D;
 using Emgu.CV.Structure;
 using Emgu.CV.UI;
 using Emgu.CV.Util;
+using RubiksCube.OpenCV.TestCase.AugmentedReality;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -19,16 +20,19 @@ namespace RubiksCube.OpenCV.TestCase
     {
         public static void Main(string[] args)
         {
+            //DrawMatches.Init();
+
             //RunForImage();
-            RunForVideo();
+            //RunForVideo();
+
+            //Bootstrapper.Run("Images\\KQWtX4GlUa4.jpg", SourceType.Image);
+            Bootstrapper.Run("Videos/cube.avi", SourceType.Video);
 
             Console.ReadKey();
         }
 
         private static void RunForImage()
         {
-            //DrawMatches.Init();
-
             var img = CvInvoke.Imread("Images\\KQWtX4GlUa4.jpg", Emgu.CV.CvEnum.LoadImageType.Grayscale);
 
             Stopwatch watch;
