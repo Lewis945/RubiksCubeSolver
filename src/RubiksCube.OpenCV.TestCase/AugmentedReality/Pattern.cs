@@ -24,7 +24,7 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
         public VectorOfKeyPoint keypoints;
         public Mat descriptors;
 
-        public VectorOfPointF points2d;
+        public VectorOfPoint points2d;
         public VectorOfPoint3D32F points3d;
         
         #endregion

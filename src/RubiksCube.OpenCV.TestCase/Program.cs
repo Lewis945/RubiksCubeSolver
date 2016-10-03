@@ -25,8 +25,8 @@ namespace RubiksCube.OpenCV.TestCase
             //RunForImage();
             //RunForVideo();
 
-            //Bootstrapper.Run("Images\\KQWtX4GlUa4.jpg", SourceType.Image);
-            Bootstrapper.Run("Videos/cube.avi", SourceType.Video);
+            Bootstrapper.Run("Images\\PyramidPatternTest.bmp", "Images\\PyramidPattern.jpg", SourceType.Image);
+            //Bootstrapper.Run("Videos/cube.avi", SourceType.Video);
 
             Console.ReadKey();
         }

@@ -102,12 +102,12 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
             getGray(image, pattern.grayImg);
 
             // Build 2d and 3d contours (3d contour lie in XY plane since it's planar)
-            pattern.points2d = new VectorOfPointF(4);
+            pattern.points2d = new VectorOfPoint(4);
             pattern.points3d = new VectorOfPoint3D32F(4);
 
             // Image dimensions
-            float w = image.Cols;
-            float h = image.Rows;
+            int w = image.Cols;
+            int h = image.Rows;
 
             // Normalized dimensions:
             float maxSize = Math.Max(w, h);
@@ -115,11 +115,11 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
             float unitH = h / maxSize;
 
             pattern.points2d.Clear();
-            pattern.points2d.Push(new PointF[] {
-                new PointF(0, 0),
-                new PointF(w, 0),
-                new PointF(w, h),
-                new PointF(0, h)
+            pattern.points2d.Push(new Point[] {
+                new Point(0, 0),
+                new Point(w, 0),
+                new Point(w, h),
+                new Point(0, h)
             });
 
             pattern.points3d.Clear();
