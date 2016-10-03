@@ -16,6 +16,11 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
     {
         public static void Run(string path, SourceType type)
         {
+            //using (var a = new GameWindow())
+            //{
+            //    a.Run(30);
+            //}
+
             var viewer = new ImageViewer();
             viewer.Text = path;
 

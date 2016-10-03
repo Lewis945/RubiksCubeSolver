@@ -72,8 +72,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AugmentedReality\ARDrawingContext.cs" />
+    <Compile Include="AugmentedReality\ARPipeline.cs" />
     <Compile Include="AugmentedReality\Bootstrapper.cs" />
+    <Compile Include="AugmentedReality\CameraCalibration.cs" />
+    <Compile Include="AugmentedReality\GameWindow.cs" />
+    <Compile Include="AugmentedReality\Pattern.cs" />
+    <Compile Include="AugmentedReality\PatternDetector.cs" />
+    <Compile Include="AugmentedReality\PatternTrackingInfo.cs" />
     <Compile Include="AugmentedReality\SourceType.cs" />
+    <Compile Include="AugmentedReality\Transformation.cs" />
     <Compile Include="DrawMatches.cs" />
     <Compile Include="FastExamples.cs" />
     <Compile Include="FreakExamples.cs" />
