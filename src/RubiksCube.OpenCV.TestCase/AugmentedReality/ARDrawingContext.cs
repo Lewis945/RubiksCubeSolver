@@ -14,7 +14,7 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
 
         private bool m_isTextureInitialized;
         private uint m_backgroundTextureId;
-        private CameraCalibration m_calibration;
+        private CameraCalibrationInfo m_calibration;
         private Mat m_backgroundImage;
         private string m_windowName;
 
@@ -27,7 +27,7 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
 
         #endregion
 
-        public ARDrawingContext(string windowName, Size frameSize, CameraCalibration c)
+        public ARDrawingContext(string windowName, Size frameSize, CameraCalibrationInfo c)
         {
             m_isTextureInitialized = false;
             m_calibration = c;

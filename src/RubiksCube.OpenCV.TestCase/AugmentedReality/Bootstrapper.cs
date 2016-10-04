@@ -25,7 +25,7 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
             viewer.Text = path;
 
             // Change this calibration to yours:
-            var calibration = new CameraCalibration(526.58037684199849f, 524.65577209994706f, 318.41744018680112f, 202.96659047014398f);
+            var calibration = new CameraCalibrationInfo(526.58037684199849f, 524.65577209994706f, 318.41744018680112f, 202.96659047014398f);
 
             var patternImage = CvInvoke.Imread(patternPath, Emgu.CV.CvEnum.LoadImageType.Unchanged);
 

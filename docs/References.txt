@@ -3,3 +3,5 @@ Mastering OpenCV with Practical Computer Vision Projects by Packt Publishing 201
 Edge-Based Markerless Real-Time 3D Tracking of Rigid Objects (https://sites.google.com/site/jbarandiaran/3dtracking)
 Research Assignment Converting 2D to 3D: A Survey / Author: Q. Wei Reviewers: E. A. Hendriks (TU Delft)  / (http://insy.ewi.tudelft.nl/sites/default/files/Research%20Assignment%20Qing%20Qing%20Wei%20-%20A%20Survey%20of%202D%20to%203D%20Conversion%20Algorithms.pdf)
 Optical Flow (http://docs.opencv.org/trunk/d7/d8b/tutorial_py_lucas_kanade.html)
+Camera Calibration (https://www.cs.umd.edu/class/fall2013/cmsc426/lectures/camera-calibration.pdf)
+Camera Calibration (http://www.emgu.com/wiki/index.php?title=Camera_Calibration)

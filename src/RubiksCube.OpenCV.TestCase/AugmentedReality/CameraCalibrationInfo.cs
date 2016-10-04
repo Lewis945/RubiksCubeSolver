@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace RubiksCube.OpenCV.TestCase.AugmentedReality
 {
-    public class CameraCalibration
+    public class CameraCalibrationInfo
     {
         #region Fields
 
@@ -28,7 +28,7 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
 
         #endregion
 
-        public CameraCalibration(float _fx, float _fy, float _cx, float _cy, float[] distorsionCoeff)
+        public CameraCalibrationInfo(float _fx, float _fy, float _cx, float _cy, float[] distorsionCoeff)
         {
             m_intrinsic = new Matrix<float>(3, 3);
             m_distortion = new VectorOfFloat(distorsionCoeff);
@@ -39,7 +39,7 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
             cy = _cy;
         }
 
-        public CameraCalibration(float _fx, float _fy, float _cx, float _cy)
+        public CameraCalibrationInfo(float _fx, float _fy, float _cx, float _cy)
             : this(_fx, _fy, _cx, _cy, new float[] { 0, 0, 0, 0, 0 })
         {
         }

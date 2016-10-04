@@ -37,7 +37,7 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
         /// </summary>
         /// <param name="pattern"></param>
         /// <param name="calibration"></param>
-        public void computePose(Pattern pattern, CameraCalibration calibration)
+        public void computePose(Pattern pattern, CameraCalibrationInfo calibration)
         {
             VectorOfFloat rotationVector32f = new VectorOfFloat();
             VectorOfFloat translationVector32f = new VectorOfFloat();

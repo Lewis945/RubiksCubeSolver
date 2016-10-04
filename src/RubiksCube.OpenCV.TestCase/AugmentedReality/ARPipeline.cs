@@ -10,13 +10,13 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
     public class ARPipeline
     {
 
-        private CameraCalibration m_calibration;
+        private CameraCalibrationInfo m_calibration;
         private Pattern m_pattern;
         private PatternTrackingInfo m_patternInfo;
 
         public PatternDetector m_patternDetector;
 
-        public ARPipeline(Mat patternImage, CameraCalibration calibration)
+        public ARPipeline(Mat patternImage, CameraCalibrationInfo calibration)
         {
             m_calibration = calibration;
             m_patternDetector.buildPatternFromImage(patternImage, m_pattern);
