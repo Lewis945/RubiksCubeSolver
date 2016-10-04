@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace RubiksCube.OpenCV.TestCase.AugmentedReality
 {
+    /// <summary>
+    /// https://github.com/amulware/genericgamedev-opentk-intro/tree/master/src
+    /// </summary>
     public sealed class GameWindow : OpenTK.GameWindow
     {
         public GameWindow()

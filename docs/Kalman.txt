@@ -1,0 +1,7 @@
+﻿Фильтр Калмана (https://habrahabr.ru/post/166693/)
+EMGU Kalman Filter (http://www.codeproject.com/Articles/342099/EMGU-Kalman-Filter)
+Object Tracking: Kalman Filter with Ease (http://www.codeproject.com/Articles/865935/Object-Tracking-Kalman-Filter-with-Ease)
+Kalman Filter (http://www.emgu.com/wiki/index.php/Kalman_Filter)
+Kalman Filter SOMA BISWAS DEPARTMENT OF ELECTRICAL ENGINEERING IISC , BANGALORE (http://www.ee.iisc.ac.in/people/faculty/soma.biswas/AIP_pdf/KalmanFilter_2016.pdf)
+Фильтр Калмана — Введение (https://habrahabr.ru/post/140274/)
+Kalman filter-based algorithms for estimating depth from image sequences / Larry Matthies / Carnegie Mellon University / Szeliski Takeo Kanade (http://repository.cmu.edu/cgi/viewcontent.cgi?article=2692&context=compsci)

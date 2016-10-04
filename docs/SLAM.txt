@@ -1,0 +1,1 @@
+﻿SLAM for Dummies - A Tutorial Approach to Simultaneous Localization and Mapping / Søren Riisgaard and Morten Rufus Blas (https://ocw.mit.edu/courses/aeronautics-and-astronautics/16-412j-cognitive-robotics-spring-2005/projects/1aslam_blas_repo.pdf)
