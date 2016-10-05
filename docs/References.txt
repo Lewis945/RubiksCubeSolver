@@ -5,3 +5,4 @@ Research Assignment Converting 2D to 3D: A Survey / Author: Q. Wei Reviewers: E.
 Optical Flow (http://docs.opencv.org/trunk/d7/d8b/tutorial_py_lucas_kanade.html)
 Camera Calibration (https://www.cs.umd.edu/class/fall2013/cmsc426/lectures/camera-calibration.pdf)
 Camera Calibration (http://www.emgu.com/wiki/index.php?title=Camera_Calibration)
+Camera Calibration and 3D Reconstruction (http://docs.opencv.org/2.4/modules/calib3d/doc/camera_calibration_and_3d_reconstruction.html#bool findChessboardCorners(InputArray image, Size patternSize, OutputArray corners, int flags))

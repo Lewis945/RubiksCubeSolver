@@ -9,10 +9,11 @@ using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace RubiksCube.OpenCV.CameraCalibration
+namespace SomeCalibrations
 {
-    public partial class CalibrationForm : Form
+    public partial class Form1 : Form
     {
+
         #region Display and aquaring chess board info
 
         readonly Capture _capture; // capture device
@@ -53,7 +54,9 @@ namespace RubiksCube.OpenCV.CameraCalibration
         readonly Mat _distCoeffs = new Mat(8, 1, DepthType.Cv64F, 1);
         #endregion
 
-        public CalibrationForm()
+
+
+        public Form1()
         {
             InitializeComponent();
 
@@ -146,49 +149,6 @@ namespace RubiksCube.OpenCV.CameraCalibration
 
                 double error = CvInvoke.CalibrateCamera(_cornersObjectList, _cornersPointsList, _grayFrame.Size,
                      _cameraMatrix, _distCoeffs, CalibType.RationalModel, new MCvTermCriteria(30, 0.1), out _rvecs, out _tvecs);
-
-                #region Camera calibration parameters (writting to a file)
-
-                var cameraMatrix = new Matrix<float>(_cameraMatrix.Rows, _cameraMatrix.Cols, _cameraMatrix.DataPointer);
-                var dissCoefMatrix = new Matrix<float>(_distCoeffs.Rows, _distCoeffs.Cols, _distCoeffs.DataPointer);
-
-                using (var tw = new System.IO.StreamWriter("CameraCalibration.txt"))
-                {
-                    tw.WriteLine("Camera matrix: ");
-
-                    for (int j = 0; j < cameraMatrix.Cols; j++)
-                    {
-                        for (int i = 0; i < cameraMatrix.Rows; i++)
-                        {
-                            if (i != 0)
-                            {
-                                tw.Write(" ");
-                            }
-                            tw.Write(cameraMatrix[i, j]);
-                        }
-                        tw.WriteLine();
-                    }
-
-                    tw.WriteLine("Diss coefs: ");
-
-                    for (int j = 0; j < dissCoefMatrix.Cols; j++)
-                    {
-                        for (int i = 0; i < dissCoefMatrix.Rows; i++)
-                        {
-                            if (i != 0)
-                            {
-                                tw.Write(" ");
-                            }
-                            tw.Write(dissCoefMatrix[i, j]);
-                        }
-                        tw.WriteLine();
-                    }
-
-                    tw.WriteLine($"Error: {error}");
-                }
-
-                #endregion
-
                 MessageBox.Show(@"Intrinsic Calculation Error: " + error.ToString(CultureInfo.InvariantCulture), @"Results", MessageBoxButtons.OK, MessageBoxIcon.Information); //display the results to the user
                 _currentMode = Mode.Calibrated;
             }

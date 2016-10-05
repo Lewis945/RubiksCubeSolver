@@ -1,16 +1,15 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("RubiksCube.OpenCV.CameraCalibration")]
+[assembly: AssemblyTitle("Camera Calibration")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("RubiksCube.OpenCV.CameraCalibration")]
-[assembly: AssemblyCopyright("Copyright ©  2016")]
+[assembly: AssemblyCompany("Luiz Correia")]
+[assembly: AssemblyProduct("Camera Calibration")]
+[assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("ae0b99f3-a3a4-4f6e-81bf-0cc729503edf")]
+[assembly: Guid("1490ecd8-7cc9-49f3-bf47-62dfcdbd767a")]
 
 // Version information for an assembly consists of the following four values:
 //
