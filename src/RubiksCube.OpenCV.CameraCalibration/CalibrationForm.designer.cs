@@ -1,6 +1,6 @@
 ﻿namespace RubiksCube.OpenCV.CameraCalibration
 {
-    partial class Form1
+    partial class CalibrationForm
     {
         /// <summary>
         /// Required designer variable.
@@ -161,7 +161,7 @@
             this.numChessHeight.Size = new System.Drawing.Size(67, 20);
             this.numChessHeight.TabIndex = 10;
             this.numChessHeight.Value = new decimal(new int[] {
-            3,
+            6,
             0,
             0,
             0});
@@ -188,7 +188,7 @@
             this.numChessWidth.Size = new System.Drawing.Size(67, 20);
             this.numChessWidth.TabIndex = 12;
             this.numChessWidth.Value = new decimal(new int[] {
-            6,
+            9,
             0,
             0,
             0});
@@ -216,7 +216,7 @@
             this.numSquareSize.Size = new System.Drawing.Size(67, 20);
             this.numSquareSize.TabIndex = 14;
             this.numSquareSize.Value = new decimal(new int[] {
-            472,
+            240,
             0,
             0,
             131072});
