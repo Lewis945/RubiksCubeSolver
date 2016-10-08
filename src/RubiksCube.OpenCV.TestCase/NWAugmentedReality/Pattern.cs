@@ -1,8 +1,17 @@
 ﻿using Emgu.CV;
+using Emgu.CV.CvEnum;
+using Emgu.CV.Features2D;
+using Emgu.CV.Structure;
+using Emgu.CV.UI;
 using Emgu.CV.Util;
+using RubiksCube.OpenCV.TestCase.NWAugmentedReality;
+using System;
+using System.Diagnostics;
 using System.Drawing;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace RubiksCube.OpenCV.TestCase.AugmentedReality
+namespace RubiksCube.OpenCV.TestCase.NWAugmentedReality
 {
     public class Pattern
     {
@@ -20,19 +29,16 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
 
         #endregion
 
-        #region .ctor
-
         public Pattern()
         {
             frame = new Mat();
             grayImg = new Mat();
             keypoints = new VectorOfKeyPoint();
-            descriptors = new Mat();
+            descriptors=new Mat();
 
             points2d = new VectorOfPoint();
             points3d = new VectorOfPoint3D32F();
         }
 
-        #endregion
     }
 }

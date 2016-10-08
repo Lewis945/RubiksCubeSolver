@@ -4,16 +4,20 @@ using Emgu.CV.Features2D;
 using Emgu.CV.Structure;
 using Emgu.CV.UI;
 using Emgu.CV.Util;
+using Emgu.CV.XFeatures2D;
 using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace RubiksCube.OpenCV.TestCase.AugmentedReality
 {
     public static class Bootstrapper
     {
+        private static CameraCalibrationInfo _calibration;
+
         public static void Run(string path, string patternPath, SourceType type)
         {
             //using (var a = new GameWindow())
@@ -24,14 +28,14 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
             var viewer = new ImageViewer();
             viewer.Text = path;
 
-            // Change this calibration to yours:
-            var calibration = new CameraCalibrationInfo(526.58037684199849f, 524.65577209994706f, 318.41744018680112f, 202.96659047014398f);
+            _calibration = new CameraCalibrationInfo(560.764656335266f, 562.763179958161f, 295.849138757436f, 255.022208986073f);
 
             var patternImage = CvInvoke.Imread(patternPath, Emgu.CV.CvEnum.LoadImageType.Unchanged);
+            var patternDetector = new PatternDetector(patternImage);
 
             if (type == SourceType.Image)
             {
-                ProcessImage(path, patternImage, viewer);
+                ProcessImage(path, patternImage, patternDetector, viewer);
             }
             else if (type == SourceType.Video)
             {
@@ -41,9 +45,9 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
             viewer.ShowDialog();
         }
 
-        private static void ProcessImage(string path, Mat patternImage, ImageViewer viewer)
+        private static void ProcessImage(string path, Mat patternImage, PatternDetector patternDetector, ImageViewer viewer)
         {
-            var img = CvInvoke.Imread(path, Emgu.CV.CvEnum.LoadImageType.Grayscale);
+            var img = CvInvoke.Imread(path, Emgu.CV.CvEnum.LoadImageType.Unchanged);
             int sleepTime = (int)Math.Round(1000 / 6f);
 
             Task.Run(() =>
@@ -52,7 +56,7 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
                 while (run)
                 {
                     if (img != null)
-                        viewer.Image = ProcessFrame(img, patternImage);
+                        viewer.Image = ProcessFrame(img, patternImage, patternDetector);
                     else
                         run = false;
 
@@ -73,7 +77,7 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
                 {
                     var frame = capture.QueryFrame();
                     if (frame != null)
-                        viewer.Image = ProcessFrame(frame, patternImage);
+                        viewer.Image = ProcessFrame(frame, patternImage, null);
                     else
                         capture = new Capture(path);
 
@@ -82,11 +86,17 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
             });
         }
 
-        private static Mat ProcessFrame(Mat frame, Mat pattern)
+        private static Mat ProcessFrame(Mat frame, Mat pattern, PatternDetector patternDetector)
         {
-            long time;
-            frame = DrawMatches.Draw(pattern, frame, out time);
-            return frame;
+            //long time;
+            //frame = DrawMatches.Draw(pattern, frame, out time);
+
+            var img = frame.Clone();
+
+            patternDetector.FindPattern(img);
+            patternDetector.PatternTrackingInfo.computePose(patternDetector.Pattern, _calibration);
+
+            return img;
         }
     }
 }

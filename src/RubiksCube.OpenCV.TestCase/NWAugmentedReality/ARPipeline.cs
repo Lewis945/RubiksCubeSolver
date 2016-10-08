@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RubiksCube.OpenCV.TestCase.AugmentedReality
+namespace RubiksCube.OpenCV.TestCase.NWAugmentedReality
 {
     public class ARPipeline
     {
@@ -19,6 +19,10 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
         public ARPipeline(Mat patternImage, CameraCalibrationInfo calibration)
         {
             m_calibration = calibration;
+            m_patternDetector = new PatternDetector();
+            m_pattern = new Pattern();
+            m_patternInfo = new PatternTrackingInfo();
+
             m_patternDetector.buildPatternFromImage(patternImage, m_pattern);
             m_patternDetector.train(m_pattern);
         }

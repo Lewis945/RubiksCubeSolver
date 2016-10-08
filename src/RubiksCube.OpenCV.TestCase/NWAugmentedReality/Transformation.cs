@@ -11,7 +11,7 @@ using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace RubiksCube.OpenCV.TestCase.AugmentedReality
+namespace RubiksCube.OpenCV.TestCase.NWAugmentedReality
 {
     public struct Transformation
     {
@@ -46,8 +46,8 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
             return new Transformation(rot, -m_translation);
         }
 
-        public OpenTK.Matrix3 m_rotation;
-        public OpenTK.Vector3 m_translation;
+        private OpenTK.Matrix3 m_rotation;
+        private OpenTK.Vector3 m_translation;
 
         public OpenTK.Matrix3 r { get { return m_rotation; } }
         public OpenTK.Vector3 t { get { return m_translation; } }

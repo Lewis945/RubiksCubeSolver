@@ -6,3 +6,9 @@ Optical Flow (http://docs.opencv.org/trunk/d7/d8b/tutorial_py_lucas_kanade.html)
 Camera Calibration (https://www.cs.umd.edu/class/fall2013/cmsc426/lectures/camera-calibration.pdf)
 Camera Calibration (http://www.emgu.com/wiki/index.php?title=Camera_Calibration)
 Camera Calibration and 3D Reconstruction (http://docs.opencv.org/2.4/modules/calib3d/doc/camera_calibration_and_3d_reconstruction.html#bool findChessboardCorners(InputArray image, Size patternSize, OutputArray corners, int flags))
+
+An Implementation of Camera Calibration Algorithms, Meredith Drennan  (http://cecas.clemson.edu/~stb/ece847/projects/Camera_Calibration.pdf)
+
+https://github.com/luizcorreia/Camera-Calibration
+https://github.com/zhoudavinci/Camera-Calibration-by-EmguCV
+https://github.com/MasteringOpenCV/code/tree/master/Chapter3_MarkerlessAR

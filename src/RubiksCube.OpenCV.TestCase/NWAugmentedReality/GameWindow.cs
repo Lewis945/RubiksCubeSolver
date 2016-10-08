@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RubiksCube.OpenCV.TestCase.AugmentedReality
+namespace RubiksCube.OpenCV.TestCase.NWAugmentedReality
 {
     /// <summary>
     /// https://github.com/amulware/genericgamedev-opentk-intro/tree/master/src

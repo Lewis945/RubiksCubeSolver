@@ -4,7 +4,6 @@ using Emgu.CV.Features2D;
 using Emgu.CV.Structure;
 using Emgu.CV.UI;
 using Emgu.CV.Util;
-using RubiksCube.OpenCV.TestCase.AugmentedReality;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -25,7 +24,7 @@ namespace RubiksCube.OpenCV.TestCase
             //RunForImage();
             //RunForVideo();
 
-            Bootstrapper.Run("Images\\PyramidPatternTest.bmp", "Images\\PyramidPattern.jpg", SourceType.Image);
+            RubiksCube.OpenCV.TestCase.AugmentedReality.Bootstrapper.Run("Images\\PyramidPatternTest.bmp", "Images\\PyramidPattern.jpg", AugmentedReality.SourceType.Image);
             //Bootstrapper.Run("Videos/cube.avi", SourceType.Video);
 
             Console.ReadKey();
