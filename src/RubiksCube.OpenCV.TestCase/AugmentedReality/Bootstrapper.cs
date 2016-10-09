@@ -20,11 +20,6 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
 
         public static void Run(string path, string patternPath, SourceType type)
         {
-            //using (var a = new GameWindow())
-            //{
-            //    a.Run(30);
-            //}
-
             var viewer = new ImageViewer();
             viewer.Text = path;
 
@@ -42,7 +37,7 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
                 ProcessVideo(path, patternImage, viewer);
             }
 
-            viewer.ShowDialog();
+            //viewer.ShowDialog();
         }
 
         private static void ProcessImage(string path, Mat patternImage, PatternDetector patternDetector, ImageViewer viewer)
@@ -59,6 +54,8 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
                         viewer.Image = ProcessFrame(img, patternImage, patternDetector);
                     else
                         run = false;
+
+                    run = false;
 
                     Thread.Sleep(sleepTime);
                 }
@@ -95,6 +92,16 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
 
             patternDetector.FindPattern(img);
             patternDetector.PatternTrackingInfo.computePose(patternDetector.Pattern, _calibration);
+
+            using (var a = new GameWindow(_calibration, img))
+            {
+                a.isPatternPresent = true;
+                a.patternPose = patternDetector.PatternTrackingInfo.pose3d;
+
+                // Set a new camera frame:
+                //a.UpdateBackground(img);
+                a.Run(30);
+            }
 
             return img;
         }

@@ -84,7 +84,7 @@
     <Compile Include="NWAugmentedReality\ARPipeline.cs" />
     <Compile Include="NWAugmentedReality\Bootstrapper.cs" />
     <Compile Include="NWAugmentedReality\CameraCalibrationInfo.cs" />
-    <Compile Include="NWAugmentedReality\GameWindow.cs" />
+    <Compile Include="AugmentedReality\GameWindow.cs" />
     <Compile Include="NWAugmentedReality\Pattern.cs" />
     <Compile Include="NWAugmentedReality\PatternDetector.cs" />
     <Compile Include="NWAugmentedReality\PatternTrackingInfo.cs" />

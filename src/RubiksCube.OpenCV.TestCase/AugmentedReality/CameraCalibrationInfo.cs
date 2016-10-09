@@ -20,11 +20,11 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
 
         #region Properties
 
-        float fx { get { return m_intrinsic[1, 1]; } set { m_intrinsic[1, 1] = value; } }
-        float fy { get { return m_intrinsic[0, 0]; } set { m_intrinsic[0, 0] = value; } }
+        public float fx { get { return m_intrinsic[1, 1]; } set { m_intrinsic[1, 1] = value; } }
+        public float fy { get { return m_intrinsic[0, 0]; } set { m_intrinsic[0, 0] = value; } }
 
-        float cx { get { return m_intrinsic[0, 2]; } set { m_intrinsic[0, 2] = value; } }
-        float cy { get { return m_intrinsic[1, 2]; } set { m_intrinsic[1, 2] = value; } }
+        public float cx { get { return m_intrinsic[0, 2]; } set { m_intrinsic[0, 2] = value; } }
+        public float cy { get { return m_intrinsic[1, 2]; } set { m_intrinsic[1, 2] = value; } }
 
         #endregion
 
