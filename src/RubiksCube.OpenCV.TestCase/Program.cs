@@ -39,7 +39,7 @@ namespace RubiksCube.OpenCV.TestCase
 
             UMat result;
 
-            result = SiftExamples.Run(img);
+            result = Examples.SiftExamples.Run(img);
             //result = SurfExamples.Run(img);
             //result = FastExamples.Run(img);
             //result = OrbExamples.Run(img);
@@ -73,7 +73,7 @@ namespace RubiksCube.OpenCV.TestCase
                     var frame = capture.QueryFrame();
                     if (frame != null)
                     {
-                        var result = FastExamples.Run(frame);
+                        var result = Examples.FastExamples.Run(frame);
                         viewer.Image = result;
                     }
                     else

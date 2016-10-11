@@ -9,27 +9,36 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 
-namespace RubiksCube.OpenCV.TestCase
+namespace RubiksCube.OpenCV.TestCase.Examples
 {
-    /// <summary>
-    /// http://www.emgu.com/wiki/index.php/FAST_feature_detector_in_CSharp
-    /// </summary>
-    public static class FastExamples
+    public static class OrbExamples
     {
-        public static UMat Run(Mat img)
+        public static void Run(Mat img)
         {
+            Stopwatch watch;
+
             var modelKeyPoints = new VectorOfKeyPoint();
+
             var result = new UMat();
 
             using (UMat uModelImage = img.ToUMat(AccessType.Read))
             {
-                FastDetector fastCPU = new FastDetector(10, true);
+                watch = Stopwatch.StartNew();
+
+                ORBDetector orbCPU = new ORBDetector();
+                //extract features from the object image
                 UMat modelDescriptors = new UMat();
-                fastCPU.DetectRaw(uModelImage, modelKeyPoints);
+                orbCPU.DetectRaw(uModelImage, modelKeyPoints);
+
                 Features2DToolbox.DrawKeypoints(img, modelKeyPoints, result, new Bgr(Color.Red), Features2DToolbox.KeypointDrawType.NotDrawSinglePoints);
+
+                watch.Stop();
             }
 
-            return result;
+            long detectTimeMs = watch.ElapsedMilliseconds;
+            float detectTimeS = detectTimeMs / 1000f;
+
+            ImageViewer.Show(result, $"ORB Example ({detectTimeS} s.)");
         }
     }
 }

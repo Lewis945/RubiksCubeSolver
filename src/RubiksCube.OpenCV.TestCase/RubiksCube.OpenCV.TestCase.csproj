@@ -81,14 +81,14 @@
     <Compile Include="AugmentedReality\SourceType.cs" />
     <Compile Include="AugmentedReality\Transformation.cs" />
     <Compile Include="AugmentedReality\GameWindow.cs" />
-    <Compile Include="DrawMatches.cs" />
-    <Compile Include="FastExamples.cs" />
-    <Compile Include="FreakExamples.cs" />
-    <Compile Include="OrbExamples.cs" />
+    <Compile Include="Examples\DrawMatches.cs" />
+    <Compile Include="Examples\FastExamples.cs" />
+    <Compile Include="Examples\FreakExamples.cs" />
+    <Compile Include="Examples\OrbExamples.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SiftExamples.cs" />
-    <Compile Include="SurfExamples.cs" />
+    <Compile Include="Examples\SiftExamples.cs" />
+    <Compile Include="Examples\SurfExamples.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

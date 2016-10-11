@@ -9,9 +9,9 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 
-namespace RubiksCube.OpenCV.TestCase
+namespace RubiksCube.OpenCV.TestCase.Examples
 {
-    public static class SiftExamples
+    public static class FreakExamples
     {
         public static UMat Run(Mat img)
         {
@@ -20,9 +20,11 @@ namespace RubiksCube.OpenCV.TestCase
 
             using (UMat uModelImage = img.ToUMat(AccessType.Read))
             {
-                SIFT siftfCPU = new SIFT();
+                FastDetector fastCPU = new FastDetector(10, true);
+                Freak freakCPU = new Freak();
                 UMat modelDescriptors = new UMat();
-                siftfCPU.DetectRaw(uModelImage, modelKeyPoints);
+                fastCPU.DetectRaw(uModelImage, modelKeyPoints);
+                freakCPU.Compute(uModelImage, modelKeyPoints, modelDescriptors);
                 Features2DToolbox.DrawKeypoints(img, modelKeyPoints, result, new Bgr(Color.Red), Features2DToolbox.KeypointDrawType.NotDrawSinglePoints);
             }
 
