@@ -192,10 +192,10 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
             float farPlane = 100.0f;  // Far clipping distance
 
             // Camera parameters
-            float f_x = calibration.fx; // Focal length in x axis
-            float f_y = calibration.fy; // Focal length in y axis (usually the same?)
-            float c_x = calibration.cx; // Camera primary point x
-            float c_y = calibration.cy; // Camera primary point y
+            float f_x = calibration.Fx; // Focal length in x axis
+            float f_y = calibration.Fy; // Focal length in y axis (usually the same?)
+            float c_x = calibration.Cx; // Camera primary point x
+            float c_y = calibration.Cy; // Camera primary point y
 
             var projectionMatrix = new Matrix4(
                 -2.0f * f_x / screen_width,

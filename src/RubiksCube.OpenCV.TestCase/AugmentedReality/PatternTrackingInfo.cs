@@ -45,8 +45,8 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
             Mat rotationVector = new Mat();
             Mat translationVector = new Mat();
 
-            var t1 = calibration.getIntrinsic();
-            var t2 = calibration.getDistorsion();
+            var t1 = calibration.Intrinsic;
+            var t2 = calibration.Distortion;
 
             var px1 = pattern.points3d.ToArray();
             var px2 = Array.ConvertAll<Point, PointF>(points2d.ToArray(), (a) => { return a; });

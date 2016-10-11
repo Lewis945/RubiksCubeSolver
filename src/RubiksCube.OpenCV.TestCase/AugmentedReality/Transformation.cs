@@ -4,7 +4,6 @@ using Emgu.CV.Features2D;
 using Emgu.CV.Structure;
 using Emgu.CV.UI;
 using Emgu.CV.Util;
-using RubiksCube.OpenCV.TestCase.NWAugmentedReality;
 using System;
 using System.Diagnostics;
 using System.Drawing;

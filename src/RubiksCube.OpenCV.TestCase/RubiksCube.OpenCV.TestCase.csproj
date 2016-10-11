@@ -80,16 +80,7 @@
     <Compile Include="AugmentedReality\PatternTrackingInfo.cs" />
     <Compile Include="AugmentedReality\SourceType.cs" />
     <Compile Include="AugmentedReality\Transformation.cs" />
-    <Compile Include="NWAugmentedReality\ARDrawingContext.cs" />
-    <Compile Include="NWAugmentedReality\ARPipeline.cs" />
-    <Compile Include="NWAugmentedReality\Bootstrapper.cs" />
-    <Compile Include="NWAugmentedReality\CameraCalibrationInfo.cs" />
     <Compile Include="AugmentedReality\GameWindow.cs" />
-    <Compile Include="NWAugmentedReality\Pattern.cs" />
-    <Compile Include="NWAugmentedReality\PatternDetector.cs" />
-    <Compile Include="NWAugmentedReality\PatternTrackingInfo.cs" />
-    <Compile Include="NWAugmentedReality\SourceType.cs" />
-    <Compile Include="NWAugmentedReality\Transformation.cs" />
     <Compile Include="DrawMatches.cs" />
     <Compile Include="FastExamples.cs" />
     <Compile Include="FreakExamples.cs" />
