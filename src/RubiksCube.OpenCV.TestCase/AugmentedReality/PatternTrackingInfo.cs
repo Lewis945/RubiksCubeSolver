@@ -48,7 +48,7 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
             var t1 = calibration.Intrinsic;
             var t2 = calibration.Distortion;
 
-            var px1 = pattern.points3d.ToArray();
+            var px1 = pattern.Points3d.ToArray();
             var px2 = Array.ConvertAll<Point, PointF>(points2d.ToArray(), (a) => { return a; });
 
             CvInvoke.SolvePnP(px1, px2, t1, t2, rotationVector, translationVector);
