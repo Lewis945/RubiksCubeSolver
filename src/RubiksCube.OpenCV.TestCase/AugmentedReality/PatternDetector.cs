@@ -18,9 +18,20 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
         private Pattern _pattern;
         private PatternTrackingInfo _patternInfo;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Pattern Pattern { get { return _pattern; } }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public PatternTrackingInfo PatternTrackingInfo { get { return _patternInfo; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="patternImage"></param>
         public PatternDetector(Mat patternImage)
         {
             _pattern = BuildPatternFromImage(patternImage);
@@ -93,7 +104,13 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
                     new MCvPoint3D32f(-unitW, unitH, 0)
             });
 
-            FeaturesUtils.ExtractFeatures(_pattern.GrayImg, out _pattern.keypoints, out _pattern.descriptors);
+            VectorOfKeyPoint keypoints;
+            Mat descriptors;
+
+            FeaturesUtils.ExtractFeatures(_pattern.GrayImg, out keypoints, out descriptors);
+
+            _pattern.Keypoints = keypoints;
+            _pattern.Descriptors = descriptors;
 
             return _pattern;
         }
