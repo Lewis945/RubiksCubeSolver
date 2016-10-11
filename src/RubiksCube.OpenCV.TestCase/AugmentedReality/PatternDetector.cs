@@ -52,13 +52,13 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
 
             FeaturesUtils.GetMatches(image, keypoints, descriptors, _pattern.Keypoints, _pattern.Descriptors, out matches, out homography);
 
-            _patternInfo.homography = homography;
+            _patternInfo.Homography = homography;
 
             var pts = Array.ConvertAll<Point, PointF>(_pattern.Points2d.ToArray(), (a) => { return a; });
             pts = CvInvoke.PerspectiveTransform(pts, homography);
             var points = Array.ConvertAll(pts, Point.Round);
 
-            _patternInfo.points2d = new VectorOfPoint(points);
+            _patternInfo.Points2d = new VectorOfPoint(points);
 
             _patternInfo.Draw2dContour(image, new MCvScalar(0, 200, 0));
 

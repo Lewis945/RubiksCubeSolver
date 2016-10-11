@@ -96,7 +96,7 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
             using (var a = new GameWindow(_calibration, img))
             {
                 a.isPatternPresent = true;
-                a.patternPose = patternDetector.PatternTrackingInfo.pose3d;
+                a.patternPose = patternDetector.PatternTrackingInfo.Pose3d;
 
                 // Set a new camera frame:
                 //a.UpdateBackground(img);

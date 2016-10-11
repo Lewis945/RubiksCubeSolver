@@ -13,14 +13,40 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
 {
     public class PatternTrackingInfo
     {
-        public Mat homography;
-        public VectorOfPoint points2d;
-        public Transformation pose3d;
+        private Mat _homography;
+        private VectorOfPoint _points2d;
+        private Transformation _pose3d;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public Mat Homography
+        {
+            get { return _homography; }
+            set { _homography = value; }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public VectorOfPoint Points2d
+        {
+            get { return _points2d; }
+            set { _points2d = value; }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Transformation Pose3d { get { return _pose3d; } }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public PatternTrackingInfo()
         {
-            homography = new Mat();
-            points2d = new VectorOfPoint();
+            _homography = new Mat();
+            _points2d = new VectorOfPoint();
         }
 
         /// <summary>
@@ -30,7 +56,7 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
         /// <param name="color"></param>
         public void Draw2dContour(Mat image, MCvScalar color)
         {
-            CvInvoke.Polylines(image, points2d, true, color, 2, Emgu.CV.CvEnum.LineType.AntiAlias);
+            CvInvoke.Polylines(image, _points2d, true, color, 2, Emgu.CV.CvEnum.LineType.AntiAlias);
         }
 
         /// <summary>
@@ -49,7 +75,7 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
             var t2 = calibration.Distortion;
 
             var px1 = pattern.Points3d.ToArray();
-            var px2 = Array.ConvertAll<Point, PointF>(points2d.ToArray(), (a) => { return a; });
+            var px2 = Array.ConvertAll<Point, PointF>(_points2d.ToArray(), (a) => { return a; });
 
             CvInvoke.SolvePnP(px1, px2, t1, t2, rotationVector, translationVector);
 
@@ -67,13 +93,13 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
             {
                 for (int row = 0; row < 3; row++)
                 {
-                    pose3d.m_rotation[row, col] = rotationMat[row, col]; // Copy rotation component
+                    _pose3d.SetRotationMatrixValue(row, col, rotationMat[row, col]); // Copy rotation component
                 }
-                pose3d.m_translation[col] = translationVector32f[col]; // Copy translation component
+                _pose3d.SetTranslationVectorValue(col, translationVector32f[col]); // Copy translation component
             }
 
             // Since solvePnP finds camera location, w.r.t to marker pose, to get marker pose w.r.t to the camera we invert it.
-            pose3d = pose3d.getInverted();
+            _pose3d = _pose3d.GetInverted();
         }
     }
 }
