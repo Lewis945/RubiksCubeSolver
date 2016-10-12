@@ -4,7 +4,6 @@ using Emgu.CV.Features2D;
 using Emgu.CV.Structure;
 using Emgu.CV.UI;
 using Emgu.CV.Util;
-using RubiksCube.OpenCV.TestCase.NWAugmentedReality;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -15,10 +14,21 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
 {
     public struct Transformation
     {
+        private OpenTK.Matrix3 _rotation;
+        private OpenTK.Vector3 _translation;
+
+        public OpenTK.Matrix3 r { get { return _rotation; } }
+        public OpenTK.Vector3 t { get { return _translation; } }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="m"></param>
+        /// <param name="v"></param>
         public Transformation(OpenTK.Matrix3 m, OpenTK.Vector3 v)
         {
-            m_rotation = m;
-            m_translation = v;
+            _rotation = m;
+            _translation = v;
         }
 
         public OpenTK.Matrix4 getMat44()
@@ -30,27 +40,30 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
                 for (int row = 0; row < 3; row++)
                 {
                     // Copy rotation component
-                    res[row, col] = m_rotation[row, col];
+                    res[row, col] = _rotation[row, col];
                 }
 
                 // Copy translation component
-                res[3, col] = m_translation[col];
+                res[3, col] = _translation[col];
             }
 
             return res;
         }
 
-        public Transformation getInverted()
+        public Transformation GetInverted()
         {
-            var rot = OpenTK.Matrix3.Transpose(m_rotation);
-            return new Transformation(rot, -m_translation);
+            var rot = OpenTK.Matrix3.Transpose(_rotation);
+            return new Transformation(rot, -_translation);
         }
 
-        public OpenTK.Matrix3 m_rotation;
-        public OpenTK.Vector3 m_translation;
+        public void SetRotationMatrixValue(int i, int j, float value)
+        {
+            _rotation[i, j] = value;
+        }
 
-        public OpenTK.Matrix3 r { get { return m_rotation; } }
-        public OpenTK.Vector3 t { get { return m_translation; } }
-
+        public void SetTranslationVectorValue(int i, float value)
+        {
+            _translation[i] = value;
+        }
     }
 }

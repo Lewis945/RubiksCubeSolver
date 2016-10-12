@@ -16,94 +16,39 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
 {
     public static class Bootstrapper
     {
-        private static CameraCalibrationInfo _calibration;
-
         public static void Run(string path, string patternPath, SourceType type)
         {
-            var viewer = new ImageViewer();
-            viewer.Text = path;
-
-            _calibration = new CameraCalibrationInfo(560.764656335266f, 562.763179958161f, 295.849138757436f, 255.022208986073f);
+            var calibration = new CameraCalibrationInfo(560.764656335266f, 562.763179958161f, 295.849138757436f, 255.022208986073f);
 
             var patternImage = CvInvoke.Imread(patternPath, Emgu.CV.CvEnum.LoadImageType.Unchanged);
             var patternDetector = new PatternDetector(patternImage);
 
             if (type == SourceType.Image)
             {
-                ProcessImage(path, patternImage, patternDetector, viewer);
+                var image = CvInvoke.Imread(path, Emgu.CV.CvEnum.LoadImageType.Unchanged);
+                ShowWindow(image, patternImage, patternDetector, calibration);
             }
             else if (type == SourceType.Video)
             {
-                ProcessVideo(path, patternImage, viewer);
+                var capture = new Capture(path);
+                var image = capture.QueryFrame();
+                ShowWindow(image, patternImage, patternDetector, calibration, capture);
             }
-
-            //viewer.ShowDialog();
         }
 
-        private static void ProcessImage(string path, Mat patternImage, PatternDetector patternDetector, ImageViewer viewer)
+        private static void ShowWindow(Mat img, Mat patternImage, PatternDetector patternDetector, CameraCalibrationInfo calibration, Capture capture = null)
         {
-            var img = CvInvoke.Imread(path, Emgu.CV.CvEnum.LoadImageType.Unchanged);
-            int sleepTime = (int)Math.Round(1000 / 6f);
-
             Task.Run(() =>
             {
-                bool run = true;
-                while (run)
+                using (var a = new GameWindow(calibration, img))
                 {
-                    if (img != null)
-                        viewer.Image = ProcessFrame(img, patternImage, patternDetector);
-                    else
-                        run = false;
+                    a.PatternDetector = patternDetector;
+                    a.Pattern = patternImage;
+                    a.Capture = capture;
 
-                    run = false;
-
-                    Thread.Sleep(sleepTime);
+                    a.Run(30);
                 }
             });
-        }
-
-        private static void ProcessVideo(string path, Mat patternImage, ImageViewer viewer)
-        {
-            var capture = new Capture(path);
-            int sleepTime = (int)Math.Round(1000 / 6f);
-
-            Task.Run(() =>
-            {
-                bool run = true;
-                while (run)
-                {
-                    var frame = capture.QueryFrame();
-                    if (frame != null)
-                        viewer.Image = ProcessFrame(frame, patternImage, null);
-                    else
-                        capture = new Capture(path);
-
-                    Thread.Sleep(sleepTime);
-                }
-            });
-        }
-
-        private static Mat ProcessFrame(Mat frame, Mat pattern, PatternDetector patternDetector)
-        {
-            //long time;
-            //frame = DrawMatches.Draw(pattern, frame, out time);
-
-            var img = frame.Clone();
-
-            patternDetector.FindPattern(img);
-            patternDetector.PatternTrackingInfo.computePose(patternDetector.Pattern, _calibration);
-
-            using (var a = new GameWindow(_calibration, img))
-            {
-                a.isPatternPresent = true;
-                a.patternPose = patternDetector.PatternTrackingInfo.pose3d;
-
-                // Set a new camera frame:
-                //a.UpdateBackground(img);
-                a.Run(30);
-            }
-
-            return img;
         }
     }
 }

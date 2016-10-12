@@ -15,6 +15,10 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
     /// </summary>
     public sealed class GameWindow : OpenTK.GameWindow
     {
+        public Capture Capture { get; set; }
+        public PatternDetector PatternDetector { get; set; }
+        public Mat Pattern { get; set; }
+
         public bool isPatternPresent;
         public Transformation patternPose;
 
@@ -38,7 +42,7 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
 
         protected override void OnResize(EventArgs e)
         {
-            GL.Viewport(0, 0, this.Width, this.Height);
+            GL.Viewport(0, 0, Width, Height);
         }
 
         protected override void OnLoad(EventArgs e)
@@ -46,9 +50,41 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
             // this is called when the window starts running
         }
 
+        private bool _isInit = false;
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
+            Title = "GameWindowSimple (Vsync: " + VSync.ToString() + ") " + "  FPS: " + (1f / e.Time).ToString("0.");
+
             // this is called every frame, put game logic here
+            if (Capture != null)
+            {
+                var frame = Capture.QueryFrame();
+                m_backgroundImage = ProcessFrame(frame);
+            }
+            else
+            {
+                if (!_isInit)
+                {
+                    m_backgroundImage = ProcessFrame(m_backgroundImage);
+                    _isInit = true;
+                }
+            }
+        }
+
+        private Mat ProcessFrame(Mat frame)
+        {
+            //long time;
+            //frame = DrawMatches.Draw(pattern, frame, out time);
+
+            var img = frame.Clone();
+
+            PatternDetector.FindPattern(img);
+            PatternDetector.PatternTrackingInfo.computePose(PatternDetector.Pattern, m_calibration);
+
+            isPatternPresent = true;
+            patternPose = PatternDetector.PatternTrackingInfo.Pose3d;
+
+            return img;
         }
 
         protected override void OnRenderFrame(FrameEventArgs e)
@@ -96,7 +132,7 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
             DrawCameraFrame();
             DrawAugmentedScene();
 
-            this.SwapBuffers();
+            SwapBuffers();
         }
 
         public void UpdateBackground(Mat frame)
@@ -192,10 +228,10 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
             float farPlane = 100.0f;  // Far clipping distance
 
             // Camera parameters
-            float f_x = calibration.fx; // Focal length in x axis
-            float f_y = calibration.fy; // Focal length in y axis (usually the same?)
-            float c_x = calibration.cx; // Camera primary point x
-            float c_y = calibration.cy; // Camera primary point y
+            float f_x = calibration.Fx; // Focal length in x axis
+            float f_y = calibration.Fy; // Focal length in y axis (usually the same?)
+            float c_x = calibration.Cx; // Camera primary point x
+            float c_y = calibration.Cy; // Camera primary point y
 
             var projectionMatrix = new Matrix4(
                 -2.0f * f_x / screen_width,

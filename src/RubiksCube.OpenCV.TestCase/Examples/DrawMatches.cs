@@ -9,7 +9,7 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 
-namespace RubiksCube.OpenCV.TestCase
+namespace RubiksCube.OpenCV.TestCase.Examples
 {
     public static class DrawMatches
     {

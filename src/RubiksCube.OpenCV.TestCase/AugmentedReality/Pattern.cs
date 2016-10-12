@@ -8,29 +8,57 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
     {
         #region Fields
 
-        public Size size;
-        public Mat frame;
-        public Mat grayImg;
+        /// <summary>
+        /// 
+        /// </summary>
+        public Size Size { get; set; }
 
-        public VectorOfKeyPoint keypoints;
-        public Mat descriptors;
+        /// <summary>
+        /// 
+        /// </summary>
+        public Mat Frame { get; set; }
 
-        public VectorOfPoint points2d;
-        public VectorOfPoint3D32F points3d;
+        /// <summary>
+        /// 
+        /// </summary>
+        public Mat GrayImg { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public VectorOfKeyPoint Keypoints { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Mat Descriptors { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public VectorOfPoint Points2d { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public VectorOfPoint3D32F Points3d { get; set; }
 
         #endregion
 
         #region .ctor
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Pattern()
         {
-            frame = new Mat();
-            grayImg = new Mat();
-            keypoints = new VectorOfKeyPoint();
-            descriptors = new Mat();
+            Frame = new Mat();
+            GrayImg = new Mat();
+            Keypoints = new VectorOfKeyPoint();
+            Descriptors = new Mat();
 
-            points2d = new VectorOfPoint();
-            points3d = new VectorOfPoint3D32F();
+            Points2d = new VectorOfPoint();
+            Points3d = new VectorOfPoint3D32F();
         }
 
         #endregion
