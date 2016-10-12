@@ -16,11 +16,9 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
 {
     public static class Bootstrapper
     {
-        private static CameraCalibrationInfo _calibration;
-
         public static void Run(string path, string patternPath, SourceType type)
         {
-            _calibration = new CameraCalibrationInfo(560.764656335266f, 562.763179958161f, 295.849138757436f, 255.022208986073f);
+            var calibration = new CameraCalibrationInfo(560.764656335266f, 562.763179958161f, 295.849138757436f, 255.022208986073f);
 
             var patternImage = CvInvoke.Imread(patternPath, Emgu.CV.CvEnum.LoadImageType.Unchanged);
             var patternDetector = new PatternDetector(patternImage);
@@ -28,21 +26,21 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
             if (type == SourceType.Image)
             {
                 var image = CvInvoke.Imread(path, Emgu.CV.CvEnum.LoadImageType.Unchanged);
-                ShowWindow(image, patternImage, patternDetector);
+                ShowWindow(image, patternImage, patternDetector, calibration);
             }
             else if (type == SourceType.Video)
             {
                 var capture = new Capture(path);
                 var image = capture.QueryFrame();
-                ShowWindow(image, patternImage, patternDetector, capture);
+                ShowWindow(image, patternImage, patternDetector, calibration, capture);
             }
         }
 
-        private static void ShowWindow(Mat img, Mat patternImage, PatternDetector patternDetector, Capture capture = null)
+        private static void ShowWindow(Mat img, Mat patternImage, PatternDetector patternDetector, CameraCalibrationInfo calibration, Capture capture = null)
         {
             Task.Run(() =>
             {
-                using (var a = new GameWindow(_calibration, img))
+                using (var a = new GameWindow(calibration, img))
                 {
                     a.PatternDetector = patternDetector;
                     a.Pattern = patternImage;
