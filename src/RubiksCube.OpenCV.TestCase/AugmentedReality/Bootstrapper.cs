@@ -18,6 +18,8 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
     {
         public static void Run(string path, string patternPath, SourceType type)
         {
+            FeaturesUtils.Init();
+
             var calibration = new CameraCalibrationInfo(560.764656335266f, 562.763179958161f, 295.849138757436f, 255.022208986073f);
 
             var patternImage = CvInvoke.Imread(patternPath, Emgu.CV.CvEnum.LoadImageType.Unchanged);
@@ -38,17 +40,13 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
 
         private static void ShowWindow(Mat img, Mat patternImage, PatternDetector patternDetector, CameraCalibrationInfo calibration, Capture capture = null)
         {
-            Task.Run(() =>
+            using (var window = new GameWindow(calibration, img))
             {
-                using (var a = new GameWindow(calibration, img))
-                {
-                    a.PatternDetector = patternDetector;
-                    a.Pattern = patternImage;
-                    a.Capture = capture;
-
-                    a.Run(30);
-                }
-            });
+                window.PatternDetector = patternDetector;
+                window.Pattern = patternImage;
+                window.Capture = capture;
+                window.Run(30);
+            }
         }
     }
 }

@@ -47,20 +47,22 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
 
             FeaturesUtils.ExtractFeatures(gray, out keypoints, out descriptors);
 
-            VectorOfVectorOfDMatch matches;
-            Mat homography;
+            Features2DToolbox.DrawKeypoints(gray, keypoints, image, new Bgr(Color.Red), Features2DToolbox.KeypointDrawType.NotDrawSinglePoints);
 
-            FeaturesUtils.GetMatches(image, keypoints, descriptors, _pattern.Keypoints, _pattern.Descriptors, out matches, out homography);
+            //VectorOfVectorOfDMatch matches;
+            //Mat homography;
 
-            _patternInfo.Homography = homography;
+            //FeaturesUtils.GetMatches(keypoints, descriptors, _pattern.Keypoints, _pattern.Descriptors, out matches, out homography);
 
-            var pts = Array.ConvertAll<Point, PointF>(_pattern.Points2d.ToArray(), (a) => { return a; });
-            pts = CvInvoke.PerspectiveTransform(pts, homography);
-            var points = Array.ConvertAll(pts, Point.Round);
+            //_patternInfo.Homography = homography;
 
-            _patternInfo.Points2d = new VectorOfPoint(points);
+            //var pts = Array.ConvertAll<Point, PointF>(_pattern.Points2d.ToArray(), (a) => { return a; });
+            //pts = CvInvoke.PerspectiveTransform(pts, homography);
+            //var points = Array.ConvertAll(pts, Point.Round);
 
-            _patternInfo.Draw2dContour(image, new MCvScalar(0, 200, 0));
+            //_patternInfo.Points2d = new VectorOfPoint(points);
+
+            //_patternInfo.Draw2dContour(image, new MCvScalar(0, 200, 0));
 
             return true;
         }

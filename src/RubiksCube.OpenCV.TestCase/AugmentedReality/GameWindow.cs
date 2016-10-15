@@ -79,7 +79,7 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
             var img = frame.Clone();
 
             PatternDetector.FindPattern(img);
-            PatternDetector.PatternTrackingInfo.computePose(PatternDetector.Pattern, m_calibration);
+            //PatternDetector.PatternTrackingInfo.computePose(PatternDetector.Pattern, m_calibration);
 
             isPatternPresent = true;
             patternPose = PatternDetector.PatternTrackingInfo.Pose3d;
