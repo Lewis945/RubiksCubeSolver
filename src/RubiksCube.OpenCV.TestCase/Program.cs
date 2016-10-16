@@ -4,6 +4,7 @@ using Emgu.CV.Features2D;
 using Emgu.CV.Structure;
 using Emgu.CV.UI;
 using Emgu.CV.Util;
+using RubiksCube.OpenCV.TestCase.Examples;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -17,12 +18,19 @@ namespace RubiksCube.OpenCV.TestCase
     /// </summary>
     public class Program
     {
+        [STAThread]
         public static void Main(string[] args)
         {
             //RubiksCube.OpenCV.TestCase.AugmentedReality.Bootstrapper.Run("Images\\PyramidPatternTest.bmp", "Images\\PyramidPattern.jpg", AugmentedReality.SourceType.Image);
             RubiksCube.OpenCV.TestCase.AugmentedReality.Bootstrapper.Run("Videos\\napkins-video.mp4", "Images\\napkins-pattern.jpg", AugmentedReality.SourceType.Video);
 
-            Console.ReadKey();
+            //UMat image;
+            //image = SiftExamples.Run(new Mat("Images\\PyramidPatternTest.bmp", LoadImageType.Grayscale));
+            //image = FastExamples.Run(new Mat("Images\\PyramidPatternTest.bmp", LoadImageType.Grayscale));
+            //image = FreakExamples.Run(new Mat("Images\\PyramidPatternTest.bmp", LoadImageType.Grayscale));
+            //image = OrbExamples.Run(new Mat("Images\\PyramidPatternTest.bmp", LoadImageType.Grayscale));
+            //image = SurfExamples.Run(new Mat("Images\\PyramidPatternTest.bmp", LoadImageType.Grayscale));
+            //ImageViewer.Show(image, "Image");
         }
     }
 }

@@ -15,20 +15,35 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
 {
     public static class FeaturesUtils
     {
+        private static Feature2D _featureDetector;
+        private static Feature2D _descriptorsComputer;
+
+        public static void Init()
+        {
+            _featureDetector = new SURF(500);
+            //_featureDetector = new ORBDetector();
+            //_featureDetector = new FastDetector(10, true);
+            //_featureDetector = new SIFT();
+
+            //_descriptorsComputer = _featureDetector;
+            _descriptorsComputer = new Freak();
+        }
+
         public static void ExtractFeatures(Mat image, out VectorOfKeyPoint keypoints, out Mat descriptors)
         {
             keypoints = new VectorOfKeyPoint();
             descriptors = new Mat();
 
-            double hessianThresh = 500;
             using (var uModelImage = image.ToUMat(AccessType.Read))
             {
-                var surfCPU = new SURF(hessianThresh);
-                surfCPU.DetectAndCompute(uModelImage, null, keypoints, descriptors, false);
+                //_featureDetector.DetectAndCompute(uModelImage, null, keypoints, descriptors, false);
+
+                _featureDetector.DetectRaw(uModelImage, keypoints);
+                _descriptorsComputer.Compute(uModelImage, keypoints, descriptors);
             }
         }
 
-        public static void GetMatches(Mat image, VectorOfKeyPoint imageKeypoints, IInputArray imageDescriptors, VectorOfKeyPoint patternKeypoints, IInputArray patternDescriptors, out VectorOfVectorOfDMatch matches, out Mat homography)
+        public static void GetMatches(VectorOfKeyPoint imageKeypoints, IInputArray imageDescriptors, VectorOfKeyPoint patternKeypoints, IInputArray patternDescriptors, out VectorOfVectorOfDMatch matches, out Mat homography)
         {
             int k = 2;
             double uniquenessThreshold = 0.8;
@@ -37,23 +52,20 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
 
             matches = new VectorOfVectorOfDMatch();
 
-            using (UMat uObservedImage = image.ToUMat(AccessType.Read))
+            var matcher = new BFMatcher(DistanceType.L2);
+            matcher.Add(patternDescriptors);
+            matcher.KnnMatch(imageDescriptors, matches, k, null);
+
+            var mask = new Mat(matches.Size, 1, DepthType.Cv8U, 1);
+            mask.SetTo(new MCvScalar(255));
+            Features2DToolbox.VoteForUniqueness(matches, uniquenessThreshold, mask);
+
+            int nonZeroCount = CvInvoke.CountNonZero(mask);
+            if (nonZeroCount >= 4)
             {
-                var matcher = new BFMatcher(DistanceType.L2);
-                matcher.Add(patternDescriptors);
-                matcher.KnnMatch(imageDescriptors, matches, k, null);
-
-                var mask = new Mat(matches.Size, 1, DepthType.Cv8U, 1);
-                mask.SetTo(new MCvScalar(255));
-                Features2DToolbox.VoteForUniqueness(matches, uniquenessThreshold, mask);
-
-                int nonZeroCount = CvInvoke.CountNonZero(mask);
+                nonZeroCount = Features2DToolbox.VoteForSizeAndOrientation(patternKeypoints, imageKeypoints, matches, mask, 1.5, 20);
                 if (nonZeroCount >= 4)
-                {
-                    nonZeroCount = Features2DToolbox.VoteForSizeAndOrientation(patternKeypoints, imageKeypoints, matches, mask, 1.5, 20);
-                    if (nonZeroCount >= 4)
-                        homography = Features2DToolbox.GetHomographyMatrixFromMatchedFeatures(patternKeypoints, imageKeypoints, matches, mask, 2);
-                }
+                    homography = Features2DToolbox.GetHomographyMatrixFromMatchedFeatures(patternKeypoints, imageKeypoints, matches, mask, 2);
             }
         }
 

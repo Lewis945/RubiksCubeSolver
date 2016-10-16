@@ -47,10 +47,12 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
 
             FeaturesUtils.ExtractFeatures(gray, out keypoints, out descriptors);
 
+            Features2DToolbox.DrawKeypoints(gray, keypoints, image, new Bgr(Color.Red), Features2DToolbox.KeypointDrawType.NotDrawSinglePoints);
+
             VectorOfVectorOfDMatch matches;
             Mat homography;
 
-            FeaturesUtils.GetMatches(image, keypoints, descriptors, _pattern.Keypoints, _pattern.Descriptors, out matches, out homography);
+            FeaturesUtils.GetMatches(keypoints, descriptors, _pattern.Keypoints, _pattern.Descriptors, out matches, out homography);
 
             _patternInfo.Homography = homography;
 

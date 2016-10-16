@@ -22,10 +22,10 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
         public bool isPatternPresent;
         public Transformation patternPose;
 
-        private bool m_isTextureInitialized;
-        private uint m_backgroundTextureId;
-        private CameraCalibrationInfo m_calibration;
-        private Mat m_backgroundImage = new Mat();
+        private bool _isTextureInitialized;
+        private uint _backgroundTextureId;
+        private CameraCalibrationInfo _calibration;
+        private Mat _backgroundImage = new Mat();
 
         public GameWindow(CameraCalibrationInfo calibration, Mat img)
             // set window resolution, title, and default behaviour
@@ -34,8 +34,8 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
             // ask for an OpenGL 3.0 forward compatible context
             3, 0, GraphicsContextFlags.ForwardCompatible)
         {
-            m_calibration = calibration;
-            m_backgroundImage = img;
+            _calibration = calibration;
+            _backgroundImage = img;
 
             Console.WriteLine("gl version: " + GL.GetString(StringName.Version));
         }
@@ -59,13 +59,14 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
             if (Capture != null)
             {
                 var frame = Capture.QueryFrame();
-                m_backgroundImage = ProcessFrame(frame);
+                if (frame != null)
+                    _backgroundImage = ProcessFrame(frame);
             }
             else
             {
                 if (!_isInit)
                 {
-                    m_backgroundImage = ProcessFrame(m_backgroundImage);
+                    _backgroundImage = ProcessFrame(_backgroundImage);
                     _isInit = true;
                 }
             }
@@ -79,7 +80,7 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
             var img = frame.Clone();
 
             PatternDetector.FindPattern(img);
-            PatternDetector.PatternTrackingInfo.computePose(PatternDetector.Pattern, m_calibration);
+            PatternDetector.PatternTrackingInfo.ComputePose(PatternDetector.Pattern, _calibration);
 
             isPatternPresent = true;
             patternPose = PatternDetector.PatternTrackingInfo.Pose3d;
@@ -89,41 +90,6 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
 
         protected override void OnRenderFrame(FrameEventArgs e)
         {
-            #region Draw triangle
-
-            //GL.LoadIdentity();
-
-            ////window size is 300x300
-            //GL.Ortho(0, 300, 300, 0, 0.0f, 100.0f);
-
-            //GL.ClearColor(Color4.Beige);
-            //GL.ClearDepth(1.0f);
-            //GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-
-            //GL.EnableClientState(ArrayCap.VertexArray);
-            //GL.EnableClientState(ArrayCap.ColorArray);
-
-            //var triangle_vertex = new float[]
-            //{
-            //    150,10,     //vertex 1
-            //    280,250,    //vertex 2
-            //    20,250      //vertex 3
-            //};
-            //var triangle_color = new float[]
-            //{
-            //    1,0,0,      //red
-            //    0,1,0,      //green
-            //    0,0,1       //blue
-            //};
-            //GL.VertexPointer(2, VertexPointerType.Float, 0, triangle_vertex);
-            //GL.ColorPointer(3, ColorPointerType.Float, 0, triangle_color);
-            //GL.DrawArrays(PrimitiveType.Triangles, 0, 3);
-
-            //GL.DisableClientState(ArrayCap.VertexArray);
-            //GL.DisableClientState(ArrayCap.ColorArray);
-
-            #endregion
-
             GL.ClearColor(Color4.Beige);
             GL.ClearDepth(1.0f);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
@@ -137,36 +103,36 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
 
         public void UpdateBackground(Mat frame)
         {
-            frame.CopyTo(m_backgroundImage);
+            frame.CopyTo(_backgroundImage);
         }
 
         private void DrawCameraFrame()
         {
             // Initialize texture for background image
-            if (!m_isTextureInitialized)
+            if (!_isTextureInitialized)
             {
-                GL.GenTextures(1, out m_backgroundTextureId);
-                GL.BindTexture(TextureTarget.Texture2D, m_backgroundTextureId);
+                GL.GenTextures(1, out _backgroundTextureId);
+                GL.BindTexture(TextureTarget.Texture2D, _backgroundTextureId);
 
                 GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
                 GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
 
-                m_isTextureInitialized = true;
+                _isTextureInitialized = true;
             }
 
-            int w = m_backgroundImage.Cols;
-            int h = m_backgroundImage.Rows;
+            int w = _backgroundImage.Cols;
+            int h = _backgroundImage.Rows;
 
             GL.PixelStore(PixelStoreParameter.PackAlignment, 1);
-            GL.BindTexture(TextureTarget.Texture2D, m_backgroundTextureId);
+            GL.BindTexture(TextureTarget.Texture2D, _backgroundTextureId);
 
             // Upload new texture data:
-            if (m_backgroundImage.NumberOfChannels == 3)
-                GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgb, w, h, 0, PixelFormat.Bgr, PixelType.UnsignedByte, m_backgroundImage.DataPointer);
-            else if (m_backgroundImage.NumberOfChannels == 4)
-                GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgb, w, h, 0, PixelFormat.Bgra, PixelType.UnsignedByte, m_backgroundImage.DataPointer);
-            else if (m_backgroundImage.NumberOfChannels == 1)
-                GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgb, w, h, 0, PixelFormat.Luminance, PixelType.UnsignedByte, m_backgroundImage.DataPointer);
+            if (_backgroundImage.NumberOfChannels == 3)
+                GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgb, w, h, 0, PixelFormat.Bgr, PixelType.UnsignedByte, _backgroundImage.DataPointer);
+            else if (_backgroundImage.NumberOfChannels == 4)
+                GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgb, w, h, 0, PixelFormat.Bgra, PixelType.UnsignedByte, _backgroundImage.DataPointer);
+            else if (_backgroundImage.NumberOfChannels == 1)
+                GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgb, w, h, 0, PixelFormat.Luminance, PixelType.UnsignedByte, _backgroundImage.DataPointer);
 
             var bgTextureVertices = new float[] { 0, 0, w, 0, 0, h, w, h };
             var bgTextureCoords = new float[] { 1, 0, 1, 1, 0, 0, 0, 1 };
@@ -179,7 +145,7 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
             GL.LoadIdentity();
 
             GL.Enable(EnableCap.Texture2D);
-            GL.BindTexture(TextureTarget.Texture2D, m_backgroundTextureId);
+            GL.BindTexture(TextureTarget.Texture2D, _backgroundTextureId);
 
             // Update attribute values.
             GL.EnableClientState(ArrayCap.VertexArray);
@@ -200,9 +166,9 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
         {
             // Init augmentation projection
             Matrix4 projectionMatrix;
-            int w = m_backgroundImage.Cols;
-            int h = m_backgroundImage.Rows;
-            projectionMatrix = BuildProjectionMatrix(m_calibration, w, h);
+            int w = _backgroundImage.Cols;
+            int h = _backgroundImage.Rows;
+            projectionMatrix = BuildProjectionMatrix(_calibration, w, h);
 
             GL.MatrixMode(MatrixMode.Projection);
             GL.LoadMatrix(ref projectionMatrix);
