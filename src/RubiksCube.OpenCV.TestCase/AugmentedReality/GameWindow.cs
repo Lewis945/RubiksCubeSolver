@@ -3,6 +3,7 @@ using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,13 +16,20 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
     /// </summary>
     public sealed class GameWindow : OpenTK.GameWindow
     {
-        public bool isPatternPresent;
-        public Transformation patternPose;
+        public Capture Capture { get; set; }
+        public PatternDetector PatternDetector { get; set; }
+        public Mat Pattern { get; set; }
 
-        private bool m_isTextureInitialized;
-        private uint m_backgroundTextureId;
-        private CameraCalibrationInfo m_calibration;
-        private Mat m_backgroundImage = new Mat();
+        //public bool _isPatternPresent;
+        //public Transformation _patternPose;
+
+        private bool _isTextureInitialized;
+        private uint _backgroundTextureId;
+        private CameraCalibrationInfo _calibration;
+        private Mat _backgroundImage = new Mat();
+
+        private bool _render;
+        private ConcurrentQueue<ProcessedFrame> _captureBuffer;
 
         public GameWindow(CameraCalibrationInfo calibration, Mat img)
             // set window resolution, title, and default behaviour
@@ -30,15 +38,46 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
             // ask for an OpenGL 3.0 forward compatible context
             3, 0, GraphicsContextFlags.ForwardCompatible)
         {
-            m_calibration = calibration;
-            m_backgroundImage = img;
+            _calibration = calibration;
+            _backgroundImage = img;
+
+            // init capture buffer
+            _captureBuffer = new ConcurrentQueue<ProcessedFrame>();
+
+            Task.Run(() =>
+            {
+                int counter = 0;
+                Transformation lastPose = new Transformation();
+                while (true)
+                {
+                    var frame = Capture.QueryFrame();
+                    if (frame == null) break;
+                    if (counter % 8 == 0)
+                    {
+                        var processedFrame = ProcessFrame(frame);
+                        lastPose = processedFrame.PatternPose;
+                        _captureBuffer.Enqueue(processedFrame);
+                    }
+                    else
+                    {
+                        _captureBuffer.Enqueue(new ProcessedFrame { PatternPose = lastPose, IsPatternPresent = true, Image = frame });
+                    }
+
+                    counter++;
+
+                    if (_captureBuffer.Count > 50)
+                    {
+                        _render = true;
+                    }
+                }
+            });
 
             Console.WriteLine("gl version: " + GL.GetString(StringName.Version));
         }
 
         protected override void OnResize(EventArgs e)
         {
-            GL.Viewport(0, 0, this.Width, this.Height);
+            GL.Viewport(0, 0, Width, Height);
         }
 
         protected override void OnLoad(EventArgs e)
@@ -46,91 +85,92 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
             // this is called when the window starts running
         }
 
+        private bool _isInit = false;
+        private ProcessedFrame _currentProcessedFrame;
+
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
+            Title = "GameWindowSimple (Vsync: " + VSync.ToString() + ") " + "  FPS: " + (1f / e.Time).ToString("0.");
+
             // this is called every frame, put game logic here
+            if (Capture != null)
+            {
+                if (_render)
+                {
+                    if (_captureBuffer.TryDequeue(out _currentProcessedFrame))
+                        _backgroundImage = _currentProcessedFrame.Image;
+                }
+            }
+            else
+            {
+                if (!_isInit)
+                {
+                    //_backgroundImage = ProcessFrame(_backgroundImage);
+                    //_isInit = true;
+                }
+            }
+        }
+
+        struct ProcessedFrame
+        {
+            public bool IsPatternPresent { get; set; }
+            public Transformation PatternPose { get; set; }
+            public Mat Image { get; set; }
+        }
+
+        private ProcessedFrame ProcessFrame(Mat frame)
+        {
+            var img = frame.Clone();
+
+            PatternDetector.FindPattern(img);
+            PatternDetector.PatternTrackingInfo.ComputePose(PatternDetector.Pattern, _calibration);
+
+            var isPatternPresent = true;
+            var patternPose = PatternDetector.PatternTrackingInfo.Pose3d;
+
+            return new ProcessedFrame { IsPatternPresent = isPatternPresent, PatternPose = patternPose, Image = img };
         }
 
         protected override void OnRenderFrame(FrameEventArgs e)
         {
-            #region Draw triangle
-
-            //GL.LoadIdentity();
-
-            ////window size is 300x300
-            //GL.Ortho(0, 300, 300, 0, 0.0f, 100.0f);
-
-            //GL.ClearColor(Color4.Beige);
-            //GL.ClearDepth(1.0f);
-            //GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-
-            //GL.EnableClientState(ArrayCap.VertexArray);
-            //GL.EnableClientState(ArrayCap.ColorArray);
-
-            //var triangle_vertex = new float[]
-            //{
-            //    150,10,     //vertex 1
-            //    280,250,    //vertex 2
-            //    20,250      //vertex 3
-            //};
-            //var triangle_color = new float[]
-            //{
-            //    1,0,0,      //red
-            //    0,1,0,      //green
-            //    0,0,1       //blue
-            //};
-            //GL.VertexPointer(2, VertexPointerType.Float, 0, triangle_vertex);
-            //GL.ColorPointer(3, ColorPointerType.Float, 0, triangle_color);
-            //GL.DrawArrays(PrimitiveType.Triangles, 0, 3);
-
-            //GL.DisableClientState(ArrayCap.VertexArray);
-            //GL.DisableClientState(ArrayCap.ColorArray);
-
-            #endregion
-
             GL.ClearColor(Color4.Beige);
             GL.ClearDepth(1.0f);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
             // Render background
-            DrawCameraFrame();
-            DrawAugmentedScene();
+            DrawCameraFrame(_backgroundImage);
+            DrawAugmentedScene(_currentProcessedFrame, _backgroundImage);
 
-            this.SwapBuffers();
+            SwapBuffers();
         }
 
-        public void UpdateBackground(Mat frame)
-        {
-            frame.CopyTo(m_backgroundImage);
-        }
-
-        private void DrawCameraFrame()
+        private void DrawCameraFrame(Mat image)
         {
             // Initialize texture for background image
-            if (!m_isTextureInitialized)
+            if (!_isTextureInitialized)
             {
-                GL.GenTextures(1, out m_backgroundTextureId);
-                GL.BindTexture(TextureTarget.Texture2D, m_backgroundTextureId);
+                GL.GenTextures(1, out _backgroundTextureId);
+                GL.BindTexture(TextureTarget.Texture2D, _backgroundTextureId);
 
                 GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
                 GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
 
-                m_isTextureInitialized = true;
+                _isTextureInitialized = true;
             }
 
-            int w = m_backgroundImage.Cols;
-            int h = m_backgroundImage.Rows;
+            int w = image.Cols;
+            int h = image.Rows;
 
             GL.PixelStore(PixelStoreParameter.PackAlignment, 1);
-            GL.BindTexture(TextureTarget.Texture2D, m_backgroundTextureId);
+            GL.BindTexture(TextureTarget.Texture2D, _backgroundTextureId);
 
             // Upload new texture data:
-            if (m_backgroundImage.NumberOfChannels == 3)
-                GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgb, w, h, 0, PixelFormat.Bgr, PixelType.UnsignedByte, m_backgroundImage.DataPointer);
-            else if (m_backgroundImage.NumberOfChannels == 4)
-                GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgb, w, h, 0, PixelFormat.Bgra, PixelType.UnsignedByte, m_backgroundImage.DataPointer);
-            else if (m_backgroundImage.NumberOfChannels == 1)
-                GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgb, w, h, 0, PixelFormat.Luminance, PixelType.UnsignedByte, m_backgroundImage.DataPointer);
+            if (image.NumberOfChannels == 3)
+                GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgb, w, h, 0, PixelFormat.Bgr, PixelType.UnsignedByte, image.DataPointer);
+            else if (image.NumberOfChannels == 4)
+                GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgb, w, h, 0, PixelFormat.Bgra, PixelType.UnsignedByte, image.DataPointer);
+            else if (image.NumberOfChannels == 1)
+                GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgb, w, h, 0, PixelFormat.Luminance, PixelType.UnsignedByte, image.DataPointer);
 
             var bgTextureVertices = new float[] { 0, 0, w, 0, 0, h, w, h };
             var bgTextureCoords = new float[] { 1, 0, 1, 1, 0, 0, 0, 1 };
@@ -143,7 +183,7 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
             GL.LoadIdentity();
 
             GL.Enable(EnableCap.Texture2D);
-            GL.BindTexture(TextureTarget.Texture2D, m_backgroundTextureId);
+            GL.BindTexture(TextureTarget.Texture2D, _backgroundTextureId);
 
             // Update attribute values.
             GL.EnableClientState(ArrayCap.VertexArray);
@@ -160,13 +200,13 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
             GL.Disable(EnableCap.Texture2D);
         }
 
-        private void DrawAugmentedScene()
+        private void DrawAugmentedScene(ProcessedFrame processedFrame, Mat image)
         {
             // Init augmentation projection
             Matrix4 projectionMatrix;
-            int w = m_backgroundImage.Cols;
-            int h = m_backgroundImage.Rows;
-            projectionMatrix = BuildProjectionMatrix(m_calibration, w, h);
+            int w = image.Cols;
+            int h = image.Rows;
+            projectionMatrix = BuildProjectionMatrix(_calibration, w, h);
 
             GL.MatrixMode(MatrixMode.Projection);
             GL.LoadMatrix(ref projectionMatrix);
@@ -174,10 +214,10 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
             GL.MatrixMode(MatrixMode.Modelview);
             GL.LoadIdentity();
 
-            if (isPatternPresent)
+            if (processedFrame.IsPatternPresent)
             {
                 // Set the pattern transformation
-                Matrix4 glMatrix = patternPose.getMat44();
+                Matrix4 glMatrix = processedFrame.PatternPose.getMat44();
                 GL.LoadMatrix(ref glMatrix);
 
                 // Render model
@@ -192,10 +232,10 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
             float farPlane = 100.0f;  // Far clipping distance
 
             // Camera parameters
-            float f_x = calibration.fx; // Focal length in x axis
-            float f_y = calibration.fy; // Focal length in y axis (usually the same?)
-            float c_x = calibration.cx; // Camera primary point x
-            float c_y = calibration.cy; // Camera primary point y
+            float f_x = calibration.Fx; // Focal length in x axis
+            float f_y = calibration.Fy; // Focal length in y axis (usually the same?)
+            float c_x = calibration.Cx; // Camera primary point x
+            float c_y = calibration.Cy; // Camera primary point y
 
             var projectionMatrix = new Matrix4(
                 -2.0f * f_x / screen_width,

@@ -9,28 +9,23 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 
-namespace RubiksCube.OpenCV.TestCase
+namespace RubiksCube.OpenCV.TestCase.Examples
 {
     /// <summary>
-    /// http://www.emgu.com/wiki/index.php/SURF_feature_detector_in_CSharp
+    /// http://www.emgu.com/wiki/index.php/FAST_feature_detector_in_CSharp
     /// </summary>
-    public static class SurfExamples
+    public static class FastExamples
     {
         public static UMat Run(Mat img)
         {
-            double hessianThresh = 500;
-
             var modelKeyPoints = new VectorOfKeyPoint();
             var result = new UMat();
 
             using (UMat uModelImage = img.ToUMat(AccessType.Read))
             {
-                SURF surfCPU = new SURF(hessianThresh);
-                //extract features from the object image
+                FastDetector fastCPU = new FastDetector(10, true);
                 UMat modelDescriptors = new UMat();
-                //surfCPU.DetectAndCompute(uModelImage, null, modelKeyPoints, modelDescriptors, false);
-                surfCPU.DetectRaw(uModelImage, modelKeyPoints);
-
+                fastCPU.DetectRaw(uModelImage, modelKeyPoints);
                 Features2DToolbox.DrawKeypoints(img, modelKeyPoints, result, new Bgr(Color.Red), Features2DToolbox.KeypointDrawType.NotDrawSinglePoints);
             }
 

@@ -9,12 +9,9 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 
-namespace RubiksCube.OpenCV.TestCase
+namespace RubiksCube.OpenCV.TestCase.Examples
 {
-    /// <summary>
-    /// http://www.emgu.com/wiki/index.php/FAST_feature_detector_in_CSharp
-    /// </summary>
-    public static class FastExamples
+    public static class FreakExamples
     {
         public static UMat Run(Mat img)
         {
@@ -24,8 +21,10 @@ namespace RubiksCube.OpenCV.TestCase
             using (UMat uModelImage = img.ToUMat(AccessType.Read))
             {
                 FastDetector fastCPU = new FastDetector(10, true);
+                Freak freakCPU = new Freak();
                 UMat modelDescriptors = new UMat();
                 fastCPU.DetectRaw(uModelImage, modelKeyPoints);
+                freakCPU.Compute(uModelImage, modelKeyPoints, modelDescriptors);
                 Features2DToolbox.DrawKeypoints(img, modelKeyPoints, result, new Bgr(Color.Red), Features2DToolbox.KeypointDrawType.NotDrawSinglePoints);
             }
 
