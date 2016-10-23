@@ -71,16 +71,13 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
             Mat rotationVector = new Mat();
             Mat translationVector = new Mat();
 
-            var t1 = calibration.Intrinsic;
-            var t2 = calibration.Distortion;
-
             var px1 = pattern.Points3d.ToArray();
             var px2 = Array.ConvertAll<Point, PointF>(_points2d.ToArray(), (a) => { return a; });
 
-            CvInvoke.SolvePnP(px1, px2, t1, t2, rotationVector, translationVector);
+            CvInvoke.SolvePnP(px1, px2, calibration.Intrinsic, calibration.Distortion, rotationVector, translationVector);
 
-            var p1 = new Matrix<float>(rotationVector.Rows, rotationVector.Cols, rotationVector.Ptr);
-            var p2 = new Matrix<float>(translationVector.Rows, translationVector.Cols, translationVector.Ptr);
+            //var p1 = new Matrix<float>(rotationVector.Rows, rotationVector.Cols, rotationVector.Ptr);
+            //var p2 = new Matrix<float>(translationVector.Rows, translationVector.Cols, translationVector.Ptr);
 
             rotationVector.ConvertTo(rotationVector32f, DepthType.Cv32F);
             translationVector.ConvertTo(translationVector32f, DepthType.Cv32F);

@@ -88,6 +88,9 @@
     <Compile Include="Examples\FastExamples.cs" />
     <Compile Include="Examples\FreakExamples.cs" />
     <Compile Include="Examples\OrbExamples.cs" />
+    <Compile Include="FundamentalMatrix\Bootstrapper.cs" />
+    <Compile Include="Kalman\Bootstrapper.cs" />
+    <Compile Include="Kalman\SimpleLinearKalman.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Examples\SiftExamples.cs" />
