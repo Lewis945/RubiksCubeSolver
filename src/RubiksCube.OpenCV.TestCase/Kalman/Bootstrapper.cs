@@ -56,7 +56,7 @@ namespace RubiksCube.OpenCV.TestCase.Kalman
         //    }
         //}
 
-        public static void Run()
+        public static void Run1()
         {
             var calibration = new CameraCalibrationInfo(560.764656335266f, 562.763179958161f, 295.849138757436f, 255.022208986073f);
 
@@ -86,6 +86,66 @@ namespace RubiksCube.OpenCV.TestCase.Kalman
                 truevoltage.Add(v.GetVoltage());
                 kalman.Add(filter.GetCurrentState()[0, 0]);
                 filter.Step(new Matrix<float>(new float[] { 0 }), new Matrix<float>(new float[] { measured }));
+            }
+
+            List<Point> p1 = new List<Point>();
+            List<Point> p2 = new List<Point>();
+            List<Point> p3 = new List<Point>();
+
+            int x = 10;
+            for (int i = 0; i < 60; i++)
+            {
+                var measuredV = measuredvoltage[i];
+                var trueV = truevoltage[i];
+                var kalmanV = kalman[i];
+
+                p1.Add(new Point(x + (i * 10), (int)measuredV));
+                p2.Add(new Point(x + (i * 10), (int)trueV));
+                p3.Add(new Point(x + (i * 10), (int)kalmanV));
+
+                //CvInvoke.Circle(mat, new Point(x + (i * 10), (int)measuredV), 2, new MCvScalar(125, 10, 10), 1, LineType.AntiAlias, 0);
+                //CvInvoke.Circle(mat, new Point(x + (i * 10), (int)trueV), 2, new MCvScalar(125, 10, 10), 1, LineType.AntiAlias, 0);
+                //CvInvoke.Circle(mat, new Point(x + (i * 10), (int)kalmanV), 2, new MCvScalar(125, 10, 10), 1, LineType.AntiAlias, 0);
+            }
+
+            CvInvoke.Polylines(mat, p1.ToArray(), false, new MCvScalar(100, 10, 10));
+            CvInvoke.Polylines(mat, p2.ToArray(), false, new MCvScalar(10, 100, 10));
+            CvInvoke.Polylines(mat, p3.ToArray(), false, new MCvScalar(10, 10, 100));
+
+            ImageViewer.Show(mat, "Plot");
+        }
+
+        public static void Run()
+        {
+            var mat = new Mat(new Size(500, 500), DepthType.Cv32F, 3);
+
+            var kal = new KalmanFilter(1, 1, 0);
+            var v = new Voltmeter(220, 20);
+
+            var measuredvoltage = new List<float>();
+            var truevoltage = new List<float>();
+            var kalman = new List<float>();
+
+            var c1 = new Matrix<float>(new float[] { 0 });
+            var control = new Mat(new int[] { 0 }, DepthType.Cv32F, c1.Ptr);
+
+            var t3 = new Matrix<float>(kal.TransitionMatrix.Rows, kal.TransitionMatrix.Cols, kal.TransitionMatrix.Ptr);
+            t3[0, 0] = 1;
+
+            for (int i = 0; i < 60; i++)
+            {
+                var measured = v.GetVoltageWithNoise();
+                measuredvoltage.Add(measured);
+                truevoltage.Add(v.GetVoltage());
+
+                var predicted = kal.Predict(control);
+                var t = new Matrix<float>(predicted.Rows, predicted.Cols, predicted.Ptr);
+                kalman.Add(t[0, 0]);
+
+                var m = new Matrix<float>(new float[] { measured });
+                var c = m.ToUMat().ToMat(AccessType.ReadWrite);
+
+                kal.Correct(c);
             }
 
             List<Point> p1 = new List<Point>();
