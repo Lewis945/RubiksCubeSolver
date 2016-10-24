@@ -41,7 +41,7 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
 
         private static void ShowWindow(Mat img, Mat patternImage, PatternDetector patternDetector, CameraCalibrationInfo calibration, Capture capture = null)
         {
-            double fps = capture.GetCaptureProperty(CapProp.Fps);
+            double fps = capture != null ? capture.GetCaptureProperty(CapProp.Fps) : 30;
             using (var window = new GameWindow(calibration, img))
             {
                 window.PatternDetector = patternDetector;

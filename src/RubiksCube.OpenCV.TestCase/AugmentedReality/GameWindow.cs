@@ -50,24 +50,27 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
                 Transformation lastPose = new Transformation();
                 while (true)
                 {
-                    var frame = Capture.QueryFrame();
-                    if (frame == null) break;
-                    if (counter % 8 == 0)
+                    if (Capture != null)
                     {
-                        var processedFrame = ProcessFrame(frame);
-                        lastPose = processedFrame.PatternPose;
-                        _captureBuffer.Enqueue(processedFrame);
-                    }
-                    else
-                    {
-                        _captureBuffer.Enqueue(new ProcessedFrame { PatternPose = lastPose, IsPatternPresent = true, Image = frame });
-                    }
+                        var frame = Capture.QueryFrame();
+                        if (frame == null) break;
+                        if (counter % 8 == 0)
+                        {
+                            var processedFrame = ProcessFrame(frame);
+                            lastPose = processedFrame.PatternPose;
+                            _captureBuffer.Enqueue(processedFrame);
+                        }
+                        else
+                        {
+                            _captureBuffer.Enqueue(new ProcessedFrame { PatternPose = lastPose, IsPatternPresent = true, Image = frame });
+                        }
 
-                    counter++;
+                        counter++;
 
-                    if (_captureBuffer.Count > 50)
-                    {
-                        _render = true;
+                        if (_captureBuffer.Count > 50)
+                        {
+                            _render = true;
+                        }
                     }
                 }
             });
@@ -105,8 +108,8 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
             {
                 if (!_isInit)
                 {
-                    //_backgroundImage = ProcessFrame(_backgroundImage);
-                    //_isInit = true;
+                    _currentProcessedFrame = ProcessFrame(_backgroundImage);
+                    _isInit = true;
                 }
             }
         }

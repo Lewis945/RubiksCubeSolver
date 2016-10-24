@@ -129,8 +129,8 @@ namespace RubiksCube.OpenCV.TestCase.Kalman
             var c1 = new Matrix<float>(new float[] { 0 });
             var control = new Mat(new int[] { 0 }, DepthType.Cv32F, c1.Ptr);
 
-            var t3 = new Matrix<float>(kal.TransitionMatrix.Rows, kal.TransitionMatrix.Cols, kal.TransitionMatrix.Ptr);
-            t3[0, 0] = 1;
+            //var t3 = new Matrix<float>(kal.TransitionMatrix.Rows, kal.TransitionMatrix.Cols, kal.TransitionMatrix.Ptr);
+            //t3[0, 0] = 1;
 
             for (int i = 0; i < 60; i++)
             {
