@@ -96,7 +96,7 @@
     <Compile Include="Examples\FastExamples.cs" />
     <Compile Include="Examples\FreakExamples.cs" />
     <Compile Include="Examples\OrbExamples.cs" />
-    <Compile Include="FundamentalMatrix\Bootstrapper.cs" />
+    <Compile Include="PtamLikeApproach\Bootstrapper.cs" />
     <Compile Include="Kalman\Bootstrapper.cs" />
     <Compile Include="Kalman\SimpleLinearKalman.cs" />
     <Compile Include="Kalman\Voltmeter.cs" />
@@ -104,6 +104,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Examples\SiftExamples.cs" />
     <Compile Include="Examples\SurfExamples.cs" />
+    <Compile Include="PtamLikeApproach\SimpleAdHocTracker.cs" />
+    <Compile Include="PtamLikeApproach\Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

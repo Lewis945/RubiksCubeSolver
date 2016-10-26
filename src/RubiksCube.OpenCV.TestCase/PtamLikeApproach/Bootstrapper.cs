@@ -9,11 +9,30 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RubiksCube.OpenCV.TestCase.FundamentalMatrix
+namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 {
     class Bootstrapper
     {
         public static void Run(string path)
+        {
+            var calibration = new CameraCalibrationInfo(560.764656335266f, 562.763179958161f, 295.849138757436f, 255.022208986073f);
+
+            var capture = new Capture(path);
+            var image1 = capture.QueryFrame();
+            var image2 = capture.QueryFrame();
+
+            //var image1Gray = new Mat();
+            //var image2Gray = new Mat();
+
+            //CvInvoke.CvtColor(image1, image1Gray, ColorConversion.Rgb2Gray);
+            //CvInvoke.CvtColor(image2, image2Gray, ColorConversion.Rgb2Gray);
+
+            var tracker = new SimpleAdHocTracker();
+            tracker.Bootstrap(image1);
+            tracker.BootstrapTrack(image2);
+        }
+
+        public static void Run1(string path)
         {
             var calibration = new CameraCalibrationInfo(560.764656335266f, 562.763179958161f, 295.849138757436f, 255.022208986073f);
 
