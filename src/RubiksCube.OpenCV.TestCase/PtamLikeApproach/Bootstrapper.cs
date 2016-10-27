@@ -19,6 +19,10 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
             var capture = new Capture(path);
             var image1 = capture.QueryFrame();
+            for (int i = 0; i < 100; i++)
+            {
+                capture.QueryFrame();
+            }
             var image2 = capture.QueryFrame();
 
             //var image1Gray = new Mat();

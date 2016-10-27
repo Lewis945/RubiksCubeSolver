@@ -143,7 +143,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
                 //camera motion is sufficient
 
                 Mat P, P1;
-                bool triangulationSucceeded = cameraPoseAndTriangulationFromFundamental(out P, out P1);
+                bool triangulationSucceeded = CameraPoseAndTriangulationFromFundamental(out P, out P1);
             }
         }
 
@@ -203,7 +203,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             return true;
         }
 
-        private bool triangulateAndCheckReproj(Mat P, Mat P1)
+        private bool TriangulateAndCheckReproj(Matrix<float> P, Matrix<float> P1)
         {
             //undistort
             var normalizedTrackedPts = new VectorOfPointF();
@@ -237,7 +237,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
 
             //calculate reprojection
-            var R = new Mat(P, new Rectangle(0, 0, 3, 3));
+            var R = P.GetSubRect(new Rectangle(0, 0, 3, 3));
             var rvec = new VectorOfFloat(new float[] { 0, 0, 0 }); //Rodrigues(R ,rvec);
             var tvec = new VectorOfFloat(new float[] { 0, 0, 0 }); // = P.col(3);
             var reprojected_pt_set1 = new VectorOfPointF();
@@ -271,7 +271,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             return false;
         }
 
-        private bool cameraPoseAndTriangulationFromFundamental(out Mat p1, out Mat p2)
+        private bool CameraPoseAndTriangulationFromFundamental(out Mat p1, out Mat p2)
         {
             p1 = null;
             p2 = null;
@@ -338,42 +338,40 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
                 });
 
                 bool triangulationSucceeded = true;
-                //if (!triangulateAndCheckReproj(P, P1))
-                //{
-                //    P1 = new Matrix<float>(new float[3, 4] {
-                //        { R1[0,0], R1[0,1], R1[0,2], t2[0,0] },
-                //        { R1[1,0], R1[1,1], R1[1,2], t2[0,1]},
-                //        { R1[2,0], R1[2,1], R1[2,2], t2[0,2]}
-                //    });
+                if (!TriangulateAndCheckReproj(P, P1))
+                {
+                    P1 = new Matrix<float>(new float[3, 4] {
+                        { R1[0,0], R1[0,1], R1[0,2], t2[0,0] },
+                        { R1[1,0], R1[1,1], R1[1,2], t2[0,1]},
+                        { R1[2,0], R1[2,1], R1[2,2], t2[0,2]}
+                    });
 
-                //    if (!triangulateAndCheckReproj(P, P1))
-                //    {
-                //        P1 = new Matrix<float>(new float[3, 4] {
-                //            { R2[0,0], R2[0,1], R2[0,2], t2[0,0] },
-                //            { R2[1,0], R2[1,1], R2[1,2], t2[0,1]},
-                //            { R2[2,0], R2[2,1], R2[2,2], t2[0,2]}
-                //        });
+                    if (!TriangulateAndCheckReproj(P, P1))
+                    {
+                        P1 = new Matrix<float>(new float[3, 4] {
+                            { R2[0,0], R2[0,1], R2[0,2], t2[0,0] },
+                            { R2[1,0], R2[1,1], R2[1,2], t2[0,1]},
+                            { R2[2,0], R2[2,1], R2[2,2], t2[0,2]}
+                        });
 
-                //        if (!triangulateAndCheckReproj(P, P1))
-                //        {
-                //            P1 = new Matrix<float>(new float[3, 4] {
-                //                { R2[0,0], R2[0,1], R2[0,2], t1[0,0] },
-                //                { R2[1,0], R2[1,1], R2[1,2], t1[0,1]},
-                //                { R2[2,0], R2[2,1], R2[2,2], t1[0,2]}
-                //            });
+                        if (!TriangulateAndCheckReproj(P, P1))
+                        {
+                            P1 = new Matrix<float>(new float[3, 4] {
+                                { R2[0,0], R2[0,1], R2[0,2], t1[0,0] },
+                                { R2[1,0], R2[1,1], R2[1,2], t1[0,1]},
+                                { R2[2,0], R2[2,1], R2[2,2], t1[0,2]}
+                            });
 
-                //            if (!triangulateAndCheckReproj(P, P1))
-                //            {
-                //                Console.WriteLine("can't find the right P matrix");
-                //                triangulationSucceeded = false;
-                //            }
-                //        }
+                            if (!TriangulateAndCheckReproj(P, P1))
+                            {
+                                Console.WriteLine("can't find the right P matrix");
+                                triangulationSucceeded = false;
+                            }
+                        }
 
-                //    }
-
-                //}
+                    }
+                }
                 return triangulationSucceeded;
-
             }
 
             p1 = new Mat();
