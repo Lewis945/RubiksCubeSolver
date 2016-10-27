@@ -1,4 +1,5 @@
-﻿using Emgu.CV.Structure;
+﻿using Emgu.CV;
+using Emgu.CV.Structure;
 using Emgu.CV.Util;
 using System;
 using System.Collections.Generic;
@@ -78,6 +79,18 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             f1 = newF1;
             f2 = newF2;
             f3 = newF3;
+        }
+
+        public static void Negotiate(Matrix<float> m)
+        {
+            for (int i = 0; i < m.Rows; i++)
+                for (int j = 0; j < m.Cols; j++)
+                    m[i, j] = -m[i, j];
+        }
+
+        public static PointF SubstarctPoints(PointF p1, PointF p2)
+        {
+            return new PointF(p1.X - p2.X, p1.Y - p2.Y);
         }
     }
 }

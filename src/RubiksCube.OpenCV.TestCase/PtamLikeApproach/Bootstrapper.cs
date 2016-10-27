@@ -27,7 +27,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             //CvInvoke.CvtColor(image1, image1Gray, ColorConversion.Rgb2Gray);
             //CvInvoke.CvtColor(image2, image2Gray, ColorConversion.Rgb2Gray);
 
-            var tracker = new SimpleAdHocTracker();
+            var tracker = new SimpleAdHocTracker(calibration);
             tracker.Bootstrap(image1);
             tracker.BootstrapTrack(image2);
         }
