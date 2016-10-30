@@ -42,7 +42,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             return new VectorOfKeyPoint(keyPoints);
         }
 
-        public static void KeepVectorsByStatus(VectorOfKeyPoint f1, VectorOfKeyPoint f2, VectorOfByte status)
+        public static void KeepVectorsByStatus(ref VectorOfKeyPoint f1, ref VectorOfKeyPoint f2, VectorOfByte status)
         {
             var newF1 = new VectorOfKeyPoint();
             var newF2 = new VectorOfKeyPoint();
@@ -53,6 +53,24 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
                 {
                     newF1.Push(new MKeyPoint[] { f1[i] });
                     newF2.Push(new MKeyPoint[] { f2[i] });
+                }
+            }
+
+            f1 = newF1;
+            f2 = newF2;
+        }
+
+        public static void KeepVectorsByStatus(VectorOfKeyPoint f1, VectorOfPoint3D32F f2, VectorOfByte status)
+        {
+            var newF1 = new VectorOfKeyPoint();
+            var newF2 = new VectorOfPoint3D32F();
+
+            for (int i = 0; i < status.Size; i++)
+            {
+                if (status[i] > 0)
+                {
+                    newF1.Push(new MKeyPoint[] { f1[i] });
+                    newF2.Push(new MCvPoint3D32f[] { f2[i] });
                 }
             }
 

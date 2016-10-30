@@ -19,8 +19,13 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
         public static int MIN_INLIERS = 10;
 
         private bool _bootstrapping;
+        private bool _canCalcMVM;
 
         private Mat _prevGray;
+        private Mat _currGray;
+
+        private Mat raux;
+        private Mat taux;
 
         private ORBDetector _detector;
 
@@ -37,6 +42,9 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             _detector = new ORBDetector();
 
             _prevGray = new Mat();
+
+            raux = new Mat();
+            taux = new Mat();
 
             _bootstrapKp = new VectorOfKeyPoint();
             _trackedFeatures = new VectorOfKeyPoint();
@@ -76,20 +84,23 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             var corners = new VectorOfPointF();
             var status = new VectorOfByte();
             var errors = new VectorOfFloat();
-            var currGray = new Mat();
 
+            var currGray = new Mat();
             CvInvoke.CvtColor(img, currGray, ColorConversion.Bgr2Gray);
 
-            try
-            {
-                CvInvoke.CalcOpticalFlowPyrLK(_prevGray, currGray, Utils.GetPointsVector(_trackedFeatures), corners, status, errors, new Size(11, 11), 0, new MCvTermCriteria(100));
-            }
-            catch (Exception ex)
-            {
-                var t = ex;
-            }
-
+            CvInvoke.CalcOpticalFlowPyrLK(_prevGray, currGray, Utils.GetPointsVector(_trackedFeatures), corners, status, errors, new Size(11, 11), 3, new MCvTermCriteria(20, 0.03));
             currGray.CopyTo(_prevGray);
+
+            for (int j = 0; j < corners.Size; j++)
+            {
+                if (status[j] == 1)
+                {
+                    var p1 = new Point((int)_trackedFeatures[j].Point.X, (int)_trackedFeatures[j].Point.Y);
+                    var p2 = new Point((int)corners[j].X, (int)corners[j].Y);
+
+                    CvInvoke.Line(img, p1, p2, new MCvScalar(120, 10, 20));
+                }
+            }
 
             if (CvInvoke.CountNonZero(status) < status.Size * 0.8)
             {
@@ -99,7 +110,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
             _trackedFeatures = Utils.GetKeyPointsVector(corners);
 
-            Utils.KeepVectorsByStatus(_trackedFeatures, _bootstrapKp, status);
+            Utils.KeepVectorsByStatus(ref _trackedFeatures, ref _bootstrapKp, status);
 
             Console.WriteLine($"{_trackedFeatures.Size} features survived optical flow.");
 
@@ -122,7 +133,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
             if (inliers_num != _trackedFeatures.Size && inliers_num >= 4 && !homography.IsEmpty)
             {
-                Utils.KeepVectorsByStatus(_trackedFeatures, _bootstrapKp, inlier_mask);
+                Utils.KeepVectorsByStatus(ref _trackedFeatures, ref _bootstrapKp, inlier_mask);
             }
             else if (inliers_num < MIN_INLIERS)
             {
@@ -136,14 +147,102 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
             //Attempt at 3D reconstruction (triangulation) if conditions are right
             var rigidT = CvInvoke.EstimateRigidTransform(Utils.GetPointsVector(_trackedFeatures), Utils.GetPointsVector(_bootstrapKp), false);
-
             var matrix = new Matrix<float>(rigidT.Rows, rigidT.Cols, rigidT.Ptr);
+
+            Console.WriteLine("Rigid "+ CvInvoke.Norm(matrix.GetCol(2)));
+
             if (CvInvoke.Norm(matrix.GetCol(2)) > 100)
             {
                 //camera motion is sufficient
 
                 Mat P, P1;
                 bool triangulationSucceeded = CameraPoseAndTriangulationFromFundamental(out P, out P1);
+            }
+        }
+
+        public void Track(Mat img)
+        {
+            //Track detected features
+            if (_prevGray.IsEmpty) { Console.WriteLine("can't track: empty prev frame"); return; }
+
+            {
+                var corners = new VectorOfPointF();
+                var status = new VectorOfByte();
+                var errors = new VectorOfFloat();
+                CvInvoke.CvtColor(img, _currGray, ColorConversion.Bgr2Gray);
+
+                CvInvoke.CalcOpticalFlowPyrLK(_prevGray, _currGray, Utils.GetPointsVector(_trackedFeatures), corners, status, errors, new Size(11, 11), 0, new MCvTermCriteria(100));
+                _currGray.CopyTo(_prevGray);
+
+                if (CvInvoke.CountNonZero(status) < status.Size * 0.8)
+                {
+                    Console.WriteLine("tracking failed");
+                    _bootstrapping = false;
+                    _canCalcMVM = false;
+                    return;
+                }
+
+                _trackedFeatures = Utils.GetKeyPointsVector(corners);
+
+                Utils.KeepVectorsByStatus(_trackedFeatures, _trackedFeatures3D, status);
+            }
+
+            Console.WriteLine("tracking.");
+
+            _canCalcMVM = (_trackedFeatures.Size >= MIN_INLIERS);
+
+            if (_canCalcMVM)
+            {
+                //Perform camera pose estimation for AR
+                Mat Rvec = new Mat();
+                var Tvec = new Mat();
+                CvInvoke.SolvePnP(_trackedFeatures3D, Utils.GetPointsVector(_trackedFeatures), _calibrationInfo.Intrinsic, _calibrationInfo.Distortion, raux, taux, !raux.IsEmpty);
+                raux.ConvertTo(Rvec, DepthType.Cv32F);
+                taux.ConvertTo(Tvec, DepthType.Cv64F);
+
+                var pts = new MCvPoint3D32f[] {
+                    new MCvPoint3D32f(0.01f,0,0),
+                    new MCvPoint3D32f(0, 0.01f, 0),
+                    new MCvPoint3D32f(0, 0, 0.01f) };
+                VectorOfPoint3D32F axis = new VectorOfPoint3D32F(pts);
+
+                VectorOfPointF imgPoints = new VectorOfPointF();
+                CvInvoke.ProjectPoints(axis, raux, taux, _calibrationInfo.Intrinsic, _calibrationInfo.Distortion, imgPoints);
+
+                var centerPoint = new Point((int)_trackedFeatures[0].Point.X, (int)_trackedFeatures[0].Point.Y);
+
+                var xPoint = new Point((int)imgPoints[0].X, (int)imgPoints[0].Y);
+                var yPoint = new Point((int)imgPoints[1].X, (int)imgPoints[1].Y);
+                var zPoint = new Point((int)imgPoints[2].X, (int)imgPoints[2].Y);
+
+                CvInvoke.Line(img, centerPoint, xPoint, new MCvScalar(255, 0, 0), 5); //blue x-ax
+                CvInvoke.Line(img, centerPoint, yPoint, new MCvScalar(0, 255, 0), 5); //green y-ax
+                CvInvoke.Line(img, centerPoint, zPoint, new MCvScalar(0, 0, 255), 5); //red z-ax
+
+                Mat Rot = new Mat(3, 3, DepthType.Cv32F, 3);
+
+                CvInvoke.Rodrigues(Rvec, Rot);
+            }
+        }
+
+        public void Process(Mat img, bool newmap)
+        {
+            if (newmap)
+            {
+                Console.WriteLine("bootstrapping");
+
+                Bootstrap(img);
+                _bootstrapping = true;
+            }
+            else if (_bootstrapping)
+            {
+                Console.WriteLine($"bootstrap tracking ({ _trackedFeatures.Size})");
+
+                BootstrapTrack(img);
+            }
+            else if (!newmap && !_bootstrapping)
+            {
+                Track(img);
             }
         }
 
@@ -292,7 +391,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
             int inliers_num = CvInvoke.CountNonZero(status);
             Console.WriteLine($"Fundamental keeping {inliers_num} / {status.Size}");
-            Utils.KeepVectorsByStatus(_trackedFeatures, _bootstrapKp, status);
+            Utils.KeepVectorsByStatus(ref _trackedFeatures, ref _bootstrapKp, status);
 
             if (inliers_num > MIN_INLIERS)
             {
