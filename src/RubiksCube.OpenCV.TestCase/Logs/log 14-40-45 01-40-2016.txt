@@ -1,0 +1,276 @@
+Bootstrapping.
+--------------------------
+Bootstrap tracking.
+--------------------------
+BootstrapTrack iteration (500).
+--------------------------
+    Tracked first point = (349, 260) / Found first corner = (348.796, 259.5018)
+    500 features survived optical flow.
+    Homography: [ [ 127.625, 2.802597E-45, 4.203895E-45 ] [ 4.203895E-45, 3.750354E-31, 3.750354E-31 ] [ 3.750371E-31, 3.750371E-31, 0 ] ].
+    500 features survived homography.
+    Rigid: 2.20618636561267E-38
+--------------------------
+BootstrapTrack iteration (500).
+--------------------------
+    Tracked first point = (348.796, 259.5018) / Found first corner = (349.5715, 257.2023)
+    500 features survived optical flow.
+    Homography: [ [ 127.625, 2.802597E-45, 4.203895E-45 ] [ 4.203895E-45, 3.750087E-31, 3.750087E-31 ] [ 3.750103E-31, 3.750103E-31, 0 ] ].
+    495 features survived homography.
+    Rigid: 2.09593220243959E-38
+--------------------------
+BootstrapTrack iteration (495).
+--------------------------
+    Tracked first point = (349.5715, 257.2023) / Found first corner = (350.0457, 251.4699)
+    495 features survived optical flow.
+    Homography: [ [ 127.625, 2.802597E-45, 4.203895E-45 ] [ 4.203895E-45, 3.750403E-31, 3.750403E-31 ] [ 3.750419E-31, 3.750419E-31, 0 ] ].
+    488 features survived homography.
+    Rigid: 6.39588815986363E-29
+--------------------------
+BootstrapTrack iteration (488).
+--------------------------
+    Tracked first point = (350.0457, 251.4699) / Found first corner = (350.3597, 250.1974)
+    488 features survived optical flow.
+    Homography: [ [ 127.625, 2.802597E-45, 4.203895E-45 ] [ 4.203895E-45, 3.749744E-31, 3.749744E-31 ] [ 3.749761E-31, 3.749761E-31, 0 ] ].
+    488 features survived homography.
+    Rigid: 6.39579186336641E-29
+--------------------------
+BootstrapTrack iteration (488).
+--------------------------
+    Tracked first point = (350.3597, 250.1974) / Found first corner = (351.4395, 250.6707)
+    488 features survived optical flow.
+    Homography: [ [ 127.625, 2.802597E-45, 4.203895E-45 ] [ 4.203895E-45, 3.750109E-31, 3.750109E-31 ] [ 3.750126E-31, 3.750126E-31, 0 ] ].
+    487 features survived homography.
+    Rigid: 6.39612890110667E-29
+--------------------------
+BootstrapTrack iteration (487).
+--------------------------
+    Tracked first point = (351.4395, 250.6707) / Found first corner = (350.2186, 251.3152)
+    487 features survived optical flow.
+    Homography: [ [ 127.625, 2.802597E-45, 4.203895E-45 ] [ 4.203895E-45, 3.750135E-31, 3.750135E-31 ] [ 3.750152E-31, 3.750152E-31, 0 ] ].
+    487 features survived homography.
+    Rigid: 6.39535852912892E-29
+--------------------------
+BootstrapTrack iteration (487).
+--------------------------
+    Tracked first point = (350.2186, 251.3152) / Found first corner = (349.2549, 253.0501)
+    487 features survived optical flow.
+    Homography: [ [ 127.625, 2.802597E-45, 4.203895E-45 ] [ 4.203895E-45, 3.749695E-31, 3.749695E-31 ] [ 3.749712E-31, 3.749712E-31, 0 ] ].
+    487 features survived homography.
+    Rigid: 6.3952622326317E-29
+--------------------------
+BootstrapTrack iteration (487).
+--------------------------
+    Tracked first point = (349.2549, 253.0501) / Found first corner = (348.3826, 254.9967)
+    487 features survived optical flow.
+    Homography: [ [ 127.625, 2.802597E-45, 4.203895E-45 ] [ 4.203895E-45, 3.749891E-31, 3.749891E-31 ] [ 3.749908E-31, 3.749908E-31, 0 ] ].
+    487 features survived homography.
+    Rigid: 6.39555112212336E-29
+--------------------------
+BootstrapTrack iteration (487).
+--------------------------
+    Tracked first point = (348.3826, 254.9967) / Found first corner = (346.9901, 256.6801)
+    487 features survived optical flow.
+    Homography: [ [ 127.625, 2.802597E-45, 4.203895E-45 ] [ 4.203895E-45, 3.750429E-31, 3.750429E-31 ] [ 3.750446E-31, 3.750446E-31, 0 ] ].
+    486 features survived homography.
+    Rigid: 6.39636964234972E-29
+--------------------------
+BootstrapTrack iteration (486).
+--------------------------
+    Tracked first point = (346.9901, 256.6801) / Found first corner = (348.5402, 256.9559)
+    486 features survived optical flow.
+    Homography: [ [ 127.625, 2.802597E-45, 4.203895E-45 ] [ 4.203895E-45, 3.749913E-31, 3.749913E-31 ] [ 3.74993E-31, 3.74993E-31, 0 ] ].
+    486 features survived homography.
+    Rigid: 6.39540667737753E-29
+--------------------------
+BootstrapTrack iteration (486).
+--------------------------
+    Tracked first point = (348.5402, 256.9559) / Found first corner = (352.1577, 257.2559)
+    486 features survived optical flow.
+    Homography: [ [ 127.625, 2.802597E-45, 4.203895E-45 ] [ 4.203895E-45, 3.749842E-31, 3.749842E-31 ] [ 3.749859E-31, 3.749859E-31, 0 ] ].
+    486 features survived homography.
+    Rigid: 6.39584001161502E-29
+--------------------------
+BootstrapTrack iteration (486).
+--------------------------
+    Tracked first point = (352.1577, 257.2559) / Found first corner = (355.6157, 257.6761)
+    486 features survived optical flow.
+    Homography: [ [ 127.625, 2.802597E-45, 4.203895E-45 ] [ 4.203895E-45, 3.749865E-31, 3.749865E-31 ] [ 3.749882E-31, 3.749882E-31, 0 ] ].
+    464 features survived homography.
+    Rigid: 6.39545482562614E-29
+--------------------------
+BootstrapTrack iteration (464).
+--------------------------
+    Tracked first point = (355.6157, 257.6761) / Found first corner = (362.8708, 256.2935)
+    464 features survived optical flow.
+    Homography: [ [ 127.625, 2.802597E-45, 4.203895E-45 ] [ 4.203895E-45, 3.74994E-31, 3.74994E-31 ] [ 3.749957E-31, 3.749957E-31, 0 ] ].
+    464 features survived homography.
+    Rigid: 6.39593630811223E-29
+--------------------------
+BootstrapTrack iteration (464).
+--------------------------
+    Tracked first point = (362.8708, 256.2935) / Found first corner = (364.3974, 255.5957)
+    464 features survived optical flow.
+    Homography: [ [ 127.625, 2.802597E-45, 4.203895E-45 ] [ 4.203895E-45, 3.749767E-31, 3.749767E-31 ] [ 3.749784E-31, 3.749784E-31, 0 ] ].
+    464 features survived homography.
+    Rigid: 6.3962733458525E-29
+--------------------------
+BootstrapTrack iteration (464).
+--------------------------
+    Tracked first point = (364.3974, 255.5957) / Found first corner = (368.8067, 254.3849)
+    464 features survived optical flow.
+    Homography: [ [ 127.625, 2.802597E-45, 4.203895E-45 ] [ 4.203895E-45, 3.750256E-31, 3.750256E-31 ] [ 3.750273E-31, 3.750273E-31, 0 ] ].
+    464 features survived homography.
+    Rigid: 6.39641779059833E-29
+--------------------------
+BootstrapTrack iteration (464).
+--------------------------
+    Tracked first point = (368.8067, 254.3849) / Found first corner = (368.4789, 254.0117)
+    464 features survived optical flow.
+    Homography: [ [ 127.625, 2.802597E-45, 4.203895E-45 ] [ 4.203895E-45, 3.750282E-31, 3.750282E-31 ] [ 3.750299E-31, 3.750299E-31, 0 ] ].
+    462 features survived homography.
+    Rigid: 6.3957437151178E-29
+--------------------------
+BootstrapTrack iteration (462).
+--------------------------
+    Tracked first point = (368.4789, 254.0117) / Found first corner = (368.8344, 253.1671)
+    462 features survived optical flow.
+    Homography: [ [ 127.625, 2.802597E-45, 4.203895E-45 ] [ 4.203895E-45, 3.750305E-31, 3.750305E-31 ] [ 3.750322E-31, 3.750322E-31, 0 ] ].
+    448 features survived homography.
+    Rigid: 6.39598445636084E-29
+--------------------------
+BootstrapTrack iteration (448).
+--------------------------
+    Tracked first point = (368.8344, 253.1671) / Found first corner = (370.4573, 253.8105)
+    448 features survived optical flow.
+    Homography: [ [ 127.625, 2.802597E-45, 4.203895E-45 ] [ 4.203895E-45, 3.749962E-31, 3.749962E-31 ] [ 3.749979E-31, 3.749979E-31, 0 ] ].
+    448 features survived homography.
+    Rigid: 6.39531038088031E-29
+--------------------------
+BootstrapTrack iteration (448).
+--------------------------
+    Tracked first point = (370.4573, 253.8105) / Found first corner = (372.3963, 254.7136)
+    448 features survived optical flow.
+    Homography: [ [ 127.625, 2.802597E-45, 4.203895E-45 ] [ 4.203895E-45, 3.750331E-31, 3.750331E-31 ] [ 3.750348E-31, 3.750348E-31, 0 ] ].
+    448 features survived homography.
+    Rigid: 6.39632149410111E-29
+--------------------------
+BootstrapTrack iteration (448).
+--------------------------
+    Tracked first point = (372.3963, 254.7136) / Found first corner = (376.0676, 254.2741)
+    448 features survived optical flow.
+    Homography: [ [ 127.625, 2.802597E-45, 4.203895E-45 ] [ 4.203895E-45, 3.749669E-31, 3.749669E-31 ] [ 3.749686E-31, 3.749686E-31, 0 ] ].
+    448 features survived homography.
+    Rigid: 6.39603260460945E-29
+--------------------------
+BootstrapTrack iteration (448).
+--------------------------
+    Tracked first point = (376.0676, 254.2741) / Found first corner = (380.3875, 252.5455)
+    448 features survived optical flow.
+    Homography: [ [ 127.625, 2.802597E-45, 4.203895E-45 ] [ 4.203895E-45, 3.749989E-31, 3.749989E-31 ] [ 3.750006E-31, 3.750006E-31, 0 ] ].
+    448 features survived homography.
+    Rigid: 6.39550297387475E-29
+--------------------------
+BootstrapTrack iteration (448).
+--------------------------
+    Tracked first point = (380.3875, 252.5455) / Found first corner = (383.2189, 253.8717)
+    448 features survived optical flow.
+    Homography: [ [ 127.625, 2.802597E-45, 4.203895E-45 ] [ 4.203895E-45, 3.750527E-31, 3.750527E-31 ] [ 3.750544E-31, 3.750544E-31, 0 ] ].
+    448 features survived homography.
+    Rigid: 6.39559927037197E-29
+--------------------------
+BootstrapTrack iteration (448).
+--------------------------
+    Tracked first point = (383.2189, 253.8717) / Found first corner = (389.9841, 256.7733)
+    448 features survived optical flow.
+    Homography: [ [ 127.625, 2.802597E-45, 4.203895E-45 ] [ 4.203895E-45, 3.750451E-31, 3.750451E-31 ] [ 3.750468E-31, 3.750468E-31, 0 ] ].
+    445 features survived homography.
+    Rigid: 6.39564741862058E-29
+--------------------------
+BootstrapTrack iteration (445).
+--------------------------
+    Tracked first point = (389.9841, 256.7733) / Found first corner = (392.6812, 259.6263)
+    445 features survived optical flow.
+    Homography: [ [ 127.625, 2.802597E-45, 4.203895E-45 ] [ 4.203895E-45, 3.750478E-31, 3.750478E-31 ] [ 3.750495E-31, 3.750495E-31, 0 ] ].
+    444 features survived homography.
+    Rigid: 6.39569556686919E-29
+--------------------------
+BootstrapTrack iteration (444).
+--------------------------
+    Tracked first point = (392.6812, 259.6263) / Found first corner = (394.3166, 257.9828)
+    444 features survived optical flow.
+    Homography: [ [ 127.625, 2.802597E-45, 4.203895E-45 ] [ 4.203895E-45, 3.750549E-31, 3.750549E-31 ] [ 3.750566E-31, 3.750566E-31, 0 ] ].
+    444 features survived homography.
+    Rigid: 6.39608075285806E-29
+--------------------------
+BootstrapTrack iteration (444).
+--------------------------
+    Tracked first point = (394.3166, 257.9828) / Found first corner = (399.0602, 254.3024)
+    444 features survived optical flow.
+    Homography: [ [ 127.625, 2.802597E-45, 4.203895E-45 ] [ 4.203895E-45, 3.7505E-31, 3.7505E-31 ] [ 3.750517E-31, 3.750517E-31, 0 ] ].
+    444 features survived homography.
+    Rigid: 2.20618636561267E-38
+--------------------------
+BootstrapTrack iteration (444).
+--------------------------
+    Tracked first point = (399.0602, 254.3024) / Found first corner = (402.1534, 251.0806)
+    444 features survived optical flow.
+    Homography: [ [ 127.625, 2.802597E-45, 4.203895E-45 ] [ 4.203895E-45, 3.749962E-31, 3.749962E-31 ] [ 3.749979E-31, 3.749979E-31, 0 ] ].
+    444 features survived homography.
+    Rigid: 2.09593220243959E-38
+--------------------------
+BootstrapTrack iteration (444).
+--------------------------
+    Tracked first point = (402.1534, 251.0806) / Found first corner = (406.8237, 249.9565)
+    444 features survived optical flow.
+    Homography: [ [ 127.625, 2.802597E-45, 4.203895E-45 ] [ 4.203895E-45, 3.749842E-31, 3.749842E-31 ] [ 3.749859E-31, 3.749859E-31, 0 ] ].
+    444 features survived homography.
+    Rigid: 6.6061515615421E-29
+--------------------------
+BootstrapTrack iteration (444).
+--------------------------
+    Tracked first point = (406.8237, 249.9565) / Found first corner = (412.9781, 250.0729)
+    444 features survived optical flow.
+    Homography: [ [ 127.625, 2.802597E-45, 4.203895E-45 ] [ 4.203895E-45, 3.749989E-31, 3.749989E-31 ] [ 3.750006E-31, 3.750006E-31, 0 ] ].
+    444 features survived homography.
+    Rigid: 6.6071145265143E-29
+--------------------------
+BootstrapTrack iteration (444).
+--------------------------
+    Tracked first point = (412.9781, 250.0729) / Found first corner = (416.9115, 250.7129)
+    444 features survived optical flow.
+    Homography: [ [ 127.625, 2.802597E-45, 4.203895E-45 ] [ 4.203895E-45, 3.750233E-31, 3.750233E-31 ] [ 3.75025E-31, 3.75025E-31, 0 ] ].
+    444 features survived homography.
+    Rigid: 6.6071626747629E-29
+--------------------------
+BootstrapTrack iteration (444).
+--------------------------
+    Tracked first point = (416.9115, 250.7129) / Found first corner = (422.0172, 250.0818)
+    444 features survived optical flow.
+    Homography: [ [ 127.625, 2.802597E-45, 4.203895E-45 ] [ 4.203895E-45, 3.749744E-31, 3.749744E-31 ] [ 3.749761E-31, 3.749761E-31, 0 ] ].
+    444 features survived homography.
+    Rigid: 6.60619970979071E-29
+--------------------------
+BootstrapTrack iteration (444).
+--------------------------
+    Tracked first point = (422.0172, 250.0818) / Found first corner = (425.4359, 250.5518)
+    444 features survived optical flow.
+    Homography: [ [ 127.625, 2.802597E-45, 4.203895E-45 ] [ 4.203895E-45, 3.749767E-31, 3.749767E-31 ] [ 3.749784E-31, 3.749784E-31, 0 ] ].
+    444 features survived homography.
+    Rigid: 6.60624785803932E-29
+--------------------------
+BootstrapTrack iteration (444).
+--------------------------
+    Tracked first point = (425.4359, 250.5518) / Found first corner = (431.5067, 250.4106)
+    444 features survived optical flow.
+    Homography: [ [ 127.625, 2.802597E-45, 4.203895E-45 ] [ 4.203895E-45, 3.750087E-31, 3.750087E-31 ] [ 3.750103E-31, 3.750103E-31, 0 ] ].
+    444 features survived homography.
+    Rigid: 6.60644045103376E-29
+--------------------------
+BootstrapTrack iteration (444).
+--------------------------
+    Tracked first point = (431.5067, 250.4106) / Found first corner = (435.4281, 252.9374)
+    444 features survived optical flow.
+    Homography: [ [ 127.625, 2.802597E-45, 4.203895E-45 ] [ 4.203895E-45, 3.750109E-31, 3.750109E-31 ] [ 3.750126E-31, 3.750126E-31, 0 ] ].
+    444 features survived homography.
+    Rigid: 6.60682563702264E-29
+--------------------------

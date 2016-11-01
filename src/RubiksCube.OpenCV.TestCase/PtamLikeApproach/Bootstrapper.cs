@@ -5,6 +5,7 @@ using Emgu.CV.Util;
 using RubiksCube.OpenCV.TestCase.AugmentedReality;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,8 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
         public static void Run(string path)
         {
+            Trace.Listeners.Add(new TextWriterTraceListener($"../../Logs/log {DateTime.Now:H-mm-ss dd-mm-yyyy}.txt", "tracelog"));
+
             var calibration = new CameraCalibrationInfo(560.764656335266f, 562.763179958161f, 295.849138757436f, 255.022208986073f);
 
             var capture = new Capture(path);
@@ -66,7 +69,11 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
             }).Start();
 
-            imageViewer.ShowDialog();
+            while (i < 75)
+            {
+            }
+            Trace.Flush();
+            //imageViewer.ShowDialog();
         }
 
         public static void Run1(string path)
