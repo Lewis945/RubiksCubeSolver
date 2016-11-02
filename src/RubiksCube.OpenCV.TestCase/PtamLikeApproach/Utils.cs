@@ -60,7 +60,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             f2 = newF2;
         }
 
-        public static void KeepVectorsByStatus(VectorOfKeyPoint f1, VectorOfPoint3D32F f2, VectorOfByte status)
+        public static void KeepVectorsByStatus(ref VectorOfKeyPoint f1, ref VectorOfPoint3D32F f2, VectorOfByte status)
         {
             var newF1 = new VectorOfKeyPoint();
             var newF2 = new VectorOfPoint3D32F();
@@ -78,7 +78,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             f2 = newF2;
         }
 
-        public static void KeepVectorsByStatus(VectorOfKeyPoint f1, VectorOfKeyPoint f2, VectorOfKeyPoint f3, VectorOfByte status)
+        public static void KeepVectorsByStatus(ref VectorOfKeyPoint f1, ref VectorOfKeyPoint f2, ref VectorOfKeyPoint f3, VectorOfByte status)
         {
             var newF1 = new VectorOfKeyPoint();
             var newF2 = new VectorOfKeyPoint();
@@ -99,7 +99,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             f3 = newF3;
         }
 
-        public static void Negotiate(Matrix<float> m)
+        public static void Negotiate(ref Matrix<float> m)
         {
             for (int i = 0; i < m.Rows; i++)
                 for (int j = 0; j < m.Cols; j++)

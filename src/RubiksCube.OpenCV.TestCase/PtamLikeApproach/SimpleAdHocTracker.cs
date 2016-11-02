@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,7 +19,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
     {
         #region Fields
 
-        private const double RansacThreshold = 3;
+        private const double RansacThreshold = 0.99;
         private const int MinInliers = 10;
 
         private bool _bootstrapping;
@@ -120,6 +121,8 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             currGray.CopyTo(_prevGray);
 
             Trace.WriteLine($"Tracked first point: ({_trackedFeatures[0].Point.X}, {_trackedFeatures[0].Point.Y}) / Found first corner = ({corners[0].X}, {corners[0].Y})");
+            Trace.WriteLine($"Tracked second point: ({_trackedFeatures[1].Point.X}, {_trackedFeatures[1].Point.Y}) / Found second corner = ({corners[1].X}, {corners[1].Y})");
+            Trace.WriteLine($"Tracked third point: ({_trackedFeatures[2].Point.X}, {_trackedFeatures[2].Point.Y}) / Found third corner = ({corners[2].X}, {corners[2].Y})");
 
             for (int j = 0; j < corners.Size; j++)
             {
@@ -151,6 +154,10 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
                 throw new Exception(error);
             }
 
+            Trace.WriteLine($"Bootstrap first point: ({_bootstrapKp[0].Point.X}, {_bootstrapKp[0].Point.Y}) / Found first corner = ({corners[0].X}, {corners[0].Y})");
+            Trace.WriteLine($"Bootstrap second point: ({_bootstrapKp[1].Point.X}, {_bootstrapKp[1].Point.Y}) / Found second corner = ({corners[1].X}, {corners[1].Y})");
+            Trace.WriteLine($"Bootstrap third point: ({_bootstrapKp[2].Point.X}, {_bootstrapKp[2].Point.Y}) / Found third corner = ({corners[2].X}, {corners[2].Y})");
+
             //verify features with a homography
             var inlierMask = new VectorOfByte();
             var homography = new Mat();
@@ -159,8 +166,26 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
             int inliersNum = CvInvoke.CountNonZero(inlierMask);
 
-            var m = new Matrix<float>(homography.Rows, homography.Cols, homography.Ptr);
+            var zeroIndecies = new StringBuilder();
+            for (int i = 0; i < inlierMask.Size; i++)
+            {
+                if (inlierMask[i] == 0)
+                    zeroIndecies.AppendFormat("{0}, ", i);
+            }
+
+            Trace.WriteLine($"Homography zero indecies: {zeroIndecies}.");
+
+            var m = new Matrix<float>(homography.Rows, homography.Cols, homography.DataPointer);
             Trace.WriteLine($"Homography: [ [ {m[0, 0]}, {m[0, 1]}, {m[0, 2]} ] [ {m[1, 0]}, {m[1, 1]}, {m[1, 2]} ] [ {m[2, 0]}, {m[2, 1]}, {m[2, 2]} ] ].");
+            m.Dispose();
+
+            //var res = new float[homography.Rows * homography.Cols];
+            //Marshal.Copy(homography.DataPointer, res, 0, homography.Rows * homography.Cols);
+            //Trace.WriteLine($"Homography1: [ [ {res[0]}, {res[1]}, {res[2]} ] [ {res[3]}, {res[4]}, {res[5]} ] [ {res[6]}, {res[7]}, {res[8]} ] ].");
+
+            //res = new float[homography.Rows * homography.Cols];
+            //Marshal.Copy(homography.DataPointer, res, 0, homography.Rows * homography.Cols);
+            //Trace.WriteLine($"Homography2: [ [ {res[0]}, {res[1]}, {res[2]} ] [ {res[3]}, {res[4]}, {res[5]} ] [ {res[6]}, {res[7]}, {res[8]} ] ].");
 
             Trace.WriteLine($"{inliersNum} features survived homography.");
 
@@ -177,9 +202,17 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             var bootstrapKpOrig = new VectorOfKeyPoint(_bootstrapKp.ToArray());
             var trackedFeaturesOrig = new VectorOfKeyPoint(_trackedFeatures.ToArray());
 
+            Trace.WriteLine($"Track first point: ({_trackedFeatures[0].Point.X}, {_trackedFeatures[0].Point.Y}) / Bootstrap first point = ({_bootstrapKp[0].Point.X}, {_bootstrapKp[0].Point.Y})");
+            Trace.WriteLine($"Track 10th point: ({_trackedFeatures[10].Point.X}, {_trackedFeatures[10].Point.Y}) / Bootstrap 10th point = ({_bootstrapKp[10].Point.X}, {_bootstrapKp[10].Point.Y})");
+            Trace.WriteLine($"Track last point: ({_trackedFeatures[_trackedFeatures.Size-1].Point.X}, {_trackedFeatures[_trackedFeatures.Size - 1].Point.Y}" +
+                            $") / Bootstrap third point = ({_bootstrapKp[_bootstrapKp.Size-1].Point.X}, {_bootstrapKp[_bootstrapKp.Size - 1].Point.Y})");
+
             //Attempt at 3D reconstruction (triangulation) if conditions are right
-            var rigidT = CvInvoke.EstimateRigidTransform(Utils.GetPointsVector(_trackedFeatures), Utils.GetPointsVector(_bootstrapKp), false);
-            var matrix = new Matrix<float>(rigidT.Rows, rigidT.Cols, rigidT.Ptr);
+            var rigidT = CvInvoke.EstimateRigidTransform(Utils.GetPointsVector(_trackedFeatures).ToArray(), Utils.GetPointsVector(_bootstrapKp).ToArray(), false);
+            var matrix = new Matrix<float>(rigidT.Rows, rigidT.Cols, rigidT.DataPointer);
+
+            //var ppp = rigidT.
+            Trace.WriteLine($"Rigid matrix: [ [ {matrix[0, 0]}, {matrix[0, 1]}, {matrix[0, 2]} ] [ {matrix[1, 0]}, {matrix[1, 1]}, {matrix[1, 2]} ] ].");
 
             Trace.WriteLine($"Rigid: {CvInvoke.Norm(matrix.GetCol(2))}");
 
@@ -222,7 +255,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
             _trackedFeatures = Utils.GetKeyPointsVector(corners);
 
-            Utils.KeepVectorsByStatus(_trackedFeatures, _trackedFeatures3D, status);
+            Utils.KeepVectorsByStatus(ref _trackedFeatures, ref _trackedFeatures3D, status);
 
             Console.WriteLine("tracking.");
 
@@ -354,7 +387,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             r2 = um * wMatTranspose * vm.Transpose(); //HZ 9.19
             t1 = um.GetCol(2); //u3
             t2 = um.GetCol(2); //u3
-            Utils.Negotiate(t2);
+            Utils.Negotiate(ref t2);
 
             wMat.Dispose();
             wMatTranspose.Dispose();
@@ -451,7 +484,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             var f = new Mat();
             var status = new VectorOfByte();
             CvInvoke.FindFundamentalMat(trackedFeaturesPts, bootstrapPts, f, FmType.Ransac, 0.006 * maxVal, 0.99, status);
-            var fMat = new Matrix<float>(f.Rows, f.Cols, f.Ptr);
+            var fMat = new Matrix<float>(f.Rows, f.Cols, f.DataPointer);
 
             int inliersNum = CvInvoke.CountNonZero(status);
 
@@ -483,7 +516,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
                 {
                     //according to http://en.wikipedia.org/wiki/Essential_matrix#Showing_that_it_is_valid
                     Trace.WriteLine($"det(R) == -1 [{determinant}]: flip E's sign");
-                    Utils.Negotiate(e);
+                    Utils.Negotiate(ref e);
                     if (!DecomposeEtoRandT(e, out r1, out r2, out t1, out t2)) return false;
                 }
                 if (Math.Abs(determinant) - 1.0 > 1e-07)

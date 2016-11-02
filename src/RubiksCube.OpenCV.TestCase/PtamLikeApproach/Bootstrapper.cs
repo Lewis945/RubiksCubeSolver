@@ -24,7 +24,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
         public static void Run(string path)
         {
-            Trace.Listeners.Add(new TextWriterTraceListener($"../../Logs/log {DateTime.Now:H-mm-ss dd-mm-yyyy}.txt", "tracelog"));
+            Trace.Listeners.Add(new TextWriterTraceListener($"../../Logs/log {DateTime.Now:H-mm-ss dd-MM-yyyy}.txt", "tracelog"));
 
             var calibration = new CameraCalibrationInfo(560.764656335266f, 562.763179958161f, 295.849138757436f, 255.022208986073f);
 
