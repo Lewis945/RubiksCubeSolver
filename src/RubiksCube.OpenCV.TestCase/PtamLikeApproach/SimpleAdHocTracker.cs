@@ -351,83 +351,87 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
         #endregion
 
-        #region Private Methods
+        #region Private Methods (move to another class later, for now they are public in order to test them)
 
-        private bool DecomposeEtoRandT(Matrix<float> e, out Matrix<float> r1, out Matrix<float> r2, out Matrix<float> t1, out Matrix<float> t2)
+        public bool DecomposeEtoRandT(IInputArray e, out Matrix<float> r1, out Matrix<float> r2, out Matrix<float> t1, out Matrix<float> t2)
         {
             r1 = null;
             r2 = null;
-            t1 = null;
-            t2 = null;
+            t1 = new Matrix<float>(3, 1);
+            t2 = new Matrix<float>(3, 1);
 
             //Using HZ E decomposition
 
             var w = new Mat();
             var u = new Mat();
-            var v = new Mat();
-            CvInvoke.SVDecomp(e, w, u, v, SvdFlag.ModifyA);
+            var vt = new Mat();
+            CvInvoke.SVDecomp(e, w, u, vt, SvdFlag.ModifyA);
 
-            var wvv = new VectorOfFloat();
-            var uvv = new VectorOfFloat();
-            var vvv = new VectorOfFloat();
-            CvInvoke.SVDecomp(e, wvv, uvv, vvv, SvdFlag.ModifyA);
-
-            var wm = new Matrix<float>(w.Rows, w.Cols, w.Ptr);
-            var um = new Matrix<float>(u.Rows, u.Cols, u.Ptr);
-            var vm = new Matrix<float>(v.Rows, v.Cols, v.Ptr);
-
-            //check if first and second singular values are the same (as they should be)
-            float singularValuesRatio = Math.Abs(wm[0, 0] / wm[0, 1]);
-            if (singularValuesRatio > 1.0) singularValuesRatio = 1.0f / singularValuesRatio; // flip ratio to keep it [0,1]
-            if (singularValuesRatio < 0.7)
+            using (var wm = new Matrix<float>(w.Rows, w.Cols, w.DataPointer))
+            using (var um = new Matrix<float>(u.Rows, u.Cols, u.DataPointer))
+            using (var vtm = new Matrix<float>(vt.Rows, vt.Cols, vt.DataPointer))
             {
-                Trace.WriteLine("Singular values of essential matrix are too far apart.");
-                return false;
+                //check if first and second singular values are the same (as they should be)
+                float singularValuesRatio = Math.Abs(wm[0, 0] / wm[1, 0]);
+                if (singularValuesRatio > 1.0) singularValuesRatio = 1.0f / singularValuesRatio; // flip ratio to keep it [0,1]
+                if (singularValuesRatio < 0.7)
+                {
+                    Trace.WriteLine("Singular values of essential matrix are too far apart.");
+                    return false;
+                }
+
+                var wMat = new Matrix<float>(new float[,] {
+                    { 0, -1, 0}, //HZ 9.13
+                    { 1, 0, 0 },
+                    { 0, 0, 1 }
+                });
+
+                var wMatTranspose = new Matrix<float>(new float[,] {
+                    { 0, 1, 0},
+                    { -1, 0, 0 },
+                    { 0, 0, 1 }
+                });
+
+                // vm maybe should be transposed.
+                r1 = um * wMat * vtm; //HZ 9.19
+                r2 = um * wMatTranspose * vtm; //HZ 9.19
+                um.GetCol(2).CopyTo(t1); //u3
+                um.GetCol(2).CopyTo(t2); //u3
+                Utils.Negotiate(ref t2);
+
+                wMat.Dispose();
+                wMatTranspose.Dispose();
             }
-
-            var wMat = new Matrix<float>(new float[,] {
-                { 0, -1, 0}, //HZ 9.13
-                { 1, 0, 0 },
-                { 0, 0, 1 }
-            });
-
-            var wMatTranspose = new Matrix<float>(new float[,] {
-                { 0, 1, 0},
-                { -1, 0, 0 },
-                { 0, 0, 1 }
-            });
-
-            // vm maybe should be transposed.
-            r1 = um * wMat * vm.Transpose(); //HZ 9.19
-            r2 = um * wMatTranspose * vm.Transpose(); //HZ 9.19
-            t1 = um.GetCol(2); //u3
-            t2 = um.GetCol(2); //u3
-            Utils.Negotiate(ref t2);
-
-            wMat.Dispose();
-            wMatTranspose.Dispose();
-
-            wm.Dispose();
-            um.Dispose();
-            vm.Dispose();
 
             return true;
         }
 
-        private bool TriangulateAndCheckReproj(Matrix<float> p, Matrix<float> p1)
+        public bool TriangulateAndCheckReproj(VectorOfPointF trackedFeatures, VectorOfPointF bootstrapKp, Matrix<float> p, Matrix<float> p1)
         {
+            float error;
+            return TriangulateAndCheckReproj(trackedFeatures, bootstrapKp, p, p1, out error);
+        }
+
+        public bool TriangulateAndCheckReproj(VectorOfPointF trackedFeatures, VectorOfPointF bootstrapKp, Matrix<float> p, Matrix<float> p1, out float error)
+        {
+            error = 0;
+
             //undistort
             var normalizedTrackedPts = new VectorOfPointF();
             var normalizedBootstrapPts = new VectorOfPointF();
 
-            CvInvoke.UndistortPoints(Utils.GetPointsVector(_trackedFeatures), normalizedTrackedPts, _calibrationInfo.Intrinsic, _calibrationInfo.Distortion);
-            CvInvoke.UndistortPoints(Utils.GetPointsVector(_bootstrapKp), normalizedBootstrapPts, _calibrationInfo.Intrinsic, _calibrationInfo.Distortion);
+            CvInvoke.UndistortPoints(trackedFeatures, normalizedTrackedPts, _calibrationInfo.Intrinsic, _calibrationInfo.Distortion);
+            CvInvoke.UndistortPoints(bootstrapKp, normalizedBootstrapPts, _calibrationInfo.Intrinsic, _calibrationInfo.Distortion);
 
             //triangulate
             var pt3Dh = new Mat();
             CvInvoke.TriangulatePoints(p, p1, normalizedBootstrapPts, normalizedTrackedPts, pt3Dh);
-            var pt3D = new Matrix<MCvPoint3D32f>(pt3Dh.Rows, pt3Dh.Cols);
-            CvInvoke.ConvertPointsFromHomogeneous(pt3Dh, pt3D);
+            var pt3DhMatrix = new Matrix<float>(pt3Dh.Rows, pt3Dh.Cols, pt3Dh.DataPointer);
+
+            var pt3DMat = new Mat();
+            CvInvoke.ConvertPointsFromHomogeneous(pt3DhMatrix.Transpose(), pt3DMat);
+            var pt3D = new Matrix<float>(pt3DMat.Rows, pt3DMat.Cols * pt3DMat.NumberOfChannels, pt3DMat.DataPointer);
+
             //Mat pt_3d; convertPointsFromHomogeneous(Mat(pt_3d_h.t()).reshape(4, 1), pt_3d);
             //    cout << pt_3d.size() << endl;
             //    cout << pt_3d.rowRange(0,10) << endl;
@@ -435,7 +439,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             var statusArray = new byte[pt3D.Rows];
             for (int i = 0; i < pt3D.Rows; i++)
             {
-                statusArray[i] = (pt3D[i, 0].Z > 0) ? (byte)1 : (byte)0;
+                statusArray[i] = (pt3D[i, 2] > 0) ? (byte)1 : (byte)0;
             }
 
             var status = new VectorOfByte(statusArray);
@@ -454,35 +458,36 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             var reprojectedPtSet1 = new VectorOfPointF();
             CvInvoke.ProjectPoints(pt3D, rvec, tvec, _calibrationInfo.Intrinsic, _calibrationInfo.Distortion, reprojectedPtSet1);
             //    cout << Mat(reprojected_pt_set1).rowRange(0,10) << endl;
-            var bootstrapPts = Utils.GetPointsVector(_bootstrapKp);
+            var bootstrapPts = new VectorOfPointF(bootstrapKp.ToArray());
             //Mat bootstrapPts = new Mat(bootstrapPts_v);
             //    cout << bootstrapPts.rowRange(0,10) << endl;
 
-            double reprojErr = CvInvoke.Norm(reprojectedPtSet1, bootstrapPts, NormType.L2) / bootstrapPts.Size;
+            float reprojErr = (float)CvInvoke.Norm(reprojectedPtSet1, bootstrapPts) / bootstrapPts.Size;
+            error = reprojErr;
             //cout << "reprojection Error " << reprojErr;
             if (reprojErr < 5)
             {
-                statusArray = new byte[pt3D.Rows];
+                statusArray = new byte[bootstrapPts.Size];
                 for (int i = 0; i < bootstrapPts.Size; ++i)
                 {
-                    //statusArray[i] = (CvInvoke.Norm(Utils.SubstarctPoints(bootstrapPts[i], reprojected_pt_set1[i])) < 20.0);
+                    var pointsDiff = Utils.SubstarctPoints(bootstrapPts[i], reprojectedPtSet1[i]);
+                    var vectorOfPoint = new VectorOfPointF(new[] { pointsDiff });
+                    statusArray[i] = CvInvoke.Norm(vectorOfPoint) < 20.0 ? (byte)1 : (byte)0;
                 }
 
                 status = new VectorOfByte(statusArray);
 
-                _trackedFeatures3D.Clear();
-                //_trackedFeatures3D.Resize(pt_3d.Rows);
-                //pt_3d.CopyTo(_trackedFeatures3D);
+                _trackedFeatures3D = new VectorOfPoint3D32F(pt3D.Rows);
+                //pt3D.CopyTo(new Matrix<MCvPoint3D32f>(_trackedFeatures3D.Size, 1, _trackedFeatures3D.Ptr));
 
-                //Utils.KeepVectorsByStatus(_trackedFeatures, _trackedFeatures3D, status);
+                //Utils.KeepVectorsByStatus(ref _trackedFeatures, ref _trackedFeatures3D, status);
                 //cout << "keeping " << trackedFeatures.size() << " nicely reprojected points";
-                _bootstrapping = false;
                 return true;
             }
             return false;
         }
 
-        private bool CameraPoseAndTriangulationFromFundamental(out Mat p1, out Mat p2)
+        public bool CameraPoseAndTriangulationFromFundamental(out Mat p1, out Mat p2)
         {
             p1 = null;
             p2 = null;
@@ -543,6 +548,9 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
                 var p = new Matrix<float>(3, 4);
                 p.SetIdentity(new MCvScalar(1f));
 
+                var trPts = Utils.GetPointsVector(_trackedFeatures);
+                var btPts = Utils.GetPointsVector(_bootstrapKp);
+
                 //TODO: there are 4 different combinations for P1...
                 var pMat1 = new Matrix<float>(new float[3, 4] {
                     { r1[0,0], r1[0,1], r1[0,2], t1[0,0] },
@@ -551,7 +559,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
                 });
 
                 bool triangulationSucceeded = true;
-                if (!TriangulateAndCheckReproj(p, pMat1))
+                if (!TriangulateAndCheckReproj(trPts, btPts, p, pMat1))
                 {
                     pMat1 = new Matrix<float>(new float[3, 4] {
                         { r1[0,0], r1[0,1], r1[0,2], t2[0,0] },
@@ -559,7 +567,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
                         { r1[2,0], r1[2,1], r1[2,2], t2[0,2]}
                     });
 
-                    if (!TriangulateAndCheckReproj(p, pMat1))
+                    if (!TriangulateAndCheckReproj(trPts, btPts, p, pMat1))
                     {
                         pMat1 = new Matrix<float>(new float[3, 4] {
                             { r2[0,0], r2[0,1], r2[0,2], t2[0,0] },
@@ -567,7 +575,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
                             { r2[2,0], r2[2,1], r2[2,2], t2[0,2]}
                         });
 
-                        if (!TriangulateAndCheckReproj(p, pMat1))
+                        if (!TriangulateAndCheckReproj(trPts, btPts, p, pMat1))
                         {
                             pMat1 = new Matrix<float>(new float[3, 4] {
                                 { r2[0,0], r2[0,1], r2[0,2], t1[0,0] },
@@ -575,7 +583,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
                                 { r2[2,0], r2[2,1], r2[2,2], t1[0,2]}
                             });
 
-                            if (!TriangulateAndCheckReproj(p, pMat1))
+                            if (!TriangulateAndCheckReproj(trPts, btPts, p, pMat1))
                             {
                                 Trace.WriteLine("Can't find the right P matrix.");
                                 triangulationSucceeded = false;
