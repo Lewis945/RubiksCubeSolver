@@ -7,13 +7,32 @@ using System.Text;
 using System.Threading.Tasks;
 using Emgu.CV;
 using Emgu.CV.CvEnum;
+using Emgu.CV.Structure;
 using Emgu.CV.Util;
 using RubiksCube.OpenCV.TestCase.AugmentedReality;
 
 namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 {
+    public struct TriangulateAndCheckReprojResult
+    {
+        public float Error { get; set; }
+        public VectorOfPoint3D32F TrackedFeatures3D { get; set; }
+        public VectorOfKeyPoint FilteredTrackedFeaturesKp { get; set; }
+        public VectorOfKeyPoint FilteredBootstrapKp { get; set; }
+        public bool Result { get; set; }
+    }
+
     public class OpenCvUtilities
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="e"></param>
+        /// <param name="r1"></param>
+        /// <param name="r2"></param>
+        /// <param name="t1"></param>
+        /// <param name="t2"></param>
+        /// <returns></returns>
         public static bool DecomposeEtoRandT(IInputArray e, out Matrix<float> r1, out Matrix<float> r2, out Matrix<float> t1, out Matrix<float> t2)
         {
             r1 = null;
@@ -62,21 +81,37 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
                 wMat.Dispose();
                 wMatTranspose.Dispose();
+
+                w.Dispose();
+                u.Dispose();
+                vt.Dispose();
             }
 
             return true;
         }
 
-        public static bool TriangulateAndCheckReproj(CameraCalibrationInfo calibrationInfo, VectorOfPointF trackedFeatures, VectorOfPointF bootstrapKp, Matrix<float> p, Matrix<float> p1, out float error)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="calibrationInfo"></param>
+        /// <param name="trackedFeaturesKp"></param>
+        /// <param name="bootstrapKp"></param>
+        /// <param name="p"></param>
+        /// <param name="p1"></param>
+        /// <returns></returns>
+        public static TriangulateAndCheckReprojResult TriangulateAndCheckReproj(CameraCalibrationInfo calibrationInfo, VectorOfKeyPoint trackedFeaturesKp, VectorOfKeyPoint bootstrapKp, Matrix<float> p, Matrix<float> p1)
         {
-            error = 0;
+            var result = new TriangulateAndCheckReprojResult();
+
+            var trackedFeaturesPoints = Utils.GetPointsVector(trackedFeaturesKp);
+            var bootstrapPoints = Utils.GetPointsVector(bootstrapKp);
 
             //undistort
             var normalizedTrackedPts = new VectorOfPointF();
             var normalizedBootstrapPts = new VectorOfPointF();
 
-            CvInvoke.UndistortPoints(trackedFeatures, normalizedTrackedPts, calibrationInfo.Intrinsic, calibrationInfo.Distortion);
-            CvInvoke.UndistortPoints(bootstrapKp, normalizedBootstrapPts, calibrationInfo.Intrinsic, calibrationInfo.Distortion);
+            CvInvoke.UndistortPoints(trackedFeaturesPoints, normalizedTrackedPts, calibrationInfo.Intrinsic, calibrationInfo.Distortion);
+            CvInvoke.UndistortPoints(bootstrapPoints, normalizedBootstrapPts, calibrationInfo.Intrinsic, calibrationInfo.Distortion);
 
             //triangulate
             var pt3Dh = new Mat();
@@ -86,10 +121,6 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             var pt3DMat = new Mat();
             CvInvoke.ConvertPointsFromHomogeneous(pt3DhMatrix.Transpose(), pt3DMat);
             var pt3D = new Matrix<float>(pt3DMat.Rows, pt3DMat.Cols * pt3DMat.NumberOfChannels, pt3DMat.DataPointer);
-
-            //Mat pt_3d; convertPointsFromHomogeneous(Mat(pt_3d_h.t()).reshape(4, 1), pt_3d);
-            //    cout << pt_3d.size() << endl;
-            //    cout << pt_3d.rowRange(0,10) << endl;
 
             var statusArray = new byte[pt3D.Rows];
             for (int i = 0; i < pt3D.Rows; i++)
@@ -101,45 +132,169 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             int count = CvInvoke.CountNonZero(status);
 
             double percentage = count / (double)pt3D.Rows;
-            //cout << count << "/" << pt_3d.rows << " = " << percentage * 100.0 << "% are in front of camera";
-            if (percentage < 0.75)
-                return false; //less than 75% of the points are in front of the camera
-
-
-            //calculate reprojection
-            var r = p.GetSubRect(new Rectangle(0, 0, 3, 3));
-            var rvec = new VectorOfFloat(new float[] { 0, 0, 0 }); //Rodrigues(R ,rvec);
-            var tvec = new VectorOfFloat(new float[] { 0, 0, 0 }); // = P.col(3);
-            var reprojectedPtSet1 = new VectorOfPointF();
-            CvInvoke.ProjectPoints(pt3D, rvec, tvec, calibrationInfo.Intrinsic, calibrationInfo.Distortion, reprojectedPtSet1);
-            //    cout << Mat(reprojected_pt_set1).rowRange(0,10) << endl;
-            var bootstrapPts = new VectorOfPointF(bootstrapKp.ToArray());
-            //Mat bootstrapPts = new Mat(bootstrapPts_v);
-            //    cout << bootstrapPts.rowRange(0,10) << endl;
-
-            float reprojErr = (float)CvInvoke.Norm(reprojectedPtSet1, bootstrapPts) / bootstrapPts.Size;
-            error = reprojErr;
-            //cout << "reprojection Error " << reprojErr;
-            if (reprojErr < 5)
+            if (percentage > 0.75)
             {
-                statusArray = new byte[bootstrapPts.Size];
-                for (int i = 0; i < bootstrapPts.Size; ++i)
+                //calculate reprojection
+                var r = p.GetSubRect(new Rectangle(0, 0, 3, 3));
+                var rvec = new VectorOfFloat(new float[] { 0, 0, 0 }); //Rodrigues(R ,rvec);
+                var tvec = new VectorOfFloat(new float[] { 0, 0, 0 }); // = P.col(3);
+                var reprojectedPtSet1 = new VectorOfPointF();
+                CvInvoke.ProjectPoints(pt3D, rvec, tvec, calibrationInfo.Intrinsic, calibrationInfo.Distortion,
+                    reprojectedPtSet1);
+
+                float reprojErr = (float)CvInvoke.Norm(reprojectedPtSet1, bootstrapPoints) / bootstrapPoints.Size;
+                if (reprojErr < 5)
                 {
-                    var pointsDiff = Utils.SubstarctPoints(bootstrapPts[i], reprojectedPtSet1[i]);
-                    var vectorOfPoint = new VectorOfPointF(new[] { pointsDiff });
-                    statusArray[i] = CvInvoke.Norm(vectorOfPoint) < 20.0 ? (byte)1 : (byte)0;
+                    statusArray = new byte[bootstrapPoints.Size];
+                    for (int i = 0; i < bootstrapPoints.Size; ++i)
+                    {
+                        var pointsDiff = Utils.SubstarctPoints(bootstrapPoints[i], reprojectedPtSet1[i]);
+                        var vectorOfPoint = new VectorOfPointF(new[] { pointsDiff });
+                        statusArray[i] = CvInvoke.Norm(vectorOfPoint) < 20.0 ? (byte)1 : (byte)0;
+                    }
+
+                    status = new VectorOfByte(statusArray);
+
+                    var trackedFeatures3D = new VectorOfPoint3D32F(Utils.GetPointsArray(pt3D));
+
+                    Utils.KeepVectorsByStatus(ref trackedFeaturesKp, ref trackedFeatures3D, status);
+
+                    result.Error = reprojErr;
+                    result.TrackedFeatures3D = trackedFeatures3D;
+                    result.FilteredTrackedFeaturesKp = trackedFeaturesKp;
+                    result.Result = true;
                 }
 
-                status = new VectorOfByte(statusArray);
-
-                //_trackedFeatures3D = new VectorOfPoint3D32F(pt3D.Rows);
-                //pt3D.CopyTo(new Matrix<MCvPoint3D32f>(_trackedFeatures3D.Size, 1, _trackedFeatures3D.Ptr));
-
-                //Utils.KeepVectorsByStatus(ref _trackedFeatures, ref _trackedFeatures3D, status);
-                //cout << "keeping " << trackedFeatures.size() << " nicely reprojected points";
-                return true;
+                rvec.Dispose();
+                tvec.Dispose();
+                reprojectedPtSet1.Dispose();
             }
-            return false;
+
+            normalizedTrackedPts.Dispose();
+            normalizedBootstrapPts.Dispose();
+            pt3Dh.Dispose();
+            pt3DhMatrix.Dispose();
+            pt3DMat.Dispose();
+            pt3D.Dispose();
+            status.Dispose();
+
+            return result;
         }
+
+        private static float MinInliers = 100;
+
+        //public static bool CameraPoseAndTriangulationFromFundamental(CameraCalibrationInfo calibrationInfo, VectorOfPointF trackedFeatures, VectorOfPointF bootstrapKp, out Mat p1, out Mat p2)
+        //{
+        //    p1 = null;
+        //    p2 = null;
+
+        //    //find fundamental matrix
+        //    double minVal, maxVal;
+        //    var minIdx = new int[2];
+        //    var maxIdx = new int[2];
+        //    var trackedFeaturesPts = trackedFeatures;
+        //    var bootstrapPts = bootstrapKp;
+
+        //    CvInvoke.MinMaxIdx(trackedFeaturesPts, out minVal, out maxVal, minIdx, maxIdx);
+
+        //    var f = new Mat();
+        //    var status = new VectorOfByte();
+        //    CvInvoke.FindFundamentalMat(trackedFeaturesPts, bootstrapPts, f, FmType.Ransac, 0.006 * maxVal, 0.99, status);
+        //    var fMat = new Matrix<float>(f.Rows, f.Cols, f.DataPointer);
+
+        //    int inliersNum = CvInvoke.CountNonZero(status);
+
+        //    Trace.WriteLine($"Fundamental keeping {inliersNum} / {status.Size}");
+
+        //    Utils.KeepVectorsByStatus(ref trackedFeatures, ref bootstrapKp, status);
+
+        //    if (inliersNum > MinInliers)
+        //    {
+        //        //Essential matrix: compute then extract cameras [R|t]
+        //        var e = calibrationInfo.Intrinsic.Transpose() * fMat * calibrationInfo.Intrinsic; //according to HZ (9.12)
+
+        //        //according to http://en.wikipedia.org/wiki/Essential_matrix#Properties_of_the_essential_matrix
+        //        var determinant = Math.Abs(CvInvoke.Determinant(e));
+        //        if (determinant > 1e-07)
+        //        {
+        //            Console.WriteLine($"det(E) != 0 : {determinant}");
+        //            return false;
+        //        }
+
+        //        Matrix<float> r1;
+        //        Matrix<float> r2;
+        //        Matrix<float> t1;
+        //        Matrix<float> t2;
+        //        if (!DecomposeEtoRandT(e, out r1, out r2, out t1, out t2)) return false;
+
+        //        determinant = Math.Abs(CvInvoke.Determinant(r1));
+        //        if (determinant + 1.0 < 1e-09)
+        //        {
+        //            //according to http://en.wikipedia.org/wiki/Essential_matrix#Showing_that_it_is_valid
+        //            Trace.WriteLine($"det(R) == -1 [{determinant}]: flip E's sign");
+        //            Utils.Negotiate(ref e);
+        //            if (!DecomposeEtoRandT(e, out r1, out r2, out t1, out t2)) return false;
+        //        }
+        //        if (Math.Abs(determinant) - 1.0 > 1e-07)
+        //        {
+        //            Trace.WriteLine($"det(R) != +-1.0, this is not a rotation matrix");
+        //            return false;
+        //        }
+
+        //        var p = new Matrix<float>(3, 4);
+        //        p.SetIdentity(new MCvScalar(1f));
+
+        //        var trPts = Utils.GetPointsVector(trackedFeatures);
+        //        var btPts = Utils.GetPointsVector(bootstrapKp);
+
+        //        //TODO: there are 4 different combinations for P1...
+        //        var pMat1 = new Matrix<float>(new float[3, 4] {
+        //            { r1[0,0], r1[0,1], r1[0,2], t1[0,0] },
+        //            { r1[1,0], r1[1,1], r1[1,2], t1[0,1]},
+        //            { r1[2,0], r1[2,1], r1[2,2], t1[0,2]}
+        //        });
+
+        //        bool triangulationSucceeded = true;
+        //        if (!TriangulateAndCheckReproj(trPts, btPts, p, pMat1))
+        //        {
+        //            pMat1 = new Matrix<float>(new float[3, 4] {
+        //                { r1[0,0], r1[0,1], r1[0,2], t2[0,0] },
+        //                { r1[1,0], r1[1,1], r1[1,2], t2[0,1]},
+        //                { r1[2,0], r1[2,1], r1[2,2], t2[0,2]}
+        //            });
+
+        //            if (!TriangulateAndCheckReproj(trPts, btPts, p, pMat1))
+        //            {
+        //                pMat1 = new Matrix<float>(new float[3, 4] {
+        //                    { r2[0,0], r2[0,1], r2[0,2], t2[0,0] },
+        //                    { r2[1,0], r2[1,1], r2[1,2], t2[0,1]},
+        //                    { r2[2,0], r2[2,1], r2[2,2], t2[0,2]}
+        //                });
+
+        //                if (!TriangulateAndCheckReproj(trPts, btPts, p, pMat1))
+        //                {
+        //                    pMat1 = new Matrix<float>(new float[3, 4] {
+        //                        { r2[0,0], r2[0,1], r2[0,2], t1[0,0] },
+        //                        { r2[1,0], r2[1,1], r2[1,2], t1[0,1]},
+        //                        { r2[2,0], r2[2,1], r2[2,2], t1[0,2]}
+        //                    });
+
+        //                    if (!TriangulateAndCheckReproj(trPts, btPts, p, pMat1))
+        //                    {
+        //                        Trace.WriteLine("Can't find the right P matrix.");
+        //                        triangulationSucceeded = false;
+        //                    }
+        //                }
+
+        //            }
+        //        }
+        //        return triangulationSucceeded;
+        //    }
+
+        //    p1 = new Mat();
+        //    p2 = new Mat();
+
+        //    return true;
+        //}
     }
 }

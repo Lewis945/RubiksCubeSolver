@@ -166,8 +166,7 @@ namespace RubiksCube.OpenCV.TestCase.Tests
             VectorOfPointF trackedFeatures;
             VectorOfPointF bootstrapKp;
 
-            bool result;
-            float error;
+            TriangulateAndCheckReprojResult result;
 
             #region Case 1
 
@@ -370,10 +369,10 @@ namespace RubiksCube.OpenCV.TestCase.Tests
                 new PointF(290.23773f, 225.74046f)
             });
 
-            result = OpenCvUtilities.TriangulateAndCheckReproj(_calibration, trackedFeatures, bootstrapKp, p, p1, out error);
+            result = OpenCvUtilities.TriangulateAndCheckReproj(_calibration, Utils.GetKeyPointsVector(trackedFeatures), Utils.GetKeyPointsVector(bootstrapKp), p, p1);
 
-            Assert.That(false, Is.EqualTo(result));
-            Assert.That(0, Is.EqualTo(error));
+            Assert.That(false, Is.EqualTo(result.Result));
+            Assert.That(0, Is.EqualTo(result.Error));
 
             #endregion
 
@@ -578,10 +577,10 @@ namespace RubiksCube.OpenCV.TestCase.Tests
                  new PointF(290.23773f, 225.74046f)
             });
 
-            result = OpenCvUtilities.TriangulateAndCheckReproj(_calibration, trackedFeatures, bootstrapKp, p, p1, out error);
+            result = OpenCvUtilities.TriangulateAndCheckReproj(_calibration, Utils.GetKeyPointsVector(trackedFeatures), Utils.GetKeyPointsVector(bootstrapKp), p, p1);
 
-            Assert.That(true, Is.EqualTo(result));
-            Assert.AreEqual(error, 2.90235f, 0.01);
+            Assert.That(true, Is.EqualTo(result.Result));
+            Assert.AreEqual(result.Error, 2.90235f, 0.01);
 
             #endregion
         }

@@ -110,5 +110,17 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
         {
             return new PointF(p1.X - p2.X, p1.Y - p2.Y);
         }
+
+        public static MCvPoint3D32f[] GetPointsArray(Matrix<float> matrix)
+        {
+            var array = new MCvPoint3D32f[matrix.Rows];
+
+            for (int i = 0; i < matrix.Rows; i++)
+            {
+                array[i] = new MCvPoint3D32f(matrix.Data[i, 0], matrix.Data[i, 1], matrix.Data[i, 2]);
+            }
+
+            return array;
+        }
     }
 }
