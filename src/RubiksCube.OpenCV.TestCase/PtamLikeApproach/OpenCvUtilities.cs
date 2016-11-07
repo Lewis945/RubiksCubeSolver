@@ -233,6 +233,10 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
             if (inliersNum > MinInliers)
             {
+                var t11 = calibrationInfo.Intrinsic;
+                var t12 = calibrationInfo.Intrinsic.Transpose();
+                var t13 = fMat;
+
                 //Essential matrix: compute then extract cameras [R|t]
                 var e = calibrationInfo.Intrinsic.Transpose() * fMat * calibrationInfo.Intrinsic; //according to HZ (9.12)
                 result.Esential = e;

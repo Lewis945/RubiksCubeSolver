@@ -16,12 +16,12 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
         /// <summary>
         /// 
         /// </summary>
-        private Matrix<float> _intrinsic;
+        private readonly Matrix<float> _intrinsic;
 
         /// <summary>
         /// 
         /// </summary>
-        private VectorOfFloat _distortion;
+        private readonly VectorOfFloat _distortion;
 
         #endregion
 
@@ -30,12 +30,12 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
         /// <summary>
         /// 
         /// </summary>
-        public Matrix<float> Intrinsic { get { return _intrinsic; } }
+        public Matrix<float> Intrinsic => _intrinsic;
 
         /// <summary>
         /// 
         /// </summary>
-        public VectorOfFloat Distortion { get { return _distortion; } }
+        public VectorOfFloat Distortion => _distortion;
 
         /// <summary>
         /// 
@@ -78,31 +78,32 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="_fx"></param>
-        /// <param name="_fy"></param>
-        /// <param name="_cx"></param>
-        /// <param name="_cy"></param>
+        /// <param name="fx"></param>
+        /// <param name="fy"></param>
+        /// <param name="cx"></param>
+        /// <param name="cy"></param>
         /// <param name="distorsionCoeff"></param>
-        public CameraCalibrationInfo(float _fx, float _fy, float _cx, float _cy, float[] distorsionCoeff)
+        public CameraCalibrationInfo(float fx, float fy, float cx, float cy, float[] distorsionCoeff)
         {
             _intrinsic = new Matrix<float>(3, 3);
+            _intrinsic.SetIdentity();
             _distortion = new VectorOfFloat(distorsionCoeff);
 
-            Fx = _fx;
-            Fy = _fy;
-            Cx = _cx;
-            Cy = _cy;
+            Fx = fx;
+            Fy = fy;
+            Cx = cx;
+            Cy = cy;
         }
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="_fx"></param>
-        /// <param name="_fy"></param>
-        /// <param name="_cx"></param>
-        /// <param name="_cy"></param>
-        public CameraCalibrationInfo(float _fx, float _fy, float _cx, float _cy)
-            : this(_fx, _fy, _cx, _cy, new float[] { 0, 0, 0, 0, 0 })
+        /// <param name="fx"></param>
+        /// <param name="fy"></param>
+        /// <param name="cx"></param>
+        /// <param name="cy"></param>
+        public CameraCalibrationInfo(float fx, float fy, float cx, float cy)
+            : this(fx, fy, cx, cy, new float[] { 0, 0, 0, 0, 0 })
         {
         }
     }
