@@ -9,6 +9,7 @@ using Emgu.CV;
 using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 using Emgu.CV.Util;
+using OpenTK.Graphics.OpenGL;
 using RubiksCube.OpenCV.TestCase.AugmentedReality;
 
 namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
@@ -233,14 +234,10 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
             if (inliersNum > MinInliers)
             {
-                var t11 = calibrationInfo.Intrinsic;
-                var t12 = calibrationInfo.Intrinsic.Transpose();
-                var t13 = fMat;
-
                 //Essential matrix: compute then extract cameras [R|t]
                 var e = calibrationInfo.Intrinsic.Transpose() * fMat * calibrationInfo.Intrinsic; //according to HZ (9.12)
                 result.Esential = e;
-                
+
                 //according to http://en.wikipedia.org/wiki/Essential_matrix#Properties_of_the_essential_matrix
                 var determinant = Math.Abs(CvInvoke.Determinant(e));
                 if (determinant > 1e-07)
