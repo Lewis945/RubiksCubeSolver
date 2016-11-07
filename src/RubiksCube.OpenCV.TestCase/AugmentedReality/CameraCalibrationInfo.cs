@@ -42,8 +42,8 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
         /// </summary>
         public float Fx
         {
-            get { return _intrinsic[1, 1]; }
-            set { _intrinsic[1, 1] = value; }
+            get { return _intrinsic[0, 0]; }
+            set { _intrinsic[0, 0] = value; }
         }
 
         /// <summary>
@@ -51,8 +51,8 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
         /// </summary>
         public float Fy
         {
-            get { return _intrinsic[0, 0]; }
-            set { _intrinsic[0, 0] = value; }
+            get { return _intrinsic[1, 1]; }
+            set { _intrinsic[1, 1] = value; }
         }
 
         /// <summary>

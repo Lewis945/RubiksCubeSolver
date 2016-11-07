@@ -584,5 +584,240 @@ namespace RubiksCube.OpenCV.TestCase.Tests
 
             #endregion
         }
+
+        [Test]
+        public void Camera_Pose_And_Triangulation_From_Fundamental()
+        {
+            Matrix<float> p;
+            Matrix<float> p1;
+            Matrix<float> e;
+
+            VectorOfPointF trackedFeatures;
+            VectorOfPointF bootstrapKp;
+
+            CameraPoseAndTriangulationFromFundamentalResult result;
+
+            #region Case 1
+
+            p = new Matrix<float>(new float[3, 4]
+            {
+                { 1, 0, 0, 0 },
+                { 0, 1, 0, 0 },
+                { 0, 0, 1, 0 }
+            });
+
+            p1 = new Matrix<float>(new float[3, 4]
+            {
+                { 0.9870124281645626f, 0.03547270126454876f, -0.1566785055892807f, -0.0008631055249466995f },
+                { -0.03193350943559628f, 0.9991760497758493f, 0.0250494017784099f, -0.02589733540347029f },
+                { 0.1574379802456221f, -0.01972077633678765f, 0.9873319468936744f, -0.9996642351649142f }
+            });
+
+            e = new Matrix<float>(new float[3, 3]
+            {
+                {  0.4052652752518787f, -12.45233689948151f, 0.01348616168894345f },
+                { 11.47229370932243f, 0.4564241889679639f, -1.831549257782737f },
+                { -0.297551532077682f, -0.001072849756781113f, 0.04743653296950803f }
+            });
+
+            trackedFeatures = new VectorOfPointF(new[]
+            {
+                new PointF(426.03632f, 222.76335f),
+                new PointF(390.96695f, 219.97858f),
+                new PointF(406.54562f, 219.64514f),
+                new PointF(428.09631f, 218.70369f),
+                new PointF(420.02969f, 214.37195f),
+                new PointF(417.18686f, 212.15242f),
+                new PointF(371.31644f, 266.3609f),
+                new PointF(373.28091f, 264.38715f),
+                new PointF(420.39337f, 209.12727f),
+                new PointF(420.87967f, 204.09981f),
+                new PointF(406.13959f, 201.16556f),
+                new PointF(372.52917f, 247.70665f),
+                new PointF(418.207f, 197.58563f),
+                new PointF(409.27347f, 198.09737f),
+                new PointF(413.95377f, 198.25195f),
+                new PointF(420.99988f, 200.95354f),
+                new PointF(401.62491f, 231.76155f),
+                new PointF(383.94525f, 230.31931f),
+                new PointF(380.65768f, 230.22371f),
+                new PointF(383.29068f, 237.19083f),
+                new PointF(399.32339f, 216.67557f),
+                new PointF(374.50339f, 248.74915f),
+                new PointF(404.55908f, 212.4364f),
+                new PointF(381.25662f, 239.14381f),
+                new PointF(396.28745f, 208.28883f),
+                new PointF(422.42389f, 196.84546f),
+                new PointF(402.66537f, 238.85341f),
+                new PointF(370.23953f, 268.43887f),
+                new PointF(401.51538f, 230.76601f),
+                new PointF(420.25861f, 204.6877f),
+                new PointF(420.39197f, 200.87657f),
+                new PointF(406.35147f, 200.13043f),
+                new PointF(418.17007f, 198.2444f),
+                new PointF(413.20557f, 196.53227f),
+                new PointF(374.18121f, 249.16602f),
+                new PointF(425.47458f, 222.13777f),
+                new PointF(427.86325f, 218.52226f),
+                new PointF(398.54398f, 216.46603f),
+                new PointF(383.29218f, 237.52814f),
+                new PointF(420.62109f, 214.55142f),
+                new PointF(381.33087f, 229.29582f),
+                new PointF(371.72778f, 246.67822f),
+                new PointF(407.19f, 219.83838f),
+                new PointF(417.2084f, 211.94316f),
+                new PointF(419.71942f, 209.54953f),
+                new PointF(404.55908f, 212.4364f),
+                new PointF(380.8197f, 238.69392f),
+                new PointF(406.92761f, 219.60931f),
+                new PointF(427.15094f, 219.28215f),
+                new PointF(405.73328f, 198.8499f),
+                new PointF(424.24506f, 222.11359f),
+                new PointF(421.53174f, 213.15207f),
+                new PointF(418.71411f, 210.00742f),
+                new PointF(380.58487f, 228.33238f),
+                new PointF(372.25766f, 246.51025f),
+                new PointF(371.43317f, 265.80927f),
+                new PointF(370.80389f, 243.58653f),
+                new PointF(374.17325f, 264.45847f),
+                new PointF(405.3219f, 210.81206f),
+                new PointF(418.19434f, 197.99078f),
+                new PointF(401.79028f, 229.80133f),
+                new PointF(426.57095f, 219.80702f),
+                new PointF(407.84232f, 220.65297f),
+                new PointF(371.43317f, 265.80927f),
+                new PointF(371.91681f, 246.1552f),
+                new PointF(381.74255f, 227.81966f),
+                new PointF(416.45859f, 208.87207f),
+                new PointF(407.67117f, 199.16803f),
+                new PointF(405.53528f, 211.66692f),
+                new PointF(397.01413f, 215.87862f),
+                new PointF(408.84979f, 220.99838f),
+                new PointF(422.86496f, 213.2979f),
+                new PointF(398.32544f, 215.67107f),
+                new PointF(372.59445f, 245.80473f),
+                new PointF(372.43692f, 265.15585f),
+                new PointF(416.97476f, 206.92216f),
+                new PointF(382.06662f, 225.86298f),
+                new PointF(370.20435f, 269.63144f),
+                new PointF(405.93604f, 210.27585f),
+                new PointF(372.24982f, 245.04134f),
+                new PointF(372.46011f, 265.53363f),
+                new PointF(414.5097f, 205.08484f),
+                new PointF(421.71219f, 212.78195f),
+                new PointF(369.8866f, 267.12936f),
+                new PointF(372.25372f, 245.5535f),
+                new PointF(395.57431f, 219.39975f),
+                new PointF(374.96515f, 243.144f),
+                new PointF(372.81671f, 268.81808f),
+                new PointF(381.4924f, 214.46245f)
+            });
+            bootstrapKp = new VectorOfPointF(new[]
+            {
+                new PointF(333, 231),
+                new PointF(300, 231),
+                new PointF(315, 229),
+                new PointF(335, 227),
+                new PointF(327, 223),
+                new PointF(324, 221),
+                new PointF(285, 277),
+                new PointF(287, 275),
+                new PointF(327, 218),
+                new PointF(327, 213),
+                new PointF(313, 211),
+                new PointF(284, 259),
+                new PointF(324, 207),
+                new PointF(316, 208),
+                new PointF(320, 208),
+                new PointF(327, 210),
+                new PointF(311, 241),
+                new PointF(294, 241),
+                new PointF(291, 241),
+                new PointF(294, 248),
+                new PointF(308, 227),
+                new PointF(286, 260),
+                new PointF(312, 222),
+                new PointF(292, 250),
+                new PointF(304, 219),
+                new PointF(328, 206),
+                new PointF(313, 248),
+                new PointF(284, 279),
+                new PointF(310.80002f, 240.00002f),
+                new PointF(326.40002f, 213.60001f),
+                new PointF(326.40002f, 210.00002f),
+                new PointF(313.20001f, 210.00002f),
+                new PointF(324, 207.60001f),
+                new PointF(319.20001f, 206.40001f),
+                new PointF(285.60001f, 260.40002f),
+                new PointF(332.40002f, 230.40001f),
+                new PointF(334.80002f, 226.8f),
+                new PointF(307.20001f, 226.8f),
+                new PointF(294, 248.40001f),
+                new PointF(327.60001f, 223.20001f),
+                new PointF(291.60001f, 240.00002f),
+                new PointF(283.20001f, 258),
+                new PointF(315.60001f, 229.20001f),
+                new PointF(324, 220.8f),
+                new PointF(326.40002f, 218.40001f),
+                new PointF(312, 222.00002f),
+                new PointF(291.60001f, 249.60001f),
+                new PointF(315.36002f, 228.96001f),
+                new PointF(334.08002f, 227.52f),
+                new PointF(312.48001f, 208.8f),
+                new PointF(331.20001f, 230.40001f),
+                new PointF(328.32001f, 221.76001f),
+                new PointF(325.44f, 218.88f),
+                new PointF(290.88f, 239.04001f),
+                new PointF(283.68002f, 257.76001f),
+                new PointF(285.12003f, 276.48001f),
+                new PointF(282.24002f, 254.88f),
+                new PointF(288, 275.04001f),
+                new PointF(312.48001f, 220.32001f),
+                new PointF(324, 207.36002f),
+                new PointF(311.04001f, 239.04001f),
+                new PointF(333.50403f, 228.09602f),
+                new PointF(316.22403f, 229.82402f),
+                new PointF(285.12003f, 276.48004f),
+                new PointF(283.39203f, 257.47202f),
+                new PointF(292.03201f, 238.46402f),
+                new PointF(323.13602f, 217.72803f),
+                new PointF(314.49603f, 209.08801f),
+                new PointF(312.76804f, 221.18402f),
+                new PointF(305.85602f, 226.36803f),
+                new PointF(317.26083f, 230.16963f),
+                new PointF(329.70245f, 221.87523f),
+                new PointF(306.89285f, 226.02243f),
+                new PointF(284.08325f, 257.12643f),
+                new PointF(286.15683f, 275.78885f),
+                new PointF(323.48166f, 215.65443f),
+                new PointF(292.37766f, 236.39043f),
+                new PointF(284.08325f, 279.93604f),
+                new PointF(313.11365f, 219.80164f),
+                new PointF(283.66855f, 256.29703f),
+                new PointF(286.15686f, 276.20358f),
+                new PointF(320.99335f, 213.99557f),
+                new PointF(328.45831f, 221.46053f),
+                new PointF(283.66855f, 277.69659f),
+                new PointF(283.66855f, 256.79468f),
+                new PointF(304.57043f, 229.92084f),
+                new PointF(286.65454f, 254.40591f),
+                new PointF(286.65454f, 279.48819f),
+                new PointF(290.23773f, 225.74046f)
+            });
+
+            result = OpenCvUtilities.CameraPoseAndTriangulationFromFundamental(_calibration, Utils.GetKeyPointsVector(trackedFeatures), Utils.GetKeyPointsVector(bootstrapKp));
+
+            Assert.AreEqual(196.532, result.Min, 0.1);
+            Assert.AreEqual(428.096, result.Max, 0.1);
+
+            Assert.That(result.Esential, Is.EqualTo(e));
+
+            Assert.That(result.P1, Is.EqualTo(p));
+            Assert.That(result.P2, Is.EqualTo(p1));
+
+            Assert.That(result.Result, Is.EqualTo(true));
+
+            #endregion
+        }
     }
 }

@@ -22,6 +22,21 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
         public bool Result { get; set; }
     }
 
+    public struct CameraPoseAndTriangulationFromFundamentalResult
+    {
+        public Matrix<float> P1 { get; set; }
+        public Matrix<float> P2 { get; set; }
+
+        public Matrix<float> Esential { get; set; }
+
+        public float Min { get; set; }
+        public float Max { get; set; }
+
+        public VectorOfKeyPoint FilteredTrackedFeaturesKp { get; set; }
+        public VectorOfKeyPoint FilteredBootstrapKp { get; set; }
+        public bool Result { get; set; }
+    }
+
     public class OpenCvUtilities
     {
         /// <summary>
@@ -155,7 +170,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
                     status = new VectorOfByte(statusArray);
 
-                    var trackedFeatures3D = new VectorOfPoint3D32F(Utils.GetPointsArray(pt3D));
+                    var trackedFeatures3D = new VectorOfPoint3D32F(Utils.Get3dPointsArray(pt3D));
 
                     Utils.KeepVectorsByStatus(ref trackedFeaturesKp, ref trackedFeatures3D, status);
 
@@ -181,120 +196,134 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             return result;
         }
 
-        private static float MinInliers = 100;
+        private static float MinInliers = 10;
 
-        //public static bool CameraPoseAndTriangulationFromFundamental(CameraCalibrationInfo calibrationInfo, VectorOfPointF trackedFeatures, VectorOfPointF bootstrapKp, out Mat p1, out Mat p2)
-        //{
-        //    p1 = null;
-        //    p2 = null;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="calibrationInfo"></param>
+        /// <param name="trackedFeaturesKp"></param>
+        /// <param name="bootstrapKp"></param>
+        /// <returns></returns>
+        public static CameraPoseAndTriangulationFromFundamentalResult CameraPoseAndTriangulationFromFundamental(CameraCalibrationInfo calibrationInfo, VectorOfKeyPoint trackedFeaturesKp, VectorOfKeyPoint bootstrapKp)
+        {
+            var result = new CameraPoseAndTriangulationFromFundamentalResult();
 
-        //    //find fundamental matrix
-        //    double minVal, maxVal;
-        //    var minIdx = new int[2];
-        //    var maxIdx = new int[2];
-        //    var trackedFeaturesPts = trackedFeatures;
-        //    var bootstrapPts = bootstrapKp;
+            //find fundamental matrix
+            double minVal, maxVal;
+            var minIdx = new int[2];
+            var maxIdx = new int[2];
+            var trackedFeaturesPts = Utils.GetPointsVector(trackedFeaturesKp);
+            var bootstrapPts = Utils.GetPointsVector(bootstrapKp);
 
-        //    CvInvoke.MinMaxIdx(trackedFeaturesPts, out minVal, out maxVal, minIdx, maxIdx);
+            CvInvoke.MinMaxIdx(Utils.GetPointsMatrix(trackedFeaturesPts), out minVal, out maxVal, minIdx, maxIdx);
+            result.Min = (float)minVal;
+            result.Max = (float)maxVal;
 
-        //    var f = new Mat();
-        //    var status = new VectorOfByte();
-        //    CvInvoke.FindFundamentalMat(trackedFeaturesPts, bootstrapPts, f, FmType.Ransac, 0.006 * maxVal, 0.99, status);
-        //    var fMat = new Matrix<float>(f.Rows, f.Cols, f.DataPointer);
+            var f = new Mat();
+            var status = new VectorOfByte();
+            CvInvoke.FindFundamentalMat(trackedFeaturesPts, bootstrapPts, f, FmType.Ransac, 0.006 * maxVal, 0.99, status);
+            var fMat = new Matrix<float>(f.Rows, f.Cols, f.DataPointer);
 
-        //    int inliersNum = CvInvoke.CountNonZero(status);
+            int inliersNum = CvInvoke.CountNonZero(status);
 
-        //    Trace.WriteLine($"Fundamental keeping {inliersNum} / {status.Size}");
+            Trace.WriteLine($"Fundamental keeping {inliersNum} / {status.Size}");
 
-        //    Utils.KeepVectorsByStatus(ref trackedFeatures, ref bootstrapKp, status);
+            Utils.KeepVectorsByStatus(ref trackedFeaturesKp, ref bootstrapKp, status);
 
-        //    if (inliersNum > MinInliers)
-        //    {
-        //        //Essential matrix: compute then extract cameras [R|t]
-        //        var e = calibrationInfo.Intrinsic.Transpose() * fMat * calibrationInfo.Intrinsic; //according to HZ (9.12)
+            if (inliersNum > MinInliers)
+            {
+                //Essential matrix: compute then extract cameras [R|t]
+                var e = calibrationInfo.Intrinsic.Transpose() * fMat * calibrationInfo.Intrinsic; //according to HZ (9.12)
+                result.Esential = e;
+                
+                //according to http://en.wikipedia.org/wiki/Essential_matrix#Properties_of_the_essential_matrix
+                var determinant = Math.Abs(CvInvoke.Determinant(e));
+                if (determinant > 1e-07)
+                {
+                    Console.WriteLine($"det(E) != 0 : {determinant}");
+                    return result;
+                }
 
-        //        //according to http://en.wikipedia.org/wiki/Essential_matrix#Properties_of_the_essential_matrix
-        //        var determinant = Math.Abs(CvInvoke.Determinant(e));
-        //        if (determinant > 1e-07)
-        //        {
-        //            Console.WriteLine($"det(E) != 0 : {determinant}");
-        //            return false;
-        //        }
+                Matrix<float> r1;
+                Matrix<float> r2;
+                Matrix<float> t1;
+                Matrix<float> t2;
+                if (!DecomposeEtoRandT(e, out r1, out r2, out t1, out t2))
+                    return result;
 
-        //        Matrix<float> r1;
-        //        Matrix<float> r2;
-        //        Matrix<float> t1;
-        //        Matrix<float> t2;
-        //        if (!DecomposeEtoRandT(e, out r1, out r2, out t1, out t2)) return false;
+                determinant = Math.Abs(CvInvoke.Determinant(r1));
+                if (determinant + 1.0 < 1e-09)
+                {
+                    //according to http://en.wikipedia.org/wiki/Essential_matrix#Showing_that_it_is_valid
+                    Trace.WriteLine($"det(R) == -1 [{determinant}]: flip E's sign");
+                    Utils.Negotiate(ref e);
+                    if (!DecomposeEtoRandT(e, out r1, out r2, out t1, out t2))
+                        return result;
+                }
+                if (Math.Abs(determinant) - 1.0 > 1e-07)
+                {
+                    Trace.WriteLine($"det(R) != +-1.0, this is not a rotation matrix");
+                    return result;
+                }
 
-        //        determinant = Math.Abs(CvInvoke.Determinant(r1));
-        //        if (determinant + 1.0 < 1e-09)
-        //        {
-        //            //according to http://en.wikipedia.org/wiki/Essential_matrix#Showing_that_it_is_valid
-        //            Trace.WriteLine($"det(R) == -1 [{determinant}]: flip E's sign");
-        //            Utils.Negotiate(ref e);
-        //            if (!DecomposeEtoRandT(e, out r1, out r2, out t1, out t2)) return false;
-        //        }
-        //        if (Math.Abs(determinant) - 1.0 > 1e-07)
-        //        {
-        //            Trace.WriteLine($"det(R) != +-1.0, this is not a rotation matrix");
-        //            return false;
-        //        }
+                var trPts = Utils.GetPointsVector(trackedFeaturesKp);
+                var btPts = Utils.GetPointsVector(bootstrapKp);
 
-        //        var p = new Matrix<float>(3, 4);
-        //        p.SetIdentity(new MCvScalar(1f));
+                var p = new Matrix<float>(3, 4);
+                p.SetIdentity(new MCvScalar(1f));
 
-        //        var trPts = Utils.GetPointsVector(trackedFeatures);
-        //        var btPts = Utils.GetPointsVector(bootstrapKp);
+                //TODO: there are 4 different combinations for P1...
+                var pMat1 = new Matrix<float>(new float[3, 4] {
+                    { r1[0,0], r1[0,1], r1[0,2], t1[0,0] },
+                    { r1[1,0], r1[1,1], r1[1,2], t1[0,1]},
+                    { r1[2,0], r1[2,1], r1[2,2], t1[0,2]}
+                });
 
-        //        //TODO: there are 4 different combinations for P1...
-        //        var pMat1 = new Matrix<float>(new float[3, 4] {
-        //            { r1[0,0], r1[0,1], r1[0,2], t1[0,0] },
-        //            { r1[1,0], r1[1,1], r1[1,2], t1[0,1]},
-        //            { r1[2,0], r1[2,1], r1[2,2], t1[0,2]}
-        //        });
+                bool triangulationSucceeded = true;
+                if (!TriangulateAndCheckReproj(calibrationInfo, trackedFeaturesKp, bootstrapKp, p, pMat1).Result)
+                {
+                    pMat1 = new Matrix<float>(new float[3, 4] {
+                        { r1[0,0], r1[0,1], r1[0,2], t2[0,0] },
+                        { r1[1,0], r1[1,1], r1[1,2], t2[0,1]},
+                        { r1[2,0], r1[2,1], r1[2,2], t2[0,2]}
+                    });
 
-        //        bool triangulationSucceeded = true;
-        //        if (!TriangulateAndCheckReproj(trPts, btPts, p, pMat1))
-        //        {
-        //            pMat1 = new Matrix<float>(new float[3, 4] {
-        //                { r1[0,0], r1[0,1], r1[0,2], t2[0,0] },
-        //                { r1[1,0], r1[1,1], r1[1,2], t2[0,1]},
-        //                { r1[2,0], r1[2,1], r1[2,2], t2[0,2]}
-        //            });
+                    if (!TriangulateAndCheckReproj(calibrationInfo, trackedFeaturesKp, bootstrapKp, p, pMat1).Result)
+                    {
+                        pMat1 = new Matrix<float>(new float[3, 4] {
+                            { r2[0,0], r2[0,1], r2[0,2], t2[0,0] },
+                            { r2[1,0], r2[1,1], r2[1,2], t2[0,1]},
+                            { r2[2,0], r2[2,1], r2[2,2], t2[0,2]}
+                        });
 
-        //            if (!TriangulateAndCheckReproj(trPts, btPts, p, pMat1))
-        //            {
-        //                pMat1 = new Matrix<float>(new float[3, 4] {
-        //                    { r2[0,0], r2[0,1], r2[0,2], t2[0,0] },
-        //                    { r2[1,0], r2[1,1], r2[1,2], t2[0,1]},
-        //                    { r2[2,0], r2[2,1], r2[2,2], t2[0,2]}
-        //                });
+                        if (!TriangulateAndCheckReproj(calibrationInfo, trackedFeaturesKp, bootstrapKp, p, pMat1).Result)
+                        {
+                            pMat1 = new Matrix<float>(new float[3, 4] {
+                                { r2[0,0], r2[0,1], r2[0,2], t1[0,0] },
+                                { r2[1,0], r2[1,1], r2[1,2], t1[0,1]},
+                                { r2[2,0], r2[2,1], r2[2,2], t1[0,2]}
+                            });
 
-        //                if (!TriangulateAndCheckReproj(trPts, btPts, p, pMat1))
-        //                {
-        //                    pMat1 = new Matrix<float>(new float[3, 4] {
-        //                        { r2[0,0], r2[0,1], r2[0,2], t1[0,0] },
-        //                        { r2[1,0], r2[1,1], r2[1,2], t1[0,1]},
-        //                        { r2[2,0], r2[2,1], r2[2,2], t1[0,2]}
-        //                    });
+                            if (!TriangulateAndCheckReproj(calibrationInfo, trackedFeaturesKp, bootstrapKp, p, pMat1).Result)
+                            {
+                                Trace.WriteLine("Can't find the right P matrix.");
+                                triangulationSucceeded = false;
+                            }
+                        }
 
-        //                    if (!TriangulateAndCheckReproj(trPts, btPts, p, pMat1))
-        //                    {
-        //                        Trace.WriteLine("Can't find the right P matrix.");
-        //                        triangulationSucceeded = false;
-        //                    }
-        //                }
+                    }
+                }
 
-        //            }
-        //        }
-        //        return triangulationSucceeded;
-        //    }
+                result.P1 = p;
+                result.P2 = pMat1;
+                result.FilteredTrackedFeaturesKp = trackedFeaturesKp;
+                result.FilteredBootstrapKp = bootstrapKp;
+                result.Result = triangulationSucceeded;
+                return result;
+            }
 
-        //    p1 = new Mat();
-        //    p2 = new Mat();
-
-        //    return true;
-        //}
+            return result;
+        }
     }
 }
