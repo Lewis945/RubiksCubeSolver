@@ -1,0 +1,15 @@
+﻿Основы стереозрения (https://habrahabr.ru/post/130300/)
+
+Multiple View Geometry in Computer Vision / Second Edition / Richard Hartley / Australian National University / Canberra / Australia (http://cvrs.whu.edu.cn/downloads/ebooks/Multiple%20View%20Geometry%20in%20Computer%20Vision%20(Second%20Edition).pdf)
+
+Epipolar geometry (https://en.wikipedia.org/wiki/Epipolar_geometry)
+
+Fundamental matrix / computer vision / (https://en.wikipedia.org/wiki/Fundamental_matrix_(computer_vision))
+
+Homography / computer vision / (https://en.wikipedia.org/wiki/Homography_(computer_vision))
+
+How to correctly use cv::triangulatePoints (http://stackoverflow.com/questions/16295551/how-to-correctly-use-cvtriangulatepoints)
+
+Get 3D coordinates from 2D image pixel if extrinsic and intrinsic parameters are known (http://stackoverflow.com/questions/7836134/get-3d-coordinates-from-2d-image-pixel-if-extrinsic-and-intrinsic-parameters-are/10750648#10750648)
+
+how can i get the camera projection matrix out of calibrateCamera() return values (http://stackoverflow.com/questions/16101747/how-can-i-get-the-camera-projection-matrix-out-of-calibratecamera-return-value)
