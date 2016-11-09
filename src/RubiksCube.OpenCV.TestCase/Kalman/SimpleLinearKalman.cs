@@ -12,39 +12,39 @@ namespace RubiksCube.OpenCV.TestCase.Kalman
         /// <summary>
         /// State transition matrix.
         /// </summary>
-        private Matrix<float> _A;
+        private Matrix<double> _A;
 
         /// <summary>
         /// Control matrix.
         /// </summary>
-        private Matrix<float> _B;
+        private Matrix<double> _B;
 
         /// <summary>
         /// Observation matrix.
         /// </summary>
-        private Matrix<float> _H;
+        private Matrix<double> _H;
 
         /// <summary>
         /// Estimated error in process.
         /// </summary>
-        private Matrix<float> _Q;
+        private Matrix<double> _Q;
 
         /// <summary>
         /// Estimated error in measurements.
         /// </summary>
-        private Matrix<float> _R;
+        private Matrix<double> _R;
 
         /// <summary>
         /// Initial state estimate.
         /// </summary>
-        private Matrix<float> _currentStateEstimate;
+        private Matrix<double> _currentStateEstimate;
 
         /// <summary>
         /// Initial covariance estimate.
         /// </summary>
-        private Matrix<float> _currentProbEstimate;
+        private Matrix<double> _currentProbEstimate;
 
-        public SimpleLinearKalman(Matrix<float> a, Matrix<float> b, Matrix<float> h, Matrix<float> q, Matrix<float> r, Matrix<float> currentStateEstimate, Matrix<float> currentProbEstimate)
+        public SimpleLinearKalman(Matrix<double> a, Matrix<double> b, Matrix<double> h, Matrix<double> q, Matrix<double> r, Matrix<double> currentStateEstimate, Matrix<double> currentProbEstimate)
         {
             _A = a;
             _B = b;
@@ -55,12 +55,12 @@ namespace RubiksCube.OpenCV.TestCase.Kalman
             _currentStateEstimate = currentStateEstimate;
         }
 
-        public Matrix<float> GetCurrentState()
+        public Matrix<double> GetCurrentState()
         {
             return _currentStateEstimate;
         }
 
-        public void Step(Matrix<float> controlVector, Matrix<float> measurementVector)
+        public void Step(Matrix<double> controlVector, Matrix<double> measurementVector)
         {
             //---------------------------Prediction step-----------------------------
 
@@ -74,7 +74,7 @@ namespace RubiksCube.OpenCV.TestCase.Kalman
             var innovationCovariance = _H * predictedProbEstimate * _H.Transpose() + _R;
             //-----------------------------Update step-------------------------------
 
-            Matrix<float> innovationCovarianceInv = new Matrix<float>(innovationCovariance.Rows, innovationCovariance.Cols);
+            Matrix<double> innovationCovarianceInv = new Matrix<double>(innovationCovariance.Rows, innovationCovariance.Cols);
             CvInvoke.Invert(innovationCovariance, innovationCovarianceInv, Emgu.CV.CvEnum.DecompMethod.LU);
 
             var kalmanGain = predictedProbEstimate * _H.Transpose() * innovationCovarianceInv;
@@ -85,7 +85,7 @@ namespace RubiksCube.OpenCV.TestCase.Kalman
             var size = _currentProbEstimate.Size.Width;
 
             // eye(n) = nxn identity matrix.
-            var eye = new Matrix<float>(size, size);
+            var eye = new Matrix<double>(size, size);
             _currentProbEstimate = (eye - kalmanGain * _H) * predictedProbEstimate;
         }
     }

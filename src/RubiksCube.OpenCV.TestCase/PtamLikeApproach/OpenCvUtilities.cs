@@ -16,7 +16,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 {
     public struct TriangulateAndCheckReprojResult
     {
-        public float Error { get; set; }
+        public double Error { get; set; }
         public VectorOfPoint3D32F TrackedFeatures3D { get; set; }
         public VectorOfKeyPoint FilteredTrackedFeaturesKp { get; set; }
         public VectorOfKeyPoint FilteredBootstrapKp { get; set; }
@@ -25,10 +25,10 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
     public struct CameraPoseAndTriangulationFromFundamentalResult
     {
-        public Matrix<float> P1 { get; set; }
-        public Matrix<float> P2 { get; set; }
+        public Matrix<double> P1 { get; set; }
+        public Matrix<double> P2 { get; set; }
 
-        public Matrix<float> Esential { get; set; }
+        public Matrix<double> Esential { get; set; }
 
         public float Min { get; set; }
         public float Max { get; set; }
@@ -49,12 +49,12 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
         /// <param name="t1"></param>
         /// <param name="t2"></param>
         /// <returns></returns>
-        public static bool DecomposeEtoRandT(IInputArray e, out Matrix<float> r1, out Matrix<float> r2, out Matrix<float> t1, out Matrix<float> t2)
+        public static bool DecomposeEtoRandT(IInputArray e, out Matrix<double> r1, out Matrix<double> r2, out Matrix<double> t1, out Matrix<double> t2)
         {
             r1 = null;
             r2 = null;
-            t1 = new Matrix<float>(3, 1);
-            t2 = new Matrix<float>(3, 1);
+            t1 = new Matrix<double>(3, 1);
+            t2 = new Matrix<double>(3, 1);
 
             //Using HZ E decomposition
 
@@ -63,12 +63,12 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             var vt = new Mat();
             CvInvoke.SVDecomp(e, w, u, vt, SvdFlag.ModifyA);
 
-            using (var wm = new Matrix<float>(w.Rows, w.Cols, w.DataPointer))
-            using (var um = new Matrix<float>(u.Rows, u.Cols, u.DataPointer))
-            using (var vtm = new Matrix<float>(vt.Rows, vt.Cols, vt.DataPointer))
+            using (var wm = new Matrix<double>(w.Rows, w.Cols, w.DataPointer))
+            using (var um = new Matrix<double>(u.Rows, u.Cols, u.DataPointer))
+            using (var vtm = new Matrix<double>(vt.Rows, vt.Cols, vt.DataPointer))
             {
                 //check if first and second singular values are the same (as they should be)
-                float singularValuesRatio = Math.Abs(wm[0, 0] / wm[1, 0]);
+                double singularValuesRatio = Math.Abs(wm[0, 0] / wm[1, 0]);
                 if (singularValuesRatio > 1.0) singularValuesRatio = 1.0f / singularValuesRatio; // flip ratio to keep it [0,1]
                 if (singularValuesRatio < 0.7)
                 {
@@ -76,13 +76,13 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
                     return false;
                 }
 
-                var wMat = new Matrix<float>(new float[,] {
+                var wMat = new Matrix<double>(new double[,] {
                     { 0, -1, 0}, //HZ 9.13
                     { 1, 0, 0 },
                     { 0, 0, 1 }
                 });
 
-                var wMatTranspose = new Matrix<float>(new float[,] {
+                var wMatTranspose = new Matrix<double>(new double[,] {
                     { 0, 1, 0},
                     { -1, 0, 0 },
                     { 0, 0, 1 }
@@ -115,7 +115,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
         /// <param name="p"></param>
         /// <param name="p1"></param>
         /// <returns></returns>
-        public static TriangulateAndCheckReprojResult TriangulateAndCheckReproj(CameraCalibrationInfo calibrationInfo, VectorOfKeyPoint trackedFeaturesKp, VectorOfKeyPoint bootstrapKp, Matrix<float> p, Matrix<float> p1)
+        public static TriangulateAndCheckReprojResult TriangulateAndCheckReproj(CameraCalibrationInfo calibrationInfo, VectorOfKeyPoint trackedFeaturesKp, VectorOfKeyPoint bootstrapKp, Matrix<double> p, Matrix<double> p1)
         {
             var result = new TriangulateAndCheckReprojResult();
 
@@ -158,7 +158,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
                 CvInvoke.ProjectPoints(pt3D, rvec, tvec, calibrationInfo.Intrinsic, calibrationInfo.Distortion,
                     reprojectedPtSet1);
 
-                float reprojErr = (float)CvInvoke.Norm(reprojectedPtSet1, bootstrapPoints) / bootstrapPoints.Size;
+                double reprojErr = CvInvoke.Norm(reprojectedPtSet1, bootstrapPoints) / bootstrapPoints.Size;
                 if (reprojErr < 5)
                 {
                     statusArray = new byte[bootstrapPoints.Size];
@@ -224,7 +224,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             var f = new Mat();
             var status = new VectorOfByte();
             CvInvoke.FindFundamentalMat(trackedFeaturesPts, bootstrapPts, f, FmType.Ransac, 0.006 * maxVal, 0.99, status);
-            var fMat = new Matrix<float>(f.Rows, f.Cols, f.DataPointer);
+            var fMat = new Matrix<double>(f.Rows, f.Cols, f.DataPointer);
 
             int inliersNum = CvInvoke.CountNonZero(status);
 
@@ -246,10 +246,10 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
                     return result;
                 }
 
-                Matrix<float> r1;
-                Matrix<float> r2;
-                Matrix<float> t1;
-                Matrix<float> t2;
+                Matrix<double> r1;
+                Matrix<double> r2;
+                Matrix<double> t1;
+                Matrix<double> t2;
                 if (!DecomposeEtoRandT(e, out r1, out r2, out t1, out t2))
                     return result;
 
@@ -271,11 +271,11 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
                 var trPts = Utils.GetPointsVector(trackedFeaturesKp);
                 var btPts = Utils.GetPointsVector(bootstrapKp);
 
-                var p = new Matrix<float>(3, 4);
+                var p = new Matrix<double>(3, 4);
                 p.SetIdentity(new MCvScalar(1f));
 
                 //TODO: there are 4 different combinations for P1...
-                var pMat1 = new Matrix<float>(new float[3, 4] {
+                var pMat1 = new Matrix<double>(new double[3, 4] {
                     { r1[0,0], r1[0,1], r1[0,2], t1[0,0] },
                     { r1[1,0], r1[1,1], r1[1,2], t1[0,1]},
                     { r1[2,0], r1[2,1], r1[2,2], t1[0,2]}
@@ -284,7 +284,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
                 bool triangulationSucceeded = true;
                 if (!TriangulateAndCheckReproj(calibrationInfo, trackedFeaturesKp, bootstrapKp, p, pMat1).Result)
                 {
-                    pMat1 = new Matrix<float>(new float[3, 4] {
+                    pMat1 = new Matrix<double>(new double[3, 4] {
                         { r1[0,0], r1[0,1], r1[0,2], t2[0,0] },
                         { r1[1,0], r1[1,1], r1[1,2], t2[0,1]},
                         { r1[2,0], r1[2,1], r1[2,2], t2[0,2]}
@@ -292,7 +292,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
                     if (!TriangulateAndCheckReproj(calibrationInfo, trackedFeaturesKp, bootstrapKp, p, pMat1).Result)
                     {
-                        pMat1 = new Matrix<float>(new float[3, 4] {
+                        pMat1 = new Matrix<double>(new double[3, 4] {
                             { r2[0,0], r2[0,1], r2[0,2], t2[0,0] },
                             { r2[1,0], r2[1,1], r2[1,2], t2[0,1]},
                             { r2[2,0], r2[2,1], r2[2,2], t2[0,2]}
@@ -300,7 +300,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
                         if (!TriangulateAndCheckReproj(calibrationInfo, trackedFeaturesKp, bootstrapKp, p, pMat1).Result)
                         {
-                            pMat1 = new Matrix<float>(new float[3, 4] {
+                            pMat1 = new Matrix<double>(new double[3, 4] {
                                 { r2[0,0], r2[0,1], r2[0,2], t1[0,0] },
                                 { r2[1,0], r2[1,1], r2[1,2], t1[0,1]},
                                 { r2[2,0], r2[2,1], r2[2,2], t1[0,2]}

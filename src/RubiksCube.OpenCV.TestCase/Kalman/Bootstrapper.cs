@@ -64,13 +64,13 @@ namespace RubiksCube.OpenCV.TestCase.Kalman
 
             //CvInvoke.Circle(mat, new Point(200, 200), 20, new MCvScalar(125, 10, 10), 1, LineType.AntiAlias, 0);
 
-            var A = new Matrix<float>(new float[] { 1 });
-            var H = new Matrix<float>(new float[] { 1 });
-            var B = new Matrix<float>(new float[] { 0 });
-            var Q = new Matrix<float>(new float[] { 0.00001f });
-            var R = new Matrix<float>(new float[] { 0.1f });
-            var xhat = new Matrix<float>(new float[] { 3 });
-            var P = new Matrix<float>(new float[] { 1 });
+            var A = new Matrix<double>(new double[] { 1 });
+            var H = new Matrix<double>(new double[] { 1 });
+            var B = new Matrix<double>(new double[] { 0 });
+            var Q = new Matrix<double>(new double[] { 0.00001f });
+            var R = new Matrix<double>(new double[] { 0.1f });
+            var xhat = new Matrix<double>(new double[] { 3 });
+            var P = new Matrix<double>(new double[] { 1 });
 
             var filter = new SimpleLinearKalman(a: A, b: B, h: H, q: Q, r: R, currentStateEstimate: xhat, currentProbEstimate: P);
             var v = new Voltmeter(220, 20);
@@ -84,8 +84,8 @@ namespace RubiksCube.OpenCV.TestCase.Kalman
                 var measured = v.GetVoltageWithNoise();
                 measuredvoltage.Add(measured);
                 truevoltage.Add(v.GetVoltage());
-                kalman.Add(filter.GetCurrentState()[0, 0]);
-                filter.Step(new Matrix<float>(new float[] { 0 }), new Matrix<float>(new float[] { measured }));
+                kalman.Add((float)filter.GetCurrentState()[0, 0]);
+                filter.Step(new Matrix<double>(new double[] { 0 }), new Matrix<double>(new double[] { measured }));
             }
 
             List<Point> p1 = new List<Point>();
@@ -126,10 +126,10 @@ namespace RubiksCube.OpenCV.TestCase.Kalman
             var truevoltage = new List<float>();
             var kalman = new List<float>();
 
-            var c1 = new Matrix<float>(new float[] { 0 });
+            var c1 = new Matrix<double>(new double[] { 0 });
             var control = new Mat(new int[] { 0 }, DepthType.Cv32F, c1.Ptr);
 
-            //var t3 = new Matrix<float>(kal.TransitionMatrix.Rows, kal.TransitionMatrix.Cols, kal.TransitionMatrix.Ptr);
+            //var t3 = new Matrix<double>(kal.TransitionMatrix.Rows, kal.TransitionMatrix.Cols, kal.TransitionMatrix.Ptr);
             //t3[0, 0] = 1;
 
             for (int i = 0; i < 60; i++)
@@ -139,10 +139,10 @@ namespace RubiksCube.OpenCV.TestCase.Kalman
                 truevoltage.Add(v.GetVoltage());
 
                 var predicted = kal.Predict(control);
-                var t = new Matrix<float>(predicted.Rows, predicted.Cols, predicted.Ptr);
-                kalman.Add(t[0, 0]);
+                var t = new Matrix<double>(predicted.Rows, predicted.Cols, predicted.Ptr);
+                kalman.Add((float)t[0, 0]);
 
-                var m = new Matrix<float>(new float[] { measured });
+                var m = new Matrix<double>(new double[] { measured });
                 var c = m.ToUMat().ToMat(AccessType.ReadWrite);
 
                 kal.Correct(c);

@@ -76,13 +76,13 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
 
             CvInvoke.SolvePnP(px1, px2, calibration.Intrinsic, calibration.Distortion, rotationVector, translationVector);
 
-            //var p1 = new Matrix<float>(rotationVector.Rows, rotationVector.Cols, rotationVector.Ptr);
-            //var p2 = new Matrix<float>(translationVector.Rows, translationVector.Cols, translationVector.Ptr);
+            //var p1 = new Matrix<double>(rotationVector.Rows, rotationVector.Cols, rotationVector.Ptr);
+            //var p2 = new Matrix<double>(translationVector.Rows, translationVector.Cols, translationVector.Ptr);
 
             rotationVector.ConvertTo(rotationVector32f, DepthType.Cv32F);
             translationVector.ConvertTo(translationVector32f, DepthType.Cv32F);
 
-            Matrix<float> rotationMat = new Matrix<float>(3, 3);
+            Matrix<double> rotationMat = new Matrix<double>(3, 3);
             CvInvoke.Rodrigues(rotationVector32f, rotationMat);
 
             // Copy to transformation matrix
@@ -90,7 +90,7 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
             {
                 for (int row = 0; row < 3; row++)
                 {
-                    _pose3d.SetRotationMatrixValue(row, col, rotationMat[row, col]); // Copy rotation component
+                    _pose3d.SetRotationMatrixValue(row, col, (float)rotationMat[row, col]); // Copy rotation component
                 }
                 _pose3d.SetTranslationVectorValue(col, translationVector32f[col]); // Copy translation component
             }

@@ -119,7 +119,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             Mat f = new Mat();
             CvInvoke.FindFundamentalMat(new VectorOfPointF(points1.ToArray()), new VectorOfPointF(points2.ToArray()), f, FmType.Ransac, 0.1, 0.99);
 
-            Matrix<float> fm = new Matrix<float>(f.Rows, f.Cols, f.Ptr);
+            var fm = new Matrix<double>(f.Rows, f.Cols, f.Ptr);
             var E = calibration.Intrinsic.Transpose() * fm * calibration.Intrinsic;
 
             Mat u = new Mat();

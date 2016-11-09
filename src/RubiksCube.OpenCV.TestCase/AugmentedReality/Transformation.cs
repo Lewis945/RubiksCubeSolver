@@ -17,8 +17,8 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
         private OpenTK.Matrix3 _rotation;
         private OpenTK.Vector3 _translation;
 
-        public OpenTK.Matrix3 r { get { return _rotation; } }
-        public OpenTK.Vector3 t { get { return _translation; } }
+        public OpenTK.Matrix3 R => _rotation;
+        public OpenTK.Vector3 T => _translation;
 
         /// <summary>
         /// 
@@ -31,7 +31,7 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
             _translation = v;
         }
 
-        public OpenTK.Matrix4 getMat44()
+        public OpenTK.Matrix4 GetMat44()
         {
             OpenTK.Matrix4 res = OpenTK.Matrix4.Identity;
 

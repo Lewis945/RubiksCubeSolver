@@ -3,10 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Emgu.CV;
+using Emgu.CV.CvEnum;
+using Emgu.CV.Structure;
 using Emgu.CV.Util;
 using RubiksCube.OpenCV.TestCase.AugmentedReality;
 using RubiksCube.OpenCV.TestCase.PtamLikeApproach;
@@ -26,47 +29,47 @@ namespace RubiksCube.OpenCV.TestCase.Tests
         [Test]
         public void Decompose_Eto_Rand()
         {
-            Matrix<float> e;
-            Matrix<float> r1;
-            Matrix<float> r2;
-            Matrix<float> t1;
-            Matrix<float> t2;
+            Matrix<double> e;
+            Matrix<double> r1;
+            Matrix<double> r2;
+            Matrix<double> t1;
+            Matrix<double> t2;
 
-            Matrix<float> r1Expected;
-            Matrix<float> r2Expected;
-            Matrix<float> t1Expected;
-            Matrix<float> t2Expected;
+            Matrix<double> r1Expected;
+            Matrix<double> r2Expected;
+            Matrix<double> t1Expected;
+            Matrix<double> t2Expected;
 
-            var comparer = Comparer<float>.Create((x, y) => Math.Abs(x - y) < 0.000001 ? 0 : 1);
+            var comparer = Comparer<double>.Create((x, y) => Math.Abs(x - y) < 0.000001 ? 0 : 1);
 
             #region Case 1
 
-            e = new Matrix<float>(new[,]
+            e = new Matrix<double>(new[,]
             {
-                { -0.0793904f, -15.101f, 0.371601f },
-                { 14.1124f, 0.375567f, -2.48662f },
-                { -0.48423f, 0.188653f, 0.0805487f }
+                { -0.0793904, -15.101, 0.371601 },
+                { 14.1124, 0.375567, -2.48662 },
+                { -0.48423, 0.188653, 0.0805487 }
             });
 
-            r1Expected = new Matrix<float>(new[,]
+            r1Expected = new Matrix<double>(new[,]
             {
-                { -0.982481f, -0.00737817f, 0.186217f },
-                { 0.0179944f, -0.998303f, 0.0553845f },
-                { 0.185492f, 0.0577651f, 0.980946f }
+                { -0.982481, -0.00737817, 0.186217 },
+                { 0.0179944, -0.998303, 0.0553845 },
+                { 0.185492, 0.0577651, 0.980946 }
             });
-            r2Expected = new Matrix<float>(new[,]
+            r2Expected = new Matrix<double>(new[,]
             {
-                { 0.987093f, 0.00800034f, -0.159948f },
-                { -0.00611273f, 0.999906f, 0.01229f },
-                { 0.160031f, -0.0111536f, 0.987049f }
+                { 0.987093, 0.00800034, -0.159948 },
+                { -0.00611273, 0.999906, 0.01229 },
+                { 0.160031, -0.0111536, 0.987049 }
             });
-            t1Expected = new Matrix<float>(new[]
+            t1Expected = new Matrix<double>(new[]
             {
-                 0.013339f, 0.0343641f, 0.99932f
+                 0.013339, 0.0343641, 0.99932
             });
-            t2Expected = new Matrix<float>(new[]
+            t2Expected = new Matrix<double>(new[]
             {
-                -0.013339f, -0.0343641f, -0.99932f
+                -0.013339, -0.0343641, -0.99932
             });
 
             OpenCvUtilities.DecomposeEtoRandT(e, out r1, out r2, out t1, out t2);
@@ -80,32 +83,32 @@ namespace RubiksCube.OpenCV.TestCase.Tests
 
             #region Case 2
 
-            e = new Matrix<float>(new[,]
+            e = new Matrix<double>(new[,]
             {
-                { 0.4052652752518787f, -12.45233689948151f, 0.01348616168894345f },
-                { 11.47229370932243f, 0.4564241889679639f, -1.831549257782737f },
-                { -0.297551532077682f, -0.001072849756781113f, 0.04743653296950803f }
+                { 0.4052652752518787, -12.45233689948151, 0.01348616168894345 },
+                { 11.47229370932243, 0.4564241889679639, -1.831549257782737 },
+                { -0.297551532077682, -0.001072849756781113, 0.04743653296950803 }
             });
 
-            r1Expected = new Matrix<float>(new[,]
+            r1Expected = new Matrix<double>(new[,]
             {
-                { -0.9870124281645626f, -0.03547270126454876f, 0.1566785055892807f },
-                { 0.03193350943559628f, -0.9991760497758493f, -0.0250494017784099f },
-                { -0.1574379802456221f, 0.01972077633678765f, -0.9873319468936744f }
+                { -0.9870124281645626, -0.03547270126454876, 0.1566785055892807 },
+                { 0.03193350943559628, -0.9991760497758493, -0.0250494017784099 },
+                { -0.1574379802456221, 0.01972077633678765, -0.9873319468936744 }
             });
-            r2Expected = new Matrix<float>(new[,]
+            r2Expected = new Matrix<double>(new[,]
             {
-                { 0.9867407052466314f, 0.03546201177308789f, -0.1583831630268374f },
-                { -0.04008650966451568f, 0.9988553133911859f, -0.02609855653312132f },
-                { -0.1572763566220209f, -0.0321015362747831f, -0.9870327446526289f }
+                { 0.9867407052466314, 0.03546201177308789, -0.1583831630268374 },
+                { -0.04008650966451568, 0.9988553133911859, -0.02609855653312132 },
+                { -0.1572763566220209, -0.0321015362747831, -0.9870327446526289 }
             });
-            t1Expected = new Matrix<float>(new[]
+            t1Expected = new Matrix<double>(new[]
             {
-                 -0.0008631055249466995f, -0.02589733540347029f, -0.9996642351649142f
+                 -0.0008631055249466995, -0.02589733540347029, -0.9996642351649142
             });
-            t2Expected = new Matrix<float>(new[]
+            t2Expected = new Matrix<double>(new[]
             {
-               0.0008631055249466995f, 0.02589733540347029f, 0.9996642351649142f
+               0.0008631055249466995, 0.02589733540347029, 0.9996642351649142
             });
 
             OpenCvUtilities.DecomposeEtoRandT(e, out r1, out r2, out t1, out t2);
@@ -119,32 +122,32 @@ namespace RubiksCube.OpenCV.TestCase.Tests
 
             #region Case 3
 
-            e = new Matrix<float>(new[,]
+            e = new Matrix<double>(new[,]
             {
-                { -0.4052652752518787f, 12.45233689948151f, -0.01348616168894345f },
-                { -11.47229370932243f, -0.4564241889679639f, 1.831549257782737f },
-                { 0.297551532077682f, 0.001072849756781113f, -0.04743653296950803f }
+                { -0.4052652752518787, 12.45233689948151, -0.01348616168894345 },
+                { -11.47229370932243, -0.4564241889679639, 1.831549257782737 },
+                { 0.297551532077682, 0.001072849756781113, -0.04743653296950803 }
             });
 
-            r1Expected = new Matrix<float>(new[,]
+            r1Expected = new Matrix<double>(new[,]
             {
-                { 0.9870124281645626f, 0.03547270126454876f, -0.1566785055892807f },
-                { -0.03193350943559628f, 0.9991760497758493f, 0.0250494017784099f },
-                { 0.1574379802456221f, -0.01972077633678765f, 0.9873319468936744f }
+                { 0.9870124281645626, 0.03547270126454876, -0.1566785055892807 },
+                { -0.03193350943559628, 0.9991760497758493, 0.0250494017784099 },
+                { 0.1574379802456221, -0.01972077633678765, 0.9873319468936744 }
             });
-            r2Expected = new Matrix<float>(new[,]
+            r2Expected = new Matrix<double>(new[,]
             {
-                { -0.9867407052466314f, -0.03546201177308789f, 0.1583831630268374f },
-                { 0.04008650966451568f, -0.9988553133911859f, 0.02609855653312132f },
-                { 0.1572763566220209f, 0.0321015362747831f, 0.9870327446526289f }
+                { -0.9867407052466314, -0.03546201177308789, 0.1583831630268374 },
+                { 0.04008650966451568, -0.9988553133911859, 0.02609855653312132 },
+                { 0.1572763566220209, 0.0321015362747831, 0.9870327446526289 }
             });
-            t1Expected = new Matrix<float>(new[]
+            t1Expected = new Matrix<double>(new[]
             {
-                 0.0008631055249466995f, 0.02589733540347029f, 0.9996642351649142f
+                 0.0008631055249466995, 0.02589733540347029, 0.9996642351649142
             });
-            t2Expected = new Matrix<float>(new[]
+            t2Expected = new Matrix<double>(new[]
             {
-                -0.0008631055249466995f, -0.02589733540347029f, -0.9996642351649142f
+                -0.0008631055249466995, -0.02589733540347029, -0.9996642351649142
             });
 
             OpenCvUtilities.DecomposeEtoRandT(e, out r1, out r2, out t1, out t2);
@@ -160,8 +163,8 @@ namespace RubiksCube.OpenCV.TestCase.Tests
         [Test]
         public void Triangulate_And_Check_Reproj()
         {
-            Matrix<float> p;
-            Matrix<float> p1;
+            Matrix<double> p;
+            Matrix<double> p1;
 
             VectorOfPointF trackedFeatures;
             VectorOfPointF bootstrapKp;
@@ -170,18 +173,18 @@ namespace RubiksCube.OpenCV.TestCase.Tests
 
             #region Case 1
 
-            p = new Matrix<float>(new float[3, 4]
+            p = new Matrix<double>(new double[3, 4]
             {
                 { 1, 0, 0, 0 },
                 { 0, 1, 0, 0 },
                 { 0, 0, 1, 0 }
             });
 
-            p1 = new Matrix<float>(new float[3, 4]
+            p1 = new Matrix<double>(new double[3, 4]
             {
-                { -0.9824809681811199f, -0.00737816829847441f, 0.1862168354216374f, 0.01333896289977746f },
-                { 0.01799441939100593f, -0.9983029386588546f, 0.05538450627997073f, 0.03436414273108072f },
-                { 0.1854921778207113f, 0.05776508718642179f, 0.9809464035663084f, 0.9993203579248829f }
+                { -0.9824809681811199, -0.00737816829847441, 0.1862168354216374, 0.01333896289977746 },
+                { 0.01799441939100593, -0.9983029386588546, 0.05538450627997073, 0.03436414273108072 },
+                { 0.1854921778207113, 0.05776508718642179, 0.9809464035663084f, 0.9993203579248829 }
             });
 
             trackedFeatures = new VectorOfPointF(new[]
@@ -378,18 +381,18 @@ namespace RubiksCube.OpenCV.TestCase.Tests
 
             #region Case 2
 
-            p = new Matrix<float>(new float[3, 4]
+            p = new Matrix<double>(new double[3, 4]
             {
                 { 1, 0, 0, 0 },
                 { 0, 1, 0, 0 },
                 { 0, 0, 1, 0 }
             });
 
-            p1 = new Matrix<float>(new float[3, 4]
+            p1 = new Matrix<double>(new double[3, 4]
             {
-                { 0.9870124281645626f, 0.03547270126454876f, -0.1566785055892807f, -0.0008631055249466995f },
-                { -0.03193350943559628f, 0.9991760497758493f, 0.0250494017784099f, -0.02589733540347029f },
-                { 0.1574379802456221f, -0.01972077633678765f, 0.9873319468936744f, -0.9996642351649142f }
+                { 0.9870124281645626, 0.03547270126454876, -0.1566785055892807, -0.0008631055249466995 },
+                { -0.03193350943559628, 0.9991760497758493, 0.0250494017784099, -0.02589733540347029 },
+                { 0.1574379802456221, -0.01972077633678765, 0.9873319468936744, -0.9996642351649142 }
             });
 
             trackedFeatures = new VectorOfPointF(new[]
@@ -588,9 +591,9 @@ namespace RubiksCube.OpenCV.TestCase.Tests
         [Test]
         public void Camera_Pose_And_Triangulation_From_Fundamental()
         {
-            Matrix<float> p;
-            Matrix<float> p1;
-            Matrix<float> e;
+            Matrix<double> p;
+            Matrix<double> p1;
+            Matrix<double> e;
 
             VectorOfPointF trackedFeatures;
             VectorOfPointF bootstrapKp;
@@ -599,25 +602,25 @@ namespace RubiksCube.OpenCV.TestCase.Tests
 
             #region Case 1
 
-            p = new Matrix<float>(new float[3, 4]
+            p = new Matrix<double>(new double[3, 4]
             {
                 { 1, 0, 0, 0 },
                 { 0, 1, 0, 0 },
                 { 0, 0, 1, 0 }
             });
 
-            p1 = new Matrix<float>(new float[3, 4]
+            p1 = new Matrix<double>(new double[3, 4]
             {
-                { 0.9870124281645626f, 0.03547270126454876f, -0.1566785055892807f, -0.0008631055249466995f },
-                { -0.03193350943559628f, 0.9991760497758493f, 0.0250494017784099f, -0.02589733540347029f },
-                { 0.1574379802456221f, -0.01972077633678765f, 0.9873319468936744f, -0.9996642351649142f }
+                { 0.9870124281645626, 0.03547270126454876, -0.1566785055892807, -0.0008631055249466995 },
+                { -0.03193350943559628, 0.9991760497758493, 0.0250494017784099, -0.02589733540347029 },
+                { 0.1574379802456221, -0.01972077633678765, 0.9873319468936744, -0.9996642351649142 }
             });
 
-            e = new Matrix<float>(new float[3, 3]
+            e = new Matrix<double>(new double[3, 3]
             {
-                {  0.4052652752518787f, -12.45233689948151f, 0.01348616168894345f },
-                { 11.47229370932243f, 0.4564241889679639f, -1.831549257782737f },
-                { -0.297551532077682f, -0.001072849756781113f, 0.04743653296950803f }
+                {  0.4052652752518787, -12.45233689948151, 0.01348616168894345 },
+                { 11.47229370932243, 0.4564241889679639, -1.831549257782737 },
+                { -0.297551532077682, -0.001072849756781113, 0.04743653296950803 }
             });
 
             trackedFeatures = new VectorOfPointF(new[]
@@ -818,6 +821,88 @@ namespace RubiksCube.OpenCV.TestCase.Tests
             Assert.That(result.Result, Is.EqualTo(true));
 
             #endregion
+        }
+
+        [Test]
+        public void FundamentalMatrix()
+        {
+            #region Init
+
+            //15 Points
+            //p1 = [[245.77, 248.66, 263.39, 251.11, 249.88, 287.57, 240.93, 206.84,
+            //       224.95, 231.47, 257.55, 264.71, 227.67, 246.01, 244.15],
+            //      [169.57, 105.82, 182.45, 146.54, 197.99, 137.11, 113.15, 171.57,
+            //       170.34, 170.21, 124.43, 176.16, 127.05, 113.26, 154.41]]
+
+            //p2 = [[267.07, 252.92, 254.22, 284.33, 236.82, 220.04, 255.9, 259.09,
+            //   241.73, 258.62, 277.83, 219.62, 262.91, 250.93, 287.09],
+            //  [172.34, 105.02, 190.25, 145.1, 190.63, 135.11, 114.37, 165.9,
+            //   164.27, 168.3, 112.98, 170.46, 129.03, 114.5, 155.89]]
+
+            //15 Points
+            var p1 = new List<PointF>()
+            {
+                new PointF(245.77f,169.57f),
+                new PointF(248.66f,105.82f),
+                new PointF(263.39f,182.45f),
+                new PointF(251.11f,146.54f),
+                new PointF(249.88f,197.99f),
+                new PointF(287.57f,137.11f),
+                new PointF(240.93f,113.15f),
+                new PointF(206.84f,171.57f),
+                new PointF(224.95f,170.34f),
+                new PointF(231.47f,170.21f),
+                new PointF(257.55f,124.43f),
+                new PointF(264.71f,176.16f),
+                new PointF(227.67f,127.05f),
+                new PointF(246.01f,113.26f),
+                new PointF(244.15f,154.41f)
+            };
+
+            var p2 = new List<PointF>()
+            {
+                new PointF(267.07f,172.34f),
+                new PointF(252.92f,105.02f),
+                new PointF(254.22f,190.25f),
+                new PointF(284.33f,145.1f),
+                new PointF(236.82f,190.63f),
+                new PointF(220.04f,135.11f),
+                new PointF(255.9f,114.37f),
+                new PointF(259.09f,165.9f),
+                new PointF(241.73f,164.27f),
+                new PointF(258.62f,168.3f),
+                new PointF(277.83f,112.98f),
+                new PointF(219.62f,170.46f),
+                new PointF(262.91f,129.03f),
+                new PointF(250.93f,114.5f),
+                new PointF(287.09f,155.89f)
+            };
+
+            #endregion
+
+            var f1Expected = new Matrix<double>(new[,]
+            {
+                { -0.0, 0.000013, -0.002001 },
+                { 0.000013, 0, -0.004486 },
+                { -0.001997, -0.002184, 1  }
+            });
+
+            var comparer = Comparer<double>.Create((x, y) => Math.Abs(x - y) < 0.000001 ? 0 : 1);
+
+            var p1Vec = new VectorOfPointF(p1.ToArray());
+            var p2Vec = new VectorOfPointF(p2.ToArray());
+
+            var f1 = new Mat();
+            CvInvoke.FindFundamentalMat(p1Vec, p2Vec, f1);
+            var f1Mat = new Matrix<double>(f1.Rows, f1.Cols, f1.DataPointer);
+
+            CollectionAssert.AreEqual(f1Expected.Data, f1Mat.Data, comparer);
+
+            var f2 = new Mat();
+            CvInvoke.FindFundamentalMat(p2Vec, p1Vec, f2);
+            var f2Mat = new Matrix<double>(f2.Rows, f2.Cols, f2.DataPointer);
+
+            CollectionAssert.AreEqual(f1Mat.Transpose().Data, f2Mat.Data, comparer);
         }
     }
 }

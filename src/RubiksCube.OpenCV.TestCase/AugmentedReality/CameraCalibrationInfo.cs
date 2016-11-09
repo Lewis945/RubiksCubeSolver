@@ -16,12 +16,12 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
         /// <summary>
         /// 
         /// </summary>
-        private readonly Matrix<float> _intrinsic;
+        private readonly Matrix<double> _intrinsic;
 
         /// <summary>
         /// 
         /// </summary>
-        private readonly VectorOfFloat _distortion;
+        private readonly VectorOfDouble _distortion;
 
         #endregion
 
@@ -30,17 +30,17 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
         /// <summary>
         /// 
         /// </summary>
-        public Matrix<float> Intrinsic => _intrinsic;
+        public Matrix<double> Intrinsic => _intrinsic;
 
         /// <summary>
         /// 
         /// </summary>
-        public VectorOfFloat Distortion => _distortion;
+        public VectorOfDouble Distortion => _distortion;
 
         /// <summary>
         /// 
         /// </summary>
-        public float Fx
+        public double Fx
         {
             get { return _intrinsic[0, 0]; }
             set { _intrinsic[0, 0] = value; }
@@ -49,7 +49,7 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
         /// <summary>
         /// 
         /// </summary>
-        public float Fy
+        public double Fy
         {
             get { return _intrinsic[1, 1]; }
             set { _intrinsic[1, 1] = value; }
@@ -58,7 +58,7 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
         /// <summary>
         /// 
         /// </summary>
-        public float Cx
+        public double Cx
         {
             get { return _intrinsic[0, 2]; }
             set { _intrinsic[0, 2] = value; }
@@ -67,7 +67,7 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
         /// <summary>
         /// 
         /// </summary>
-        public float Cy
+        public double Cy
         {
             get { return _intrinsic[1, 2]; }
             set { _intrinsic[1, 2] = value; }
@@ -83,11 +83,11 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
         /// <param name="cx"></param>
         /// <param name="cy"></param>
         /// <param name="distorsionCoeff"></param>
-        public CameraCalibrationInfo(float fx, float fy, float cx, float cy, float[] distorsionCoeff)
+        public CameraCalibrationInfo(double fx, double fy, double cx, double cy, double[] distorsionCoeff)
         {
-            _intrinsic = new Matrix<float>(3, 3);
+            _intrinsic = new Matrix<double>(3, 3);
             _intrinsic.SetIdentity();
-            _distortion = new VectorOfFloat(distorsionCoeff);
+            _distortion = new VectorOfDouble(distorsionCoeff);
 
             Fx = fx;
             Fy = fy;
@@ -102,8 +102,8 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
         /// <param name="fy"></param>
         /// <param name="cx"></param>
         /// <param name="cy"></param>
-        public CameraCalibrationInfo(float fx, float fy, float cx, float cy)
-            : this(fx, fy, cx, cy, new float[] { 0, 0, 0, 0, 0 })
+        public CameraCalibrationInfo(double fx, double fy, double cx, double cy)
+            : this(fx, fy, cx, cy, new double[] { 0, 0, 0, 0, 0 })
         {
         }
     }
