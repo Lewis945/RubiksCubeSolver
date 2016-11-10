@@ -67,8 +67,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="TestClass.cs" />
+    <Compile Include="OpenCvUtilitiesTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SimpleAdHocTrackerTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

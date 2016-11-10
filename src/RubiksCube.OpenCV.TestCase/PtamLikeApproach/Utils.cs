@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Emgu.CV.CvEnum;
 
 namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 {
@@ -146,6 +147,21 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             }
 
             return matrix;
+        }
+
+        public static Mat Get3dPointsMat(VectorOfPoint3D32F points)
+        {
+            var mat = new Mat(points.Size, 3, DepthType.Cv32F, 1);
+            var matrix = new Matrix<double>(points.Size, 3, mat.DataPointer);
+
+            for (int i = 0; i < points.Size; i++)
+            {
+                matrix[i, 0] = points[i].X;
+                matrix[i, 1] = points[i].Y;
+                matrix[i, 2] = points[i].Z;
+            }
+
+            return mat;
         }
     }
 }

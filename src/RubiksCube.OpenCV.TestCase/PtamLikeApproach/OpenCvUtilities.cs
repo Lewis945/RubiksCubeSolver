@@ -17,9 +17,9 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
     public struct TriangulateAndCheckReprojResult
     {
         public double Error { get; set; }
-        public VectorOfPoint3D32F TrackedFeatures3D { get; set; }
         public VectorOfKeyPoint FilteredTrackedFeaturesKp { get; set; }
         public VectorOfKeyPoint FilteredBootstrapKp { get; set; }
+        public VectorOfPoint3D32F TrackedFeatures3D { get; set; }
         public bool Result { get; set; }
     }
 
@@ -35,6 +35,8 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
         public VectorOfKeyPoint FilteredTrackedFeaturesKp { get; set; }
         public VectorOfKeyPoint FilteredBootstrapKp { get; set; }
+        public VectorOfPoint3D32F TrackedFeatures3D { get; set; }
+
         public bool Result { get; set; }
     }
 
@@ -176,8 +178,9 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
                     Utils.KeepVectorsByStatus(ref trackedFeaturesKp, ref trackedFeatures3D, status);
 
                     result.Error = reprojErr;
-                    result.TrackedFeatures3D = trackedFeatures3D;
-                    result.FilteredTrackedFeaturesKp = trackedFeaturesKp;
+                    result.TrackedFeatures3D = new VectorOfPoint3D32F(trackedFeatures3D.ToArray());
+                    result.FilteredTrackedFeaturesKp = new VectorOfKeyPoint(trackedFeaturesKp.ToArray());
+                    result.FilteredBootstrapKp = new VectorOfKeyPoint(bootstrapKp.ToArray());
                     result.Result = true;
                 }
 
@@ -197,8 +200,6 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             return result;
         }
 
-        private static float MinInliers = 10;
-
         /// <summary>
         /// 
         /// </summary>
@@ -206,7 +207,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
         /// <param name="trackedFeaturesKp"></param>
         /// <param name="bootstrapKp"></param>
         /// <returns></returns>
-        public static CameraPoseAndTriangulationFromFundamentalResult CameraPoseAndTriangulationFromFundamental(CameraCalibrationInfo calibrationInfo, VectorOfKeyPoint trackedFeaturesKp, VectorOfKeyPoint bootstrapKp)
+        public static CameraPoseAndTriangulationFromFundamentalResult CameraPoseAndTriangulationFromFundamental(CameraCalibrationInfo calibrationInfo, VectorOfKeyPoint trackedFeaturesKp, VectorOfKeyPoint bootstrapKp, int minInliers=10)
         {
             var result = new CameraPoseAndTriangulationFromFundamentalResult();
 
@@ -232,7 +233,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
             Utils.KeepVectorsByStatus(ref trackedFeaturesKp, ref bootstrapKp, status);
 
-            if (inliersNum > MinInliers)
+            if (inliersNum > minInliers)
             {
                 //Essential matrix: compute then extract cameras [R|t]
                 var e = calibrationInfo.Intrinsic.Transpose() * fMat * calibrationInfo.Intrinsic; //according to HZ (9.12)
@@ -253,7 +254,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
                 if (!DecomposeEtoRandT(e, out r1, out r2, out t1, out t2))
                     return result;
 
-                determinant = Math.Abs(CvInvoke.Determinant(r1));
+                determinant = CvInvoke.Determinant(r1);
                 if (determinant + 1.0 < 1e-09)
                 {
                     //according to http://en.wikipedia.org/wiki/Essential_matrix#Showing_that_it_is_valid
@@ -277,39 +278,41 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
                 //TODO: there are 4 different combinations for P1...
                 var pMat1 = new Matrix<double>(new double[3, 4] {
                     { r1[0,0], r1[0,1], r1[0,2], t1[0,0] },
-                    { r1[1,0], r1[1,1], r1[1,2], t1[0,1]},
-                    { r1[2,0], r1[2,1], r1[2,2], t1[0,2]}
+                    { r1[1,0], r1[1,1], r1[1,2], t1[1,0] },
+                    { r1[2,0], r1[2,1], r1[2,2], t1[2,0] }
                 });
 
-                bool triangulationSucceeded = true;
-                if (!TriangulateAndCheckReproj(calibrationInfo, trackedFeaturesKp, bootstrapKp, p, pMat1).Result)
+                var  triangulationResult = TriangulateAndCheckReproj(calibrationInfo, trackedFeaturesKp, bootstrapKp, p, pMat1);
+                if (!triangulationResult.Result)
                 {
                     pMat1 = new Matrix<double>(new double[3, 4] {
                         { r1[0,0], r1[0,1], r1[0,2], t2[0,0] },
-                        { r1[1,0], r1[1,1], r1[1,2], t2[0,1]},
-                        { r1[2,0], r1[2,1], r1[2,2], t2[0,2]}
+                        { r1[1,0], r1[1,1], r1[1,2], t2[1,0] },
+                        { r1[2,0], r1[2,1], r1[2,2], t2[2,0] }
                     });
 
-                    if (!TriangulateAndCheckReproj(calibrationInfo, trackedFeaturesKp, bootstrapKp, p, pMat1).Result)
+                    triangulationResult = TriangulateAndCheckReproj(calibrationInfo, trackedFeaturesKp, bootstrapKp, p, pMat1);
+                    if (!triangulationResult.Result)
                     {
                         pMat1 = new Matrix<double>(new double[3, 4] {
                             { r2[0,0], r2[0,1], r2[0,2], t2[0,0] },
-                            { r2[1,0], r2[1,1], r2[1,2], t2[0,1]},
-                            { r2[2,0], r2[2,1], r2[2,2], t2[0,2]}
+                            { r2[1,0], r2[1,1], r2[1,2], t2[1,0] },
+                            { r2[2,0], r2[2,1], r2[2,2], t2[2,0] }
                         });
 
-                        if (!TriangulateAndCheckReproj(calibrationInfo, trackedFeaturesKp, bootstrapKp, p, pMat1).Result)
+                        triangulationResult = TriangulateAndCheckReproj(calibrationInfo, trackedFeaturesKp, bootstrapKp, p, pMat1);
+                        if (!triangulationResult.Result)
                         {
                             pMat1 = new Matrix<double>(new double[3, 4] {
                                 { r2[0,0], r2[0,1], r2[0,2], t1[0,0] },
-                                { r2[1,0], r2[1,1], r2[1,2], t1[0,1]},
-                                { r2[2,0], r2[2,1], r2[2,2], t1[0,2]}
+                                { r2[1,0], r2[1,1], r2[1,2], t1[1,0] },
+                                { r2[2,0], r2[2,1], r2[2,2], t1[2,0] }
                             });
 
-                            if (!TriangulateAndCheckReproj(calibrationInfo, trackedFeaturesKp, bootstrapKp, p, pMat1).Result)
+                            triangulationResult = TriangulateAndCheckReproj(calibrationInfo, trackedFeaturesKp, bootstrapKp, p, pMat1);
+                            if (!triangulationResult.Result)
                             {
                                 Trace.WriteLine("Can't find the right P matrix.");
-                                triangulationSucceeded = false;
                             }
                         }
 
@@ -318,9 +321,10 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
                 result.P1 = p;
                 result.P2 = pMat1;
-                result.FilteredTrackedFeaturesKp = trackedFeaturesKp;
-                result.FilteredBootstrapKp = bootstrapKp;
-                result.Result = triangulationSucceeded;
+                result.FilteredTrackedFeaturesKp = triangulationResult.FilteredTrackedFeaturesKp;
+                result.FilteredBootstrapKp = triangulationResult.FilteredBootstrapKp;
+                result.TrackedFeatures3D = triangulationResult.TrackedFeatures3D;
+                result.Result = triangulationResult.Result;
                 return result;
             }
 
