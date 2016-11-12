@@ -1,0 +1,310 @@
+ I = 0
+I = 1
+I = 10
+I = 11
+I = 12
+I = 13
+I = 14
+I = 15
+I = 16
+I = 17
+I = 18
+I = 19
+I = 2
+I = 20
+I = 21
+I = 22
+I = 23
+I = 24
+I = 25
+I = 26
+I = 27
+I = 28
+I = 29
+I = 3
+I = 30
+I = 31
+I = 32
+I = 33
+I = 34
+I = 35
+I = 36
+I = 37
+I = 38
+I = 39
+I = 4
+I = 40
+bootstrapping
+I = 41
+bootstrap tracking (500)
+I = 42
+bootstrap tracking (497)
+I = 43
+bootstrap tracking (468)
+I = 44
+bootstrap tracking (449)
+I = 45
+bootstrap tracking (449)
+I = 46
+bootstrap tracking (449)
+I = 47
+bootstrap tracking (405)
+I = 48
+bootstrap tracking (405)
+I = 49
+bootstrap tracking (405)
+I = 5
+I = 50
+bootstrap tracking (405)
+I = 51
+bootstrap tracking (405)
+I = 52
+bootstrap tracking (405)
+I = 53
+bootstrap tracking (405)
+I = 54
+bootstrap tracking (381)
+I = 55
+bootstrap tracking (380)
+I = 56
+bootstrap tracking (380)
+I = 57
+bootstrap tracking (380)
+I = 58
+bootstrap tracking (380)
+I = 59
+bootstrap tracking (380)
+I = 6
+I = 60
+bootstrap tracking (380)
+I = 61
+bootstrap tracking (380)
+I = 62
+bootstrap tracking (380)
+I = 63
+bootstrap tracking (378)
+I = 64
+bootstrap tracking (366)
+I = 65
+bootstrap tracking (355)
+I = 66
+bootstrap tracking (355)
+I = 67
+bootstrap tracking (312)
+I = 68
+bootstrap tracking (312)
+I = 69
+bootstrap tracking (303)
+I = 7
+I = 70
+bootstrap tracking (303)
+I = 71
+bootstrap tracking (301)
+I = 72
+bootstrap tracking (287)
+I = 73
+bootstrap tracking (287)
+I = 74
+bootstrap tracking (287)
+I = 75
+bootstrap tracking (287)
+I = 76
+bootstrap tracking (277)
+I = 77
+bootstrap tracking (260)
+I = 78
+bootstrap tracking (259)
+I = 79
+bootstrap tracking (259)
+I = 8
+I = 80
+bootstrap tracking (259)
+I = 81
+bootstrap tracking (259)
+I = 82
+bootstrap tracking (259)
+I = 83
+bootstrap tracking (259)
+I = 84
+bootstrap tracking (249)
+I = 85
+bootstrap tracking (248)
+I = 86
+bootstrap tracking (241)
+I = 87
+bootstrap tracking (200)
+I = 88
+bootstrap tracking (199)
+I = 89
+bootstrap tracking (198)
+I = 9
+I = 90
+bootstrap tracking (163)
+I = 91
+bootstrap tracking (116)
+I = 92
+bootstrap tracking (110)
+I = 93
+bootstrap tracking (98)
+I = 94
+bootstrap tracking (89)
+_____________ cameraPoseAndTriangulationFromFundamental minVal ________: 201.121
+_____________ cameraPoseAndTriangulationFromFundamental maxVal ________: 429.167
+Fundamental keeping 89 / 89
+P
+[1, 0, 0, 0;
+ 0, 1, 0, 0;
+ 0, 0, 1, 0]
+P1
+[-0.9824809681811199, -0.00737816829847441, 0.1862168354216374, 0.01333896289977746;
+ 0.01799441939100593, -0.9983029386588546, 0.05538450627997073, 0.03436414273108072;
+ 0.1854921778207113, 0.05776508718642179, 0.9809464035663084, 0.9993203579248829]
+24/89 = 26.9663% are in front of camera
+P1
+[-0.9824809681811199, -0.00737816829847441, 0.1862168354216374, -0.01333896289977746;
+ 0.01799441939100593, -0.9983029386588546, 0.05538450627997073, -0.03436414273108072;
+ 0.1854921778207113, 0.05776508718642179, 0.9809464035663084, -0.9993203579248829]
+65/89 = 73.0337% are in front of camera
+P1
+[0.98709302652146, 0.008000339834416691, -0.1599479651487894, -0.01333896289977746;
+ -0.006112728716675621, 0.9999057912662858, 0.01228996093482701, -0.03436414273108072;
+ 0.1600312205175628, -0.01115361621525008, 0.9870489376444219, -0.9993203579248829]
+89/89 = 100% are in front of camera
+reprojection Error 3.69738
+keeping 13 nicely reprojected points
+[0.964416, 0.237577, -0.116011]
+9/13 are coplanar
+I = 95
+bootstrap tracking (89)
+_____________ cameraPoseAndTriangulationFromFundamental minVal ________: 196.532
+_____________ cameraPoseAndTriangulationFromFundamental maxVal ________: 428.096
+Fundamental keeping 89 / 89
+det(R) == -1 [-1]: flip E's sign
+[-1]: flip E's sign
+P
+[1, 0, 0, 0;
+ 0, 1, 0, 0;
+ 0, 0, 1, 0]
+P1
+[0.9870124281645626, 0.03547270126454876, -0.1566785055892807, 0.0008631055249466995;
+ -0.03193350943559628, 0.9991760497758493, 0.0250494017784099, 0.02589733540347029;
+ 0.1574379802456221, -0.01972077633678765, 0.9873319468936744, 0.9996642351649142]
+0/89 = 0% are in front of camera
+P1
+[0.9870124281645626, 0.03547270126454876, -0.1566785055892807, -0.0008631055249466995;
+ -0.03193350943559628, 0.9991760497758493, 0.0250494017784099, -0.02589733540347029;
+ 0.1574379802456221, -0.01972077633678765, 0.9873319468936744, -0.9996642351649142]
+89/89 = 100% are in front of camera
+reprojection Error 2.90235
+keeping 28 nicely reprojected points
+[0.784662, 0.61012, -0.109817]
+22/28 are coplanar
+I = 96
+tracking.
+OpenGL matrix calculated.
+I = 97
+tracking.
+OpenGL matrix calculated.
+I = 98
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+GLEW 4.5 not supported

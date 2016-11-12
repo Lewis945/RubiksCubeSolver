@@ -177,21 +177,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
             int inliersNum = CvInvoke.CountNonZero(inlierMask);
 
-            var zeroIndecies = new StringBuilder();
-            for (int i = 0; i < inlierMask.Size; i++)
-            {
-                if (inlierMask[i] == 0)
-                    zeroIndecies.AppendFormat("{0}, ", i);
-            }
-
             var m = new Matrix<double>(homography.Rows, homography.Cols, homography.DataPointer);
-
-            #region Trace
-
-            Trace.WriteLine($"Homography zero indecies: {zeroIndecies}.");
-            Trace.WriteLine($"Homography: [ [ {m[0, 0]}, {m[0, 1]}, {m[0, 2]} ] [ {m[1, 0]}, {m[1, 1]}, {m[1, 2]} ] [ {m[2, 0]}, {m[2, 1]}, {m[2, 2]} ] ].");
-
-            #endregion
 
             m.Dispose();
 

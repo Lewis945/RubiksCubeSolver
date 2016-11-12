@@ -1,7 +1,9 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -9,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Emgu.CV;
 using Emgu.CV.CvEnum;
+using Emgu.CV.Features2D;
 using Emgu.CV.Structure;
 using Emgu.CV.Util;
 using RubiksCube.OpenCV.TestCase.AugmentedReality;
@@ -641,7 +644,7 @@ namespace RubiksCube.OpenCV.TestCase.Tests
             Mat homography;
 
             #region Case 1
-            
+
             homographyExpected = new Matrix<double>(new double[3, 3]
             {
                 { 1.796900849816589, 0.2819337396210342, -306.5536443694784 },
@@ -659,7 +662,7 @@ namespace RubiksCube.OpenCV.TestCase.Tests
             #endregion
 
             #region Case 2
-            
+
             homographyExpected = new Matrix<double>(new double[3, 3]
             {
                 { 2.034080944007798, 0.3516133089584049, -368.443996592606 },

@@ -114,7 +114,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="License-LGPL.txt" />
-    <Content Include="out.txt" />
     <Content Include="Videos\cube2.avi">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
