@@ -23,18 +23,23 @@ namespace RubiksCube.OpenCV.TestCase.Tests
         private static readonly int StartinPoint = 40;
         private static readonly int BootstrappedPoint = 95;
 
+        //private static readonly string TestCaseProjectPath = @"C:\Users\zakharov\Documents\Repos\Mine\Rc\src\RubiksCube.OpenCV.TestCase";
+        private static readonly string TestCaseProjectPath = @"D:\Projects\RubiksCube\src\RubiksCube.OpenCV.TestCase";
+        //private static readonly string TestCaseTestProjectPath = "C:/Users/zakharov/Documents/Repos/Mine/Rc/tests/RubiksCube.OpenCV.TestCase.Tests";
+        private static readonly string TestCaseTestProjectPath = @"D:\Projects\RubiksCube\tests\RubiksCube.OpenCV.TestCase.Tests";
+
         public SimpleAdHocTrackerTests()
         {
             _calibration = new CameraCalibrationInfo(560.764656335266f, 562.763179958161f, 295.849138757436f, 255.022208986073f);
             _tracker = new SimpleAdHocTracker(_calibration);
 
-            Trace.Listeners.Add(new TextWriterTraceListener($"C:/Users/zakharov/Documents/Repos/Mine/Rc/tests/RubiksCube.OpenCV.TestCase.Tests/Logs/log {DateTime.Now:H-mm-ss dd-MM-yyyy}.txt", "tracelog"));
+            Trace.Listeners.Add(new TextWriterTraceListener($"{TestCaseTestProjectPath}/Logs/log {DateTime.Now:H-mm-ss dd-MM-yyyy}.txt", "tracelog"));
         }
 
         [Test]
         public void Bootstrap_Track_Test()
         {
-            var capture = new Capture(@"C:\Users\zakharov\Documents\Repos\Mine\Rc\src\RubiksCube.OpenCV.TestCase\Videos\cube2.avi");
+            var capture = new Capture($@"{TestCaseProjectPath}\Videos\cube2.avi");
 
             int i = 0;
             do
@@ -76,7 +81,7 @@ namespace RubiksCube.OpenCV.TestCase.Tests
 
             using (
                 var reader = File.OpenText(
-                        @"C:\Users\zakharov\Documents\Repos\Mine\Rc\tests\RubiksCube.OpenCV.TestCase.Tests\out.txt"))
+                        $@"{TestCaseTestProjectPath}\out.txt"))
             {
                 string currentKey = "init";
                 parsed.Add(currentKey, new List<string>());
@@ -97,7 +102,7 @@ namespace RubiksCube.OpenCV.TestCase.Tests
 
             foreach (var item in parsed)
             {
-                File.WriteAllLines($@"C:\Users\zakharov\Documents\Repos\Mine\Rc\tests\RubiksCube.OpenCV.TestCase.Tests\cpluspluslogs\{item.Key}.txt", item.Value);
+                File.WriteAllLines($@"{TestCaseTestProjectPath}\cpluspluslogs\{item.Key}.txt", item.Value);
             }
         }
 
@@ -109,7 +114,7 @@ namespace RubiksCube.OpenCV.TestCase.Tests
             parsed.Add(currentKey, new List<string>());
 
             var dir = new DirectoryInfo(
-                    @"C:\Users\zakharov\Documents\Repos\Mine\Rc\tests\RubiksCube.OpenCV.TestCase.Tests\cpluspluslogs\");
+                    $@"{TestCaseTestProjectPath}\cpluspluslogs\");
 
             foreach (var file in dir.GetFiles())
             {
@@ -203,14 +208,15 @@ namespace RubiksCube.OpenCV.TestCase.Tests
 
             foreach (var item in parsed)
             {
-                File.WriteAllLines($@"C:\Users\zakharov\Documents\Repos\Mine\Rc\tests\RubiksCube.OpenCV.TestCase.Tests\csharplogs\{item.Key}.txt", item.Value);
+                File.WriteAllLines($@"{TestCaseTestProjectPath}\csharplogs\{item.Key}.txt", item.Value);
             }
         }
 
         [Test]
         public void Bootstrap_Track_Logic_Test()
         {
-            var capture = new Capture(@"C:\Users\zakharov\Documents\Repos\Mine\Rc\src\RubiksCube.OpenCV.TestCase\Videos\cube2.avi");
+            var capture = new Capture($@"{TestCaseProjectPath}\Videos\cube2.avi");
+            //var capture = new Capture(@"C:\Users\zakharov\Documents\Repos\Mine\Rc\src\RubiksCube.OpenCV.TestCase\Videos\cube2.avi");
             for (int i = 0; i < 40; i++)
             {
                 capture.QueryFrame();
@@ -232,7 +238,7 @@ namespace RubiksCube.OpenCV.TestCase.Tests
 
             var pointComparer = Comparer<PointF>.Create((p1, p2) => Math.Abs(p1.X - p2.X) < 0.0001f && Math.Abs(p1.Y - p2.Y) < 0.0001f ? 0 : 1);
             var point3DComparer = Comparer<MCvPoint3D32f>.Create((p1, p2) => Math.Abs(p1.X - p2.X) < 0.0001f && Math.Abs(p1.Y - p2.Y) < 0.0001f && Math.Abs(p1.Z - p2.Z) < 0.0001f ? 0 : 1);
-            var matrixComparer = Comparer<double>.Create((x, y) => Math.Abs(x - y) < 0.00001 ? 0 : 1);
+            var matrixComparer = Comparer<double>.Create((x, y) => Math.Abs(x - y) < 0.01 ? 0 : 1);
 
             VectorOfPointF bootstrapPointsBeforeOpticalFlowCplusPlus;
             VectorOfPointF trackedPointsBeforeOpticalFlowCplusPlus;
@@ -416,7 +422,7 @@ namespace RubiksCube.OpenCV.TestCase.Tests
 
             using (
                var reader = File.OpenText(
-                       $@"C:\Users\zakharov\Documents\Repos\Mine\Rc\tests\RubiksCube.OpenCV.TestCase.Tests\csharplogs\{name}"))
+                       $@"{TestCaseTestProjectPath}\csharplogs\{name}"))
             {
                 string line;
                 while ((line = reader.ReadLine()) != null)
@@ -445,7 +451,7 @@ namespace RubiksCube.OpenCV.TestCase.Tests
 
             using (
                var reader = File.OpenText(
-                       $@"C:\Users\zakharov\Documents\Repos\Mine\Rc\tests\RubiksCube.OpenCV.TestCase.Tests\csharplogs\{name}"))
+                       $@"{TestCaseTestProjectPath}\csharplogs\{name}"))
             {
                 string line;
                 while ((line = reader.ReadLine()) != null)
@@ -477,7 +483,7 @@ namespace RubiksCube.OpenCV.TestCase.Tests
 
             using (
                var reader = File.OpenText(
-                       $@"C:\Users\zakharov\Documents\Repos\Mine\Rc\tests\RubiksCube.OpenCV.TestCase.Tests\csharplogs\{name}"))
+                       $@"{TestCaseTestProjectPath}\csharplogs\{name}"))
             {
                 string line;
                 while ((line = reader.ReadLine()) != null)
@@ -516,7 +522,7 @@ namespace RubiksCube.OpenCV.TestCase.Tests
 
             using (
                var reader = File.OpenText(
-                       $@"C:\Users\zakharov\Documents\Repos\Mine\Rc\tests\RubiksCube.OpenCV.TestCase.Tests\csharplogs\{name}"))
+                       $@"{TestCaseTestProjectPath}\csharplogs\{name}"))
             {
                 string line;
                 while ((line = reader.ReadLine()) != null)
@@ -548,7 +554,7 @@ namespace RubiksCube.OpenCV.TestCase.Tests
 
             using (
                var reader = File.OpenText(
-                       $@"C:\Users\zakharov\Documents\Repos\Mine\Rc\tests\RubiksCube.OpenCV.TestCase.Tests\csharplogs\{name}"))
+                       $@"{TestCaseTestProjectPath}\csharplogs\{name}"))
             {
                 string line;
                 while ((line = reader.ReadLine()) != null)
