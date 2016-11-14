@@ -23,10 +23,10 @@ namespace RubiksCube.OpenCV.TestCase.Tests
         private static readonly int StartinPoint = 40;
         private static readonly int BootstrappedPoint = 95;
 
-        //private static readonly string TestCaseProjectPath = @"C:\Users\zakharov\Documents\Repos\Mine\Rc\src\RubiksCube.OpenCV.TestCase";
-        private static readonly string TestCaseProjectPath = @"D:\Projects\RubiksCube\src\RubiksCube.OpenCV.TestCase";
-        //private static readonly string TestCaseTestProjectPath = "C:/Users/zakharov/Documents/Repos/Mine/Rc/tests/RubiksCube.OpenCV.TestCase.Tests";
-        private static readonly string TestCaseTestProjectPath = @"D:\Projects\RubiksCube\tests\RubiksCube.OpenCV.TestCase.Tests";
+        private static readonly string TestCaseProjectPath = @"C:\Users\zakharov\Documents\Repos\Mine\Rc\src\RubiksCube.OpenCV.TestCase";
+        //private static readonly string TestCaseProjectPath = @"D:\Projects\RubiksCube\src\RubiksCube.OpenCV.TestCase";
+        private static readonly string TestCaseTestProjectPath = "C:/Users/zakharov/Documents/Repos/Mine/Rc/tests/RubiksCube.OpenCV.TestCase.Tests";
+        //private static readonly string TestCaseTestProjectPath = @"D:\Projects\RubiksCube\tests\RubiksCube.OpenCV.TestCase.Tests";
 
         public SimpleAdHocTrackerTests()
         {
@@ -238,7 +238,7 @@ namespace RubiksCube.OpenCV.TestCase.Tests
 
             var pointComparer = Comparer<PointF>.Create((p1, p2) => Math.Abs(p1.X - p2.X) < 0.0001f && Math.Abs(p1.Y - p2.Y) < 0.0001f ? 0 : 1);
             var point3DComparer = Comparer<MCvPoint3D32f>.Create((p1, p2) => Math.Abs(p1.X - p2.X) < 0.0001f && Math.Abs(p1.Y - p2.Y) < 0.0001f && Math.Abs(p1.Z - p2.Z) < 0.0001f ? 0 : 1);
-            var matrixComparer = Comparer<double>.Create((x, y) => Math.Abs(x - y) < 0.01 ? 0 : 1);
+            var matrixComparer = Comparer<double>.Create((x, y) => Math.Abs(x - y) < 0.0001f ? 0 : 1);
 
             VectorOfPointF bootstrapPointsBeforeOpticalFlowCplusPlus;
             VectorOfPointF trackedPointsBeforeOpticalFlowCplusPlus;
