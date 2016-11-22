@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using Emgu.CV;
 using Emgu.CV.CvEnum;
 using Emgu.CV.Features2D;
@@ -11,6 +12,12 @@ using Emgu.CV.Util;
 using NUnit.Framework;
 using RubiksCube.OpenCV.TestCase.AugmentedReality;
 using RubiksCube.OpenCV.TestCase.PtamLikeApproach;
+
+using Accord.Math;
+using Accord.Math.Decompositions;
+using Accord.Statistics;
+using Accord.Statistics.Analysis;
+using Accord.Statistics.Kernels;
 
 namespace RubiksCube.OpenCV.TestCase.Tests
 {
@@ -345,12 +352,17 @@ namespace RubiksCube.OpenCV.TestCase.Tests
                         CollectionAssert.AreEqual(trackedFeatures3D.ToArray(), points3dCplusPlus.ToArray(), point3DComparer);
 
                         //var trackedFeatures3Dm = Utils.Get3dPointsMat(trackedFeatures3D);
+                        var tf3D = new double[trackedFeatures3D.Size, 3];
                         var trackedFeatures3Dm = new Matrix<double>(trackedFeatures3D.Size, 3);
                         for (int k = 0; k < trackedFeatures3D.Size; k++)
                         {
                             trackedFeatures3Dm[k, 0] = trackedFeatures3D[k].X;
                             trackedFeatures3Dm[k, 1] = trackedFeatures3D[k].Y;
                             trackedFeatures3Dm[k, 2] = trackedFeatures3D[k].Z;
+
+                            tf3D[k, 0] = trackedFeatures3D[k].X;
+                            tf3D[k, 1] = trackedFeatures3D[k].Y;
+                            tf3D[k, 2] = trackedFeatures3D[k].Z;
                         }
 
                         var eigenvectors = new Mat();
@@ -360,9 +372,19 @@ namespace RubiksCube.OpenCV.TestCase.Tests
 
                         CollectionAssert.AreEqual(eigenvectorsMatrix.Data, eigenvectorsCplusPlus.Data, matrixComparer);
 
+                        // Step 2. Subtract the mean
+                        double[] meanArr = tf3D.Mean(0);
+                        double[,] dataAdjustArr = tf3D.Subtract(meanArr, 0);
+
+                        var method = PrincipalComponentMethod.Center;
+                        var pca = new PrincipalComponentAnalysis(method);
+                        pca.Learn(tf3D.ToJagged());
+
+                        var meanMatrix = new Matrix<double>(mean.Rows, mean.Cols, mean.DataPointer);
+                        CollectionAssert.AreEqual(meanMatrix.Data.ToJagged()[0], meanArr, matrixComparer);
+
                         int numInliers = 0;
                         var normalOfPlane = eigenvectorsMatrix.GetRow(2).ToUMat().ToMat(AccessType.Fast);
-                        //eigenvectors.GetRow(2).CopyTo(normalOfPlane);
                         CvInvoke.Normalize(normalOfPlane, normalOfPlane);
 
                         var normalOfPlaneMatrix = new Matrix<double>(normalOfPlane.Rows, normalOfPlane.Cols, normalOfPlane.DataPointer);
@@ -370,40 +392,43 @@ namespace RubiksCube.OpenCV.TestCase.Tests
 
                         CollectionAssert.AreEqual(normalOfPlaneArray, normalOfPlaneCplusPlus, matrixComparer);
 
-                        //double p_to_plane_thresh = sqrt(pca.eigenvalues.at<double>(2));
-                        //var statusVector = new VectorOfByte(trackedFeatures3D.Size);
-                        //for (int k = 0; k < trackedFeatures3D.Size; k++)
-                        //{
-                        //    Vec3d w = Vec3d(trackedFeatures3D[i]) - x0;
-                        //    double D = Math.Abs(normalOfPlane.dot(w));
-                        //    if (D < p_to_plane_thresh)
-                        //    {
-                        //        numInliers++;
-                        //        statusVector[i] = 1;
-                        //    }
-                        //}
+                        double pToPlaneThresh = Math.Sqrt(pca.Eigenvalues.ElementAt(2));
+                        var statusArray = new byte[trackedFeatures3D.Size];
+                        for (int k = 0; k < trackedFeatures3D.Size; k++)
+                        {
+                            var t1 = new double[] { trackedFeatures3D[k].X, trackedFeatures3D[k].Y, trackedFeatures3D[k].Z };
+                            var t2 = t1.Subtract(meanArr);
+                            var w = new Matrix<double>(new[,] { { t2[0], t2[1], t2[2] } });
+                            double d = Math.Abs(normalOfPlane.Dot(w));
+                            if (d < pToPlaneThresh)
+                            {
+                                numInliers++;
+                                statusArray[k] = 1;
+                            }
+                        }
 
+                        var statusVector = new VectorOfByte(statusArray);
                         //Assert.AreEqual(numInliers, 1);
 
-                        //var bootstrapping = numInliers / (double)trackedFeatures3D.Size < 0.75;
-                        //if (!bootstrapping)
-                        //{
-                        //    //enough features are coplanar, keep them and flatten them on the XY plane
-                        //    Utils.KeepVectorsByStatus(ref trackedFeatures, ref trackedFeatures3D, statusVector);
+                        var bootstrapping = numInliers / (double)trackedFeatures3D.Size < 0.75;
+                        if (!bootstrapping)
+                        {
+                            //enough features are coplanar, keep them and flatten them on the XY plane
+                            Utils.KeepVectorsByStatus(ref trackedFeatures, ref trackedFeatures3D, statusVector);
 
-                        //    //the PCA has the major axes of the plane
-                        //    var projected = new Mat();
-                        //    CvInvoke.PCAProject(trackedFeatures3Dm, mean, eigenvectors, projected);
-                        //    var projectedMatrix = new Matrix<double>(projected.Rows, projected.Cols, projected.DataPointer);
-                        //    projectedMatrix.GetCol(2).SetValue(0);
-                        //    projectedMatrix.CopyTo(trackedFeatures3Dm);
-                        //}
-                        //else
-                        //{
-                        //    //cerr << "not enough features are coplanar" << "\n";
-                        //    //bootstrap_kp = bootstrap_kp_orig;
-                        //    //trackedFeatures = trackedFeatures_orig;
-                        //}
+                            //the PCA has the major axes of the plane
+                            var projected = new Mat();
+                            CvInvoke.PCAProject(trackedFeatures3Dm, mean, eigenvectors, projected);
+                            var projectedMatrix = new Matrix<double>(projected.Rows, projected.Cols, projected.DataPointer);
+                            projectedMatrix.GetCol(2).SetValue(0);
+                            projectedMatrix.CopyTo(trackedFeatures3Dm);
+                        }
+                        else
+                        {
+                            //cerr << "not enough features are coplanar" << "\n";
+                            //bootstrap_kp = bootstrap_kp_orig;
+                            //trackedFeatures = trackedFeatures_orig;
+                        }
                     }
 
                     //return true;
