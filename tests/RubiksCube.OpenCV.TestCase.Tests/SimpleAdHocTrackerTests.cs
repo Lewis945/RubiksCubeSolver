@@ -30,10 +30,10 @@ namespace RubiksCube.OpenCV.TestCase.Tests
         private static readonly int StartinPoint = 40;
         private static readonly int BootstrappedPoint = 95;
 
-        private static readonly string TestCaseProjectPath = @"C:\Users\zakharov\Documents\Repos\Mine\Rc\src\RubiksCube.OpenCV.TestCase";
-        //private static readonly string TestCaseProjectPath = @"D:\Projects\RubiksCube\src\RubiksCube.OpenCV.TestCase";
-        private static readonly string TestCaseTestProjectPath = "C:/Users/zakharov/Documents/Repos/Mine/Rc/tests/RubiksCube.OpenCV.TestCase.Tests";
-        //private static readonly string TestCaseTestProjectPath = @"D:\Projects\RubiksCube\tests\RubiksCube.OpenCV.TestCase.Tests";
+        //private static readonly string TestCaseProjectPath = @"C:\Users\zakharov\Documents\Repos\Mine\Rc\src\RubiksCube.OpenCV.TestCase";
+        private static readonly string TestCaseProjectPath = @"D:\Projects\RubiksCube\src\RubiksCube.OpenCV.TestCase";
+        //private static readonly string TestCaseTestProjectPath = "C:/Users/zakharov/Documents/Repos/Mine/Rc/tests/RubiksCube.OpenCV.TestCase.Tests";
+        private static readonly string TestCaseTestProjectPath = @"D:\Projects\RubiksCube\tests\RubiksCube.OpenCV.TestCase.Tests";
 
         public SimpleAdHocTrackerTests()
         {
@@ -188,6 +188,33 @@ namespace RubiksCube.OpenCV.TestCase.Tests
                             currentKey = $"{file.Name.Replace(".", "")} - normal of plane";
                             parsed.Add(currentKey, new List<string>());
                         }
+                        else if (line.Contains("p_to_plane_thresh"))
+                        {
+                            currentKey = $"{file.Name.Replace(".", "")} - p_to_plane_thresh";
+                            parsed.Add(currentKey, new List<string>());
+                            parsed[currentKey].Add(line.Remove(0, line.IndexOf(":") + 1));
+                        }
+                        else if (line.Contains("num inliers"))
+                        {
+                            currentKey = $"{file.Name.Replace(".", "")} - num inliers";
+                            parsed.Add(currentKey, new List<string>());
+                            parsed[currentKey].Add(line.Remove(0, line.IndexOf(":") + 1));
+                        }
+                        else if (line.Contains("status arr"))
+                        {
+                            currentKey = $"{file.Name.Replace(".", "")} - status arr";
+                            parsed.Add(currentKey, new List<string>());
+                        }
+                        else if (line.Contains("trackedFeatures3DM"))
+                        {
+                            currentKey = $"{file.Name.Replace(".", "")} - trackedFeatures3DM";
+                            parsed.Add(currentKey, new List<string>());
+                        }
+                        else if (line.Contains("projected trackedFeatures3mat"))
+                        {
+                            currentKey = $"{file.Name.Replace(".", "")} - projected trackedFeatures3mat";
+                            parsed.Add(currentKey, new List<string>());
+                        }
                         else if (line.Contains("features survived optical flow") ||
                                  line.Contains("features survived homography"))
                         {
@@ -245,7 +272,7 @@ namespace RubiksCube.OpenCV.TestCase.Tests
 
             var pointComparer = Comparer<PointF>.Create((p1, p2) => Math.Abs(p1.X - p2.X) < 0.0001f && Math.Abs(p1.Y - p2.Y) < 0.0001f ? 0 : 1);
             var point3DComparer = Comparer<MCvPoint3D32f>.Create((p1, p2) => Math.Abs(p1.X - p2.X) < 0.0001f && Math.Abs(p1.Y - p2.Y) < 0.0001f && Math.Abs(p1.Z - p2.Z) < 0.0001f ? 0 : 1);
-            var matrixComparer = Comparer<double>.Create((x, y) => Math.Abs(x - y) < 0.0001f ? 0 : 1);
+            var matrixComparer = Comparer<double>.Create((x, y) => Math.Abs(x - y) < 0.01f ? 0 : 1);
 
             VectorOfPointF bootstrapPointsBeforeOpticalFlowCplusPlus;
             VectorOfPointF trackedPointsBeforeOpticalFlowCplusPlus;
@@ -261,7 +288,13 @@ namespace RubiksCube.OpenCV.TestCase.Tests
             Matrix<double> eigenvectorsCplusPlus;
             double[] normalOfPlaneCplusPlus;
 
-            for (int i = 41; i < 95; i++)
+            double pToPlaneTrashCplusPlus;
+            int numInliersCplusPlus;
+            VectorOfByte statusArrCplusPlus;
+            Matrix<double> trackedFeatures3DMCplusPlus;
+            Matrix<double> projectedTrackedFeaturesCplusPlus;
+
+            for (int i = 41; i <= 95; i++)
             {
                 bootstrapPointsBeforeOpticalFlowCplusPlus = GetPoints($"I = {i}txt - Bootstrap points before optical flow.txt");
                 trackedPointsBeforeOpticalFlowCplusPlus = GetPoints($"I = {i}txt - Tracked points before optical flow.txt");
@@ -328,6 +361,9 @@ namespace RubiksCube.OpenCV.TestCase.Tests
                 CollectionAssert.AreEqual(Utils.GetPointsVector(bootstrapKp).ToArray(), bootstrapPointsAfterHomographyCplusPlus.ToArray(), pointComparer);
                 CollectionAssert.AreEqual(Utils.GetPointsVector(trackedFeatures).ToArray(), trackedPointsAfterHomographyCplusPlus.ToArray(), pointComparer);
 
+                var bootstrapKpOrig = new VectorOfKeyPoint(bootstrapKp.ToArray());
+                var trackedFeaturesOrig = new VectorOfKeyPoint(trackedFeatures.ToArray());
+
                 //TODO: Compare all these to c++ version
                 //Attempt at 3D reconstruction (triangulation) if conditions are right
                 var rigidT = CvInvoke.EstimateRigidTransform(Utils.GetPointsVector(trackedFeatures).ToArray(), Utils.GetPointsVector(bootstrapKp).ToArray(), false);
@@ -347,6 +383,10 @@ namespace RubiksCube.OpenCV.TestCase.Tests
 
                     if (result.Result)
                     {
+                        pToPlaneTrashCplusPlus = GetDouble($"I = {i}txt - p_to_plane_thresh.txt");
+                        numInliersCplusPlus = GetInt($"I = {i}txt - num inliers.txt");
+                        statusArrCplusPlus = GetByteVector($"I = {i}txt - status arr.txt");
+
                         trackedFeatures3D = result.TrackedFeatures3D;
 
                         CollectionAssert.AreEqual(trackedFeatures3D.ToArray(), points3dCplusPlus.ToArray(), point3DComparer);
@@ -393,6 +433,9 @@ namespace RubiksCube.OpenCV.TestCase.Tests
                         CollectionAssert.AreEqual(normalOfPlaneArray, normalOfPlaneCplusPlus, matrixComparer);
 
                         double pToPlaneThresh = Math.Sqrt(pca.Eigenvalues.ElementAt(2));
+
+                        Assert.AreEqual(pToPlaneTrashCplusPlus, pToPlaneThresh, 0.2);
+
                         var statusArray = new byte[trackedFeatures3D.Size];
                         for (int k = 0; k < trackedFeatures3D.Size; k++)
                         {
@@ -407,12 +450,16 @@ namespace RubiksCube.OpenCV.TestCase.Tests
                             }
                         }
 
+                        Assert.AreEqual(numInliersCplusPlus, numInliers);
+
                         var statusVector = new VectorOfByte(statusArray);
-                        //Assert.AreEqual(numInliers, 1);
+                        CollectionAssert.AreEqual(statusArrCplusPlus.ToArray(), statusVector.ToArray());
 
                         var bootstrapping = numInliers / (double)trackedFeatures3D.Size < 0.75;
                         if (!bootstrapping)
                         {
+                            trackedFeatures3DMCplusPlus = Getmatrix($"I = {i}txt - trackedFeatures3DM.txt");
+
                             //enough features are coplanar, keep them and flatten them on the XY plane
                             Utils.KeepVectorsByStatus(ref trackedFeatures, ref trackedFeatures3D, statusVector);
 
@@ -420,14 +467,20 @@ namespace RubiksCube.OpenCV.TestCase.Tests
                             var projected = new Mat();
                             CvInvoke.PCAProject(trackedFeatures3Dm, mean, eigenvectors, projected);
                             var projectedMatrix = new Matrix<double>(projected.Rows, projected.Cols, projected.DataPointer);
+
+                            projectedTrackedFeaturesCplusPlus = Getmatrix($"I = {i}txt - projected trackedFeatures3mat.txt");
+                            CollectionAssert.AreEqual(projectedTrackedFeaturesCplusPlus.Data, projectedMatrix.Data, matrixComparer);
+
                             projectedMatrix.GetCol(2).SetValue(0);
                             projectedMatrix.CopyTo(trackedFeatures3Dm);
+
+                            CollectionAssert.AreEqual(trackedFeatures3DMCplusPlus.Data, trackedFeatures3Dm.Data, matrixComparer);
                         }
                         else
                         {
                             //cerr << "not enough features are coplanar" << "\n";
-                            //bootstrap_kp = bootstrap_kp_orig;
-                            //trackedFeatures = trackedFeatures_orig;
+                            bootstrapKp = bootstrapKpOrig;
+                            trackedFeatures = trackedFeaturesOrig;
                         }
                     }
 
@@ -560,9 +613,21 @@ namespace RubiksCube.OpenCV.TestCase.Tests
                         line = line.Remove(line.Length - 1, 1);
 
                     line = line.Replace(";", "");
-                    byte number = (byte)int.Parse(line);
 
-                    list.Add(number);
+                    if (line.Contains(",") && line.Length > 4)
+                    {
+                        var items = line.Split(',');
+                        foreach (var item in items)
+                        {
+                            byte itemNumber = (byte)int.Parse(item);
+                            list.Add(itemNumber);
+                        }
+                    }
+                    else
+                    {
+                        byte number = (byte)int.Parse(line);
+                        list.Add(number);
+                    }
 
                     i++;
                 }
@@ -605,6 +670,77 @@ namespace RubiksCube.OpenCV.TestCase.Tests
             }
 
             return list.ToArray();
+        }
+
+        private double GetDouble(string name)
+        {
+            string line;
+            using (
+               var reader = File.OpenText(
+                       $@"{TestCaseTestProjectPath}\csharplogs\{name}"))
+            {
+                line = reader.ReadToEnd();
+            }
+
+            return Convert.ToDouble(line);
+        }
+
+        private int GetInt(string name)
+        {
+            string line;
+            using (
+               var reader = File.OpenText(
+                       $@"{TestCaseTestProjectPath}\csharplogs\{name}"))
+            {
+                line = reader.ReadToEnd();
+            }
+
+            return Convert.ToInt32(line);
+        }
+
+        private Matrix<double> Getmatrix(string name)
+        {
+            var list = new List<List<double>>();
+
+            using (
+               var reader = File.OpenText(
+                       $@"{TestCaseTestProjectPath}\csharplogs\{name}"))
+            {
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    line = line.Remove(line.Length - 1, 1);
+                    if (line.Contains("["))
+                        line = line.Remove(0, 1);
+
+                    if (line.Contains("]"))
+                        line = line.Remove(line.Length - 1, 1);
+
+                    if (line.Contains(";"))
+                        line = line.Replace(";", "");
+
+                    var items = line.Split(',');
+                    double x1 = double.Parse(items[0]);
+                    double x2 = double.Parse(items[1]);
+                    double x3 = double.Parse(items[2]);
+
+                    list.Add(new List<double> { x1, x2, x3 });
+                }
+            }
+
+            var matrix = new Matrix<double>(list.Count, 3);
+
+            int i = 0;
+            foreach (var row in list)
+            {
+                matrix[i, 0] = row[0];
+                matrix[i, 1] = row[1];
+                matrix[i, 2] = row[2];
+
+                i++;
+            }
+
+            return matrix;
         }
 
         #endregion

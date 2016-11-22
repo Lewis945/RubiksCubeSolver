@@ -3544,6 +3544,7 @@ Tracked points after homography: ([348.79584, 259.50177;
  261.5166, 253.89709;
  290.1803, 225.27042;
  436.78616, 193.07475]
+Rigid: 0.317256
 I = 42
 bootstrap tracking (497)
 Bootstrap points before optical flow: ([349, 260;
@@ -6974,6 +6975,7 @@ Tracked points after homography: ([349.57114, 257.20239;
  262.27505, 251.51076;
  291.09879, 222.98849;
  437.68954, 190.88972]
+Rigid: 3.29109
 I = 43
 bootstrap tracking (468)
 Bootstrap points before optical flow: ([349, 260;
@@ -10221,6 +10223,7 @@ Tracked points after homography: ([350.04498, 251.47643;
  263.03271, 245.82315;
  291.48108, 217.40817;
  437.87637, 185.21475]
+Rigid: 8.00974
 I = 44
 bootstrap tracking (449)
 Bootstrap points before optical flow: ([349, 260;
@@ -13373,6 +13376,7 @@ Tracked points after homography: ([350.35846, 250.20461;
  263.41718, 244.56161;
  291.92657, 216.06161;
  438.13312, 183.99446]
+Rigid: 9.21919
 I = 45
 bootstrap tracking (449)
 Bootstrap points before optical flow: ([349, 260;
@@ -16525,6 +16529,7 @@ Tracked points after homography: ([351.4389, 250.67725;
  264.38065, 245.30872;
  292.93927, 216.73882;
  439.06778, 184.28238]
+Rigid: 8.5819
 I = 46
 bootstrap tracking (449)
 Bootstrap points before optical flow: ([349, 260;
@@ -19589,6 +19594,7 @@ Tracked points after homography: ([350.2175, 251.32205;
  206.74736, 185.0446;
  263.38864, 245.65471;
  291.92062, 217.18135]
+Rigid: 8.47086
 I = 47
 bootstrap tracking (405)
 Bootstrap points before optical flow: ([349, 260;
@@ -22433,6 +22439,7 @@ Tracked points after homography: ([349.25372, 253.05783;
  205.59532, 186.92357;
  262.32755, 247.56531;
  291.08652, 219.15886]
+Rigid: 6.06455
 I = 48
 bootstrap tracking (405)
 Bootstrap points before optical flow: ([349, 260;
@@ -25277,6 +25284,7 @@ Tracked points after homography: ([348.38058, 255.00415;
  204.47928, 188.73007;
  261.30762, 249.52197;
  289.97952, 220.83789]
+Rigid: 4.29397
 I = 49
 bootstrap tracking (405)
 Bootstrap points before optical flow: ([349, 260;
@@ -28121,6 +28129,7 @@ Tracked points after homography: ([346.98984, 256.68268;
  202.78914, 190.60037;
  259.99002, 251.26332;
  288.42969, 222.59023]
+Rigid: 2.76008
 I = 50
 bootstrap tracking (405)
 Bootstrap points before optical flow: ([349, 260;
@@ -30965,6 +30974,7 @@ Tracked points after homography: ([348.53983, 256.95901;
  203.95087, 190.67508;
  261.21893, 251.42197;
  289.87643, 222.9205]
+Rigid: 2.35414
 I = 51
 bootstrap tracking (405)
 Bootstrap points before optical flow: ([349, 260;
@@ -33809,6 +33819,7 @@ Tracked points after homography: ([352.15704, 257.25873;
  207.21367, 190.71465;
  264.62833, 251.70502;
  293.31363, 223.0824]
+Rigid: 3.47675
 I = 52
 bootstrap tracking (405)
 Bootstrap points before optical flow: ([349, 260;
@@ -36653,6 +36664,7 @@ Tracked points after homography: ([355.61523, 257.67877;
  210.08887, 191.38881;
  267.72583, 252.29424;
  296.45996, 223.92244]
+Rigid: 4.81675
 I = 53
 bootstrap tracking (405)
 Bootstrap points before optical flow: ([349, 260;
@@ -39449,6 +39461,7 @@ Tracked points after homography: ([362.8703, 256.29889;
  217.39897, 189.74512;
  275.09399, 250.7413;
  303.87811, 222.0916]
+Rigid: 12.4301
 I = 54
 bootstrap tracking (381)
 Bootstrap points before optical flow: ([349, 260;
@@ -42123,6 +42136,7 @@ Tracked points after homography: ([364.39722, 255.60072;
  219.20297, 189.22726;
  276.55795, 250.13039;
  305.45493, 221.68329]
+Rigid: 14.9848
 I = 55
 bootstrap tracking (380)
 Bootstrap points before optical flow: ([349, 260;
@@ -44792,6 +44806,7 @@ Tracked points after homography: ([368.80792, 254.38788;
  223.15262, 188.23254;
  281.00522, 249.10641;
  309.52756, 220.31013]
+Rigid: 18.0786
 I = 56
 bootstrap tracking (380)
 Bootstrap points before optical flow: ([349, 260;
@@ -47461,6 +47476,7 @@ Tracked points after homography: ([368.478, 254.01538;
  223.44516, 187.62488;
  280.81827, 248.4903;
  309.65482, 219.96461]
+Rigid: 19.7189
 I = 57
 bootstrap tracking (380)
 Bootstrap points before optical flow: ([349, 260;
@@ -50130,6 +50146,7 @@ Tracked points after homography: ([368.83356, 253.17036;
  224.22629, 186.33119;
  281.27026, 247.41162;
  310.36478, 219.00772]
+Rigid: 21.5042
 I = 58
 bootstrap tracking (380)
 Bootstrap points before optical flow: ([349, 260;
@@ -52799,6 +52816,7 @@ Tracked points after homography: ([370.4606, 253.813;
  225.54994, 186.81807;
  282.78558, 248.00682;
  311.58203, 219.38821]
+Rigid: 22.2356
 I = 59
 bootstrap tracking (380)
 Bootstrap points before optical flow: ([349, 260;
@@ -55468,6 +55486,7 @@ Tracked points after homography: ([372.40109, 254.7148;
  227.06804, 187.76378;
  284.50464, 249.01888;
  313.23752, 220.15907]
+Rigid: 22.9967
 I = 60
 bootstrap tracking (380)
 Bootstrap points before optical flow: ([349, 260;
@@ -58137,6 +58156,7 @@ Tracked points after homography: ([376.07312, 254.27495;
  230.37881, 187.27795;
  288.02664, 248.47534;
  317.04279, 220.04617]
+Rigid: 26.3408
 I = 61
 bootstrap tracking (380)
 Bootstrap points before optical flow: ([349, 260;
@@ -60806,6 +60826,7 @@ Tracked points after homography: ([380.39087, 252.54799;
  234.65199, 185.56479;
  292.23087, 246.769;
  321.3226, 218.19118]
+Rigid: 31.0397
 I = 62
 bootstrap tracking (380)
 Bootstrap points before optical flow: ([349, 260;
@@ -63471,6 +63492,7 @@ Tracked points after homography: ([383.2226, 253.87436;
  237.12025, 185.83737;
  294.83209, 247.85141;
  323.69983, 218.81485]
+Rigid: 32.511
 I = 63
 bootstrap tracking (378)
 Bootstrap points before optical flow: ([349, 260;
@@ -66102,6 +66124,7 @@ Tracked points after homography: ([389.98932, 256.77258;
  242.97548, 189.32706;
  301.17096, 251.0388;
  330.14182, 222.1848]
+Rigid: 36.4663
 I = 64
 bootstrap tracking (366)
 Bootstrap points before optical flow: ([349, 260;
@@ -68651,6 +68674,7 @@ Tracked points after homography: ([392.68396, 259.62729;
  246.09575, 192.13905;
  303.94516, 253.91319;
  333.20862, 225.04337]
+Rigid: 39.0049
 I = 65
 bootstrap tracking (355)
 Bootstrap points before optical flow: ([349, 260;
@@ -71145,6 +71169,7 @@ Tracked points after homography: ([394.31946, 257.9837;
  247.83585, 190.74605;
  305.50058, 252.24809;
  334.96851, 223.52621]
+Rigid: 41.8036
 I = 66
 bootstrap tracking (355)
 Bootstrap points before optical flow: ([349, 260;
@@ -73553,6 +73578,7 @@ Tracked points after homography: ([399.0639, 254.30476;
  336.06903, 187.13876;
  310.2066, 248.31331;
  339.52606, 219.57504]
+Rigid: 47.6675
 I = 67
 bootstrap tracking (312)
 Bootstrap points before optical flow: ([349, 260;
@@ -75746,6 +75772,7 @@ Tracked points after homography: ([402.15433, 251.08099;
  339.07184, 184.062;
  313.27405, 245.27658;
  342.56488, 216.53958]
+Rigid: 51.0077
 I = 68
 bootstrap tracking (312)
 Bootstrap points before optical flow: ([349, 260;
@@ -77921,6 +77948,7 @@ Tracked points after homography: ([406.82477, 249.95679;
  343.14453, 182.77718;
  317.58829, 244.09427;
  346.99542, 215.29932]
+Rigid: 54.5954
 I = 69
 bootstrap tracking (303)
 Bootstrap points before optical flow: ([349, 260;
@@ -80051,6 +80079,7 @@ Tracked points after homography: ([412.9791, 250.07339;
  349.53201, 182.39308;
  323.59473, 243.9066;
  353.31046, 215.10335]
+Rigid: 60.2
 I = 70
 bootstrap tracking (303)
 Bootstrap points before optical flow: ([349, 260;
@@ -82177,6 +82206,7 @@ Tracked points after homography: ([416.91284, 250.71188;
  353.40021, 183.05945;
  327.33386, 244.57684;
  357.28275, 215.96193]
+Rigid: 63.3426
 I = 71
 bootstrap tracking (301)
 Bootstrap points before optical flow: ([349, 260;
@@ -84265,6 +84295,7 @@ Tracked points after homography: ([422.01895, 250.08028;
  358.3967, 182.36685;
  332.27206, 243.98863;
  362.0134, 215.13518]
+Rigid: 67.4798
 I = 72
 bootstrap tracking (287)
 Bootstrap points before optical flow: ([349, 260;
@@ -86283,6 +86314,7 @@ Tracked points after homography: ([425.43729, 250.55054;
  361.47232, 182.75961;
  335.45633, 244.53909;
  365.24185, 215.72331]
+Rigid: 69.1986
 I = 73
 bootstrap tracking (287)
 Bootstrap points before optical flow: ([349, 260;
@@ -88301,6 +88333,7 @@ Tracked points after homography: ([431.50812, 250.40938;
  367.30658, 182.31017;
  341.17615, 244.38748;
  371.10703, 215.40114]
+Rigid: 73.54
 I = 74
 bootstrap tracking (287)
 Bootstrap points before optical flow: ([349, 260;
@@ -90319,6 +90352,7 @@ Tracked points after homography: ([435.42963, 252.9359;
  371.12634, 184.44315;
  344.64441, 246.63039;
  374.90881, 217.53851]
+Rigid: 76.4215
 I = 75
 bootstrap tracking (287)
 Bootstrap points before optical flow: ([349, 260;
@@ -92317,6 +92351,7 @@ Tracked points after homography: ([437.78818, 254.46523;
  373.81128, 185.52696;
  347.07364, 247.83287;
  377.60019, 218.76491]
+Rigid: 78.5982
 I = 76
 bootstrap tracking (277)
 Bootstrap points before optical flow: ([349, 260;
@@ -94231,6 +94266,7 @@ Tracked points after homography: ([437.43558, 257.57544;
  373.48514, 188.49088;
  346.46469, 250.83438;
  377.05042, 221.77443]
+Rigid: 77.9896
 I = 77
 bootstrap tracking (260)
 Bootstrap points before optical flow: ([349, 260;
@@ -96058,6 +96094,7 @@ Tracked points after homography: ([436.01215, 259.42059;
  372.21811, 190.02985;
  345.11111, 252.24275;
  375.81403, 223.30975]
+Rigid: 77.5028
 I = 78
 bootstrap tracking (259)
 Bootstrap points before optical flow: ([349, 260;
@@ -97880,6 +97917,7 @@ Tracked points after homography: ([436.31357, 261.03439;
  372.30814, 191.75304;
  345.21381, 253.79991;
  376.00946, 225.09117]
+Rigid: 77.258
 I = 79
 bootstrap tracking (259)
 Bootstrap points before optical flow: ([349, 260;
@@ -99702,6 +99740,7 @@ Tracked points after homography: ([436.18784, 260.40674;
  372.33005, 190.95026;
  345.08435, 252.84929;
  376.02856, 224.20148]
+Rigid: 78.2386
 I = 80
 bootstrap tracking (259)
 Bootstrap points before optical flow: ([349, 260;
@@ -101524,6 +101563,7 @@ Tracked points after homography: ([435.84833, 257.9397;
  372.08615, 188.46561;
  344.68665, 250.32921;
  375.69208, 221.79338]
+Rigid: 79.0535
 I = 81
 bootstrap tracking (259)
 Bootstrap points before optical flow: ([349, 260;
@@ -103346,6 +103386,7 @@ Tracked points after homography: ([434.49139, 256.46518;
  370.88364, 187.12453;
  343.40265, 248.76956;
  374.24429, 220.18176]
+Rigid: 79.0028
 I = 82
 bootstrap tracking (259)
 Bootstrap points before optical flow: ([349, 260;
@@ -105168,6 +105209,7 @@ Tracked points after homography: ([432.86682, 254.95964;
  369.43423, 185.657;
  341.82907, 247.25874;
  373.04739, 218.91621]
+Rigid: 78.3534
 I = 83
 bootstrap tracking (259)
 Bootstrap points before optical flow: ([349, 260;
@@ -106970,6 +107012,7 @@ Tracked points after homography: ([432.46838, 254.42773;
  369.17227, 184.92198;
  341.5307, 246.61697;
  372.32544, 218.20198]
+Rigid: 78.0712
 I = 84
 bootstrap tracking (249)
 Bootstrap points before optical flow: ([349, 260;
@@ -108720,6 +108763,7 @@ Tracked points after homography: ([431.14291, 257.79474;
  368.2243, 187.7849;
  340.27075, 249.62939;
  371.21255, 221.17783]
+Rigid: 77.4912
 I = 85
 bootstrap tracking (248)
 Bootstrap points before optical flow: ([349, 260;
@@ -110451,6 +110495,7 @@ Tracked points after homography: ([432.6524, 261.65118;
  369.53299, 191.55946;
  341.75095, 253.0952;
  372.62527, 224.74071]
+Rigid: 78.4177
 I = 86
 bootstrap tracking (241)
 Bootstrap points before optical flow: ([349, 260;
@@ -112065,6 +112110,7 @@ Tracked points after homography: ([434.4184, 262.90942;
  429.1608, 257.3288;
  343.2384, 254.47006;
  374.25369, 226.23695]
+Rigid: 78.7099
 I = 87
 bootstrap tracking (200)
 Bootstrap points before optical flow: ([349, 260;
@@ -113472,6 +113518,7 @@ Tracked points after homography: ([434.90378, 258.50537;
  429.56082, 253.08791;
  343.99832, 249.59967;
  374.93469, 221.54147]
+Rigid: 82.6791
 I = 88
 bootstrap tracking (199)
 Bootstrap points before optical flow: ([349, 260;
@@ -114872,6 +114919,7 @@ Tracked points after homography: ([433.61612, 257.19678;
  428.24533, 251.72269;
  342.82736, 247.67509;
  374.01599, 219.73944]
+Rigid: 85.2167
 I = 89
 bootstrap tracking (198)
 Bootstrap points before optical flow: ([349, 260;
@@ -116197,6 +116245,7 @@ Tracked points after homography: ([431.22354, 259.68402;
  425.79071, 254.10733;
  340.72937, 249.05728;
  372.1185, 221.39417]
+Rigid: 85.653
 I = 90
 bootstrap tracking (163)
 Bootstrap points before optical flow: ([349, 260;
@@ -117253,6 +117302,7 @@ Tracked points after homography: ([417.06848, 234.3544;
  364.69766, 281.27081;
  341.16885, 253.61057;
  372.74222, 226.42993]
+Rigid: 88.8796
 I = 91
 bootstrap tracking (116)
 Bootstrap points before optical flow: ([333, 231;
@@ -118062,6 +118112,7 @@ Tracked points after homography: ([419.89432, 235.53659;
  367.36804, 282.41724;
  343.78616, 254.68607;
  375.59045, 227.88789]
+Rigid: 90.6239
 I = 92
 bootstrap tracking (110)
 Bootstrap points before optical flow: ([333, 231;
@@ -118817,6 +118868,7 @@ Tracked points after homography: ([423.81107, 235.60246;
  372.89813, 256.68735;
  371.18161, 282.44888;
  379.24454, 227.91072]
+Rigid: 93.0695
 I = 93
 bootstrap tracking (98)
 Bootstrap points before optical flow: ([333, 231;
@@ -119494,6 +119546,7 @@ Tracked points after homography: ([425.90125, 233.07495;
  374.73148, 253.95425;
  372.8287, 279.71597;
  381.25885, 225.02118]
+Rigid: 99.1621
 I = 94
 bootstrap tracking (89)
 Bootstrap points before optical flow: ([333, 231;
@@ -120126,6 +120179,7 @@ Tracked points after homography: ([427.13428, 227.33339;
  375.98041, 247.96669;
  374.15375, 273.72263;
  382.40717, 219.19965]
+Rigid: 103.546
 _____________ cameraPoseAndTriangulationFromFundamental minVal ________: 201.121
 _____________ cameraPoseAndTriangulationFromFundamental maxVal ________: 429.167
 Fundamental keeping 89 / 89
@@ -120168,6 +120222,9 @@ eigenvectors: [0.08936827900401986, 0.1200323130751703, 0.9887393764413773;
  0.9644161766670849, 0.2375768824847345, -0.1160114782755449]
 2nd row eigenvectors: [0.964416, 0.237577, -0.116011]
 normal of plane: [0.964416, 0.237577, -0.116011]
+p_to_plane_thresh: 4.71473e-05
+num inliers: 9
+status arr: [1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0]
 9/13 are coplanar
 I = 95
 bootstrap tracking (89)
@@ -120801,6 +120858,7 @@ Tracked points after homography: ([426.03632, 222.76335;
  374.96515, 243.144;
  372.81671, 268.81808;
  381.4924, 214.46245]
+Rigid: 107.147
 _____________ cameraPoseAndTriangulationFromFundamental minVal ________: 196.532
 _____________ cameraPoseAndTriangulationFromFundamental maxVal ________: 428.096
 Fundamental keeping 89 / 89
@@ -120854,7 +120912,66 @@ eigenvectors: [0.1515537598843088, -0.01702299622042101, 0.9883024210557255;
  0.784661917922799, 0.6101195804856614, -0.1098169935379539]
 2nd row eigenvectors: [0.784662, 0.61012, -0.109817]
 normal of plane: [0.784662, 0.61012, -0.109817]
+p_to_plane_thresh: 0.000454246
+num inliers: 22
+status arr: [1, 1, 1, 1, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 22/28 are coplanar
+projected trackedFeatures3mat: [-0.03263346420604461, -0.001854704531141697, -0.0001265045088313407;
+ -0.02017158773735267, -0.001071316033507904, -7.154549576234232e-05;
+ -0.01724618538307687, 0.001305655415286287, 0.0002845663511235681;
+ 0.1548430180866273, -0.00276927226689181, -0.0002595296883456839;
+ -0.007179834585560233, 0.001424328663758544, 1.019227398782149e-05;
+ -0.03968838481128984, -0.002521944089440549, -0.000213079939299702;
+ -0.009565056235302799, 0.001358946816936003, -5.829606474010932e-07;
+ -0.02068811762108219, 0.001321952869223973, 0.000450859863667286;
+ -0.01769673571916604, 0.001394217302149791, 0.0003468082378086889;
+ -0.03166406133336414, -0.001736005013716648, -8.613663457544395e-05;
+ -0.01481949156325721, -0.000882641663015486, -6.265193536776235e-05;
+ -0.03166406182175572, -0.001735994303627779, -8.613070928635818e-05;
+ -0.01910253983204584, 0.001400273981693147, 0.0004435107066298512;
+ -0.01494338230940823, 0.001513988426437003, 0.0003622202534503056;
+ -0.02545009455701034, -0.001382650561052465, -8.510181968249611e-05;
+ -0.04006703109046825, -0.002796383171447902, -0.0003205820206852788;
+ -0.01625323321385629, 0.001547371171517752, 0.0004049241851493263;
+ -0.0256037857362521, -0.001410083069527162, -0.0001087402404464986;
+ -0.04097938504002661, -0.002441306851828196, -8.247065548659411e-05;
+ -0.01676894672552195, 0.00149193490905986, 0.0003805273270780329;
+ 0.001556856557536741, 0.001873897075187184, 0.0001775948982204944;
+ -0.02491863898289429, -0.001742440642319028, -0.0002727529299123991;
+ -0.01625323321385629, 0.001547371171517752, 0.0004049241851493263;
+ -0.0256037857362521, -0.001410083069527162, -0.0001087402404464986;
+ -0.04097938504002661, -0.002441306851828196, -8.247065548659411e-05;
+ -0.01676894672552195, 0.00149193490905986, 0.0003805273270780329;
+ 0.001556856557536741, 0.001873897075187184, 0.0001775948982204944;
+ -0.02491863898289429, -0.001742440642319028, -0.0002727529299123991]
+trackedFeatures3DM: [-0.03263346420604461, -0.001854704531141697, 0;
+ -0.02017158773735267, -0.001071316033507904, 0;
+ -0.01724618538307687, 0.001305655415286287, 0;
+ 0.1548430180866273, -0.00276927226689181, 0;
+ -0.007179834585560233, 0.001424328663758544, 0;
+ -0.03968838481128984, -0.002521944089440549, 0;
+ -0.009565056235302799, 0.001358946816936003, 0;
+ -0.02068811762108219, 0.001321952869223973, 0;
+ -0.01769673571916604, 0.001394217302149791, 0;
+ -0.03166406133336414, -0.001736005013716648, 0;
+ -0.01481949156325721, -0.000882641663015486, 0;
+ -0.03166406182175572, -0.001735994303627779, 0;
+ -0.01910253983204584, 0.001400273981693147, 0;
+ -0.01494338230940823, 0.001513988426437003, 0;
+ -0.02545009455701034, -0.001382650561052465, 0;
+ -0.04006703109046825, -0.002796383171447902, 0;
+ -0.01625323321385629, 0.001547371171517752, 0;
+ -0.0256037857362521, -0.001410083069527162, 0;
+ -0.04097938504002661, -0.002441306851828196, 0;
+ -0.01676894672552195, 0.00149193490905986, 0;
+ 0.001556856557536741, 0.001873897075187184, 0;
+ -0.02491863898289429, -0.001742440642319028, 0;
+ -0.01625323321385629, 0.001547371171517752, 0;
+ -0.0256037857362521, -0.001410083069527162, 0;
+ -0.04097938504002661, -0.002441306851828196, 0;
+ -0.01676894672552195, 0.00149193490905986, 0;
+ 0.001556856557536741, 0.001873897075187184, 0;
+ -0.02491863898289429, -0.001742440642319028, 0]
 I = 96
 tracking.
 OpenGL matrix calculated.
@@ -120963,3 +121080,199 @@ OpenGL matrix calculated.
 I = 99
 tracking.
 OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99

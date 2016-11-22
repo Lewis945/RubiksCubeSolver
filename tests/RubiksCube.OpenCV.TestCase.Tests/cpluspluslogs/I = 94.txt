@@ -630,6 +630,7 @@ Tracked points after homography: ([427.13428, 227.33339;
  375.98041, 247.96669;
  374.15375, 273.72263;
  382.40717, 219.19965]
+Rigid: 103.546
 _____________ cameraPoseAndTriangulationFromFundamental minVal ________: 201.121
 _____________ cameraPoseAndTriangulationFromFundamental maxVal ________: 429.167
 Fundamental keeping 89 / 89
@@ -672,4 +673,7 @@ eigenvectors: [0.08936827900401986, 0.1200323130751703, 0.9887393764413773;
  0.9644161766670849, 0.2375768824847345, -0.1160114782755449]
 2nd row eigenvectors: [0.964416, 0.237577, -0.116011]
 normal of plane: [0.964416, 0.237577, -0.116011]
+p_to_plane_thresh: 4.71473e-05
+num inliers: 9
+status arr: [1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0]
 9/13 are coplanar

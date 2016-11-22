@@ -37,117 +37,171 @@ I = 40
 bootstrapping
 I = 41
 bootstrap tracking (500)
+Rigid: 0.317256
 I = 42
 bootstrap tracking (497)
+Rigid: 3.29109
 I = 43
 bootstrap tracking (468)
+Rigid: 8.00974
 I = 44
 bootstrap tracking (449)
+Rigid: 9.21919
 I = 45
 bootstrap tracking (449)
+Rigid: 8.5819
 I = 46
 bootstrap tracking (449)
+Rigid: 8.47086
 I = 47
 bootstrap tracking (405)
+Rigid: 6.06455
 I = 48
 bootstrap tracking (405)
+Rigid: 4.29397
 I = 49
 bootstrap tracking (405)
+Rigid: 2.76008
 I = 5
 I = 50
 bootstrap tracking (405)
+Rigid: 2.35414
 I = 51
 bootstrap tracking (405)
+Rigid: 3.47675
 I = 52
 bootstrap tracking (405)
+Rigid: 4.81675
 I = 53
 bootstrap tracking (405)
+Rigid: 12.4301
 I = 54
 bootstrap tracking (381)
+Rigid: 14.9848
 I = 55
 bootstrap tracking (380)
+Rigid: 18.0786
 I = 56
 bootstrap tracking (380)
+Rigid: 19.7189
 I = 57
 bootstrap tracking (380)
+Rigid: 21.5042
 I = 58
 bootstrap tracking (380)
+Rigid: 22.2356
 I = 59
 bootstrap tracking (380)
+Rigid: 22.9967
 I = 6
 I = 60
 bootstrap tracking (380)
+Rigid: 26.3408
 I = 61
 bootstrap tracking (380)
+Rigid: 31.0397
 I = 62
 bootstrap tracking (380)
+Rigid: 32.511
 I = 63
 bootstrap tracking (378)
+Rigid: 36.4663
 I = 64
 bootstrap tracking (366)
+Rigid: 39.0049
 I = 65
 bootstrap tracking (355)
+Rigid: 41.8036
 I = 66
 bootstrap tracking (355)
+Rigid: 47.6675
 I = 67
 bootstrap tracking (312)
+Rigid: 51.0077
 I = 68
 bootstrap tracking (312)
+Rigid: 54.5954
 I = 69
 bootstrap tracking (303)
+Rigid: 60.2
 I = 7
 I = 70
 bootstrap tracking (303)
+Rigid: 63.3426
 I = 71
 bootstrap tracking (301)
+Rigid: 67.4798
 I = 72
 bootstrap tracking (287)
+Rigid: 69.1986
 I = 73
 bootstrap tracking (287)
+Rigid: 73.54
 I = 74
 bootstrap tracking (287)
+Rigid: 76.4215
 I = 75
 bootstrap tracking (287)
+Rigid: 78.5982
 I = 76
 bootstrap tracking (277)
+Rigid: 77.9896
 I = 77
 bootstrap tracking (260)
+Rigid: 77.5028
 I = 78
 bootstrap tracking (259)
+Rigid: 77.258
 I = 79
 bootstrap tracking (259)
+Rigid: 78.2386
 I = 8
 I = 80
 bootstrap tracking (259)
+Rigid: 79.0535
 I = 81
 bootstrap tracking (259)
+Rigid: 79.0028
 I = 82
 bootstrap tracking (259)
+Rigid: 78.3534
 I = 83
 bootstrap tracking (259)
+Rigid: 78.0712
 I = 84
 bootstrap tracking (249)
+Rigid: 77.4912
 I = 85
 bootstrap tracking (248)
+Rigid: 78.4177
 I = 86
 bootstrap tracking (241)
+Rigid: 78.7099
 I = 87
 bootstrap tracking (200)
+Rigid: 82.6791
 I = 88
 bootstrap tracking (199)
+Rigid: 85.2167
 I = 89
 bootstrap tracking (198)
+Rigid: 85.653
 I = 9
 I = 90
 bootstrap tracking (163)
+Rigid: 88.8796
 I = 91
 bootstrap tracking (116)
+Rigid: 90.6239
 I = 92
 bootstrap tracking (110)
+Rigid: 93.0695
 I = 93
 bootstrap tracking (98)
+Rigid: 99.1621
 I = 94
 bootstrap tracking (89)
+Rigid: 103.546
 _____________ cameraPoseAndTriangulationFromFundamental minVal ________: 201.121
 _____________ cameraPoseAndTriangulationFromFundamental maxVal ________: 429.167
 Fundamental keeping 89 / 89
@@ -176,6 +230,7 @@ keeping 13 nicely reprojected points
 9/13 are coplanar
 I = 95
 bootstrap tracking (89)
+Rigid: 107.147
 _____________ cameraPoseAndTriangulationFromFundamental minVal ________: 196.532
 _____________ cameraPoseAndTriangulationFromFundamental maxVal ________: 428.096
 Fundamental keeping 89 / 89
@@ -307,4 +362,200 @@ OpenGL matrix calculated.
 I = 99
 tracking.
 OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
+tracking.
+OpenGL matrix calculated.
+I = 99
 GLEW 4.5 not supported
