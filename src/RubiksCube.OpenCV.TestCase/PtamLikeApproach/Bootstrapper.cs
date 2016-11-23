@@ -14,66 +14,49 @@ using System.Threading.Tasks;
 
 namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 {
-    class Bootstrapper
+    public class Bootstrapper
     {
-        static int speed = 100;
-        static Mat currentFrame;
-        //int startinPoint = 220;
-        static int startinPoint = 40;
-        static int i = 0;
+        private static int startinPoint = 40;
+        private static int i = 0;
 
-        public static void Run(string path)
+        public static void Run(string path, bool preprocess)
         {
-            Trace.Listeners.Add(new TextWriterTraceListener($"../../Logs/log {DateTime.Now:H-mm-ss dd-MM-yyyy}.txt", "tracelog"));
-
             var calibration = new CameraCalibrationInfo(560.764656335266f, 562.763179958161f, 295.849138757436f, 255.022208986073f);
+            var algorithm = new PtamLikeAlgorithm(calibration);
 
             var capture = new Capture(path);
 
-            //var image1Gray = new Mat();
-            //var image2Gray = new Mat();
+            Mat image;
+            for (int j = 0; j < startinPoint; j++)
+                image = capture.QueryFrame();
 
-            //CvInvoke.CvtColor(image1, image1Gray, ColorConversion.Rgb2Gray);
-            //CvInvoke.CvtColor(image2, image2Gray, ColorConversion.Rgb2Gray);
+            image = capture.QueryFrame();
+            algorithm.Bootstrap(image);
 
-            var tracker = new SimpleAdHocTracker(calibration);
-
-            var imageViewer = new ImageViewer();
-
-            new Task(() =>
+            if (preprocess)
             {
-                do
+                while (true)
                 {
-                    currentFrame = capture.QueryFrame();
-                    if (currentFrame == null)
+                    image = capture.QueryFrame();
+                    var result = algorithm.BootstrapTrack(image);
+                    if (result)
                         break;
-
-                    if (i == startinPoint)
-                    {
-                        tracker.Process(currentFrame, true);
-                    }
-                    else if (i > startinPoint)
-                    {
-                        tracker.Process(currentFrame, false);
-                    }
-
-                    CvInvoke.PutText(currentFrame, i.ToString(), new Point(20, 20), FontFace.HersheyPlain, 2, new Emgu.CV.Structure.MCvScalar(100, 10, 100));
-
-                    i++;
-
-                    imageViewer.Image = currentFrame;
-
-                    Thread.Sleep(1000 / 15);
                 }
-                while (true);
-
-            }).Start();
-
-            while (i < 75)
-            {
             }
-            Trace.Flush();
-            //imageViewer.ShowDialog();
+
+            ShowWindow(image, calibration, algorithm, preprocess, capture);
+        }
+
+        private static void ShowWindow(Mat img, CameraCalibrationInfo calibration, PtamLikeAlgorithm algorithm, bool preprocess, Capture capture = null)
+        {
+            double fps = capture?.GetCaptureProperty(CapProp.Fps) ?? 30;
+            using (var window = new PtamWindow(calibration, img))
+            {
+                if (!preprocess)
+                    window.Capture = capture;
+                window.Algorithm = algorithm;
+                window.Run(fps);
+            }
         }
     }
 }

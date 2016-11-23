@@ -33,7 +33,7 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
 
         public OpenTK.Matrix4 GetMat44()
         {
-            OpenTK.Matrix4 res = OpenTK.Matrix4.Identity;
+            var res = OpenTK.Matrix4.Identity;
 
             for (int col = 0; col < 3; col++)
             {

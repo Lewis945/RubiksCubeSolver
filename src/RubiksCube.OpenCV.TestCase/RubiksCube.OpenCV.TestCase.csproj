@@ -121,7 +121,10 @@
     <Compile Include="Examples\SiftExamples.cs" />
     <Compile Include="Examples\SurfExamples.cs" />
     <Compile Include="PtamLikeApproach\OpenCvUtilities.cs" />
+    <Compile Include="PtamLikeApproach\PtamLikeAlgorithm.cs" />
+    <Compile Include="PtamLikeApproach\PtamWindow.cs" />
     <Compile Include="PtamLikeApproach\SimpleAdHocTracker.cs" />
+    <Compile Include="PtamLikeApproach\TrackingInfo.cs" />
     <Compile Include="PtamLikeApproach\Utils.cs" />
   </ItemGroup>
   <ItemGroup>

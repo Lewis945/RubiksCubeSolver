@@ -26,7 +26,7 @@ namespace RubiksCube.OpenCV.TestCase
 
             //RubiksCube.OpenCV.TestCase.Kalman.Bootstrapper.Run();
 
-            RubiksCube.OpenCV.TestCase.PtamLikeApproach.Bootstrapper.Run("Videos\\cube2.avi");
+            RubiksCube.OpenCV.TestCase.PtamLikeApproach.Bootstrapper.Run("Videos\\cube2.avi", false);
 
             //UMat image;
             //image = SiftExamples.Run(new Mat("Images\\PyramidPatternTest.bmp", LoadImageType.Grayscale));

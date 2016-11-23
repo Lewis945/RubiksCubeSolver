@@ -30,10 +30,10 @@ namespace RubiksCube.OpenCV.TestCase.Tests
         private static readonly int StartinPoint = 40;
         private static readonly int BootstrappedPoint = 95;
 
-        //private static readonly string TestCaseProjectPath = @"C:\Users\zakharov\Documents\Repos\Mine\Rc\src\RubiksCube.OpenCV.TestCase";
-        private static readonly string TestCaseProjectPath = @"D:\Projects\RubiksCube\src\RubiksCube.OpenCV.TestCase";
-        //private static readonly string TestCaseTestProjectPath = "C:/Users/zakharov/Documents/Repos/Mine/Rc/tests/RubiksCube.OpenCV.TestCase.Tests";
-        private static readonly string TestCaseTestProjectPath = @"D:\Projects\RubiksCube\tests\RubiksCube.OpenCV.TestCase.Tests";
+        private static readonly string TestCaseProjectPath = @"C:\Users\zakharov\Documents\Repos\Mine\Rc\src\RubiksCube.OpenCV.TestCase";
+        //private static readonly string TestCaseProjectPath = @"D:\Projects\RubiksCube\src\RubiksCube.OpenCV.TestCase";
+        private static readonly string TestCaseTestProjectPath = "C:/Users/zakharov/Documents/Repos/Mine/Rc/tests/RubiksCube.OpenCV.TestCase.Tests";
+        //private static readonly string TestCaseTestProjectPath = @"D:\Projects\RubiksCube\tests\RubiksCube.OpenCV.TestCase.Tests";
 
         public SimpleAdHocTrackerTests()
         {
@@ -458,8 +458,6 @@ namespace RubiksCube.OpenCV.TestCase.Tests
                         var bootstrapping = numInliers / (double)trackedFeatures3D.Size < 0.75;
                         if (!bootstrapping)
                         {
-                            trackedFeatures3DMCplusPlus = Getmatrix($"I = {i}txt - trackedFeatures3DM.txt");
-
                             //enough features are coplanar, keep them and flatten them on the XY plane
                             Utils.KeepVectorsByStatus(ref trackedFeatures, ref trackedFeatures3D, statusVector);
 
@@ -467,14 +465,8 @@ namespace RubiksCube.OpenCV.TestCase.Tests
                             var projected = new Mat();
                             CvInvoke.PCAProject(trackedFeatures3Dm, mean, eigenvectors, projected);
                             var projectedMatrix = new Matrix<double>(projected.Rows, projected.Cols, projected.DataPointer);
-
-                            projectedTrackedFeaturesCplusPlus = Getmatrix($"I = {i}txt - projected trackedFeatures3mat.txt");
-                            CollectionAssert.AreEqual(projectedTrackedFeaturesCplusPlus.Data, projectedMatrix.Data, matrixComparer);
-
                             projectedMatrix.GetCol(2).SetValue(0);
                             projectedMatrix.CopyTo(trackedFeatures3Dm);
-
-                            CollectionAssert.AreEqual(trackedFeatures3DMCplusPlus.Data, trackedFeatures3Dm.Data, matrixComparer);
                         }
                         else
                         {
