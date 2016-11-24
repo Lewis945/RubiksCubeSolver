@@ -13,6 +13,7 @@ using Emgu.CV.CvEnum;
 using Emgu.CV.Features2D;
 using Emgu.CV.Structure;
 using Emgu.CV.Util;
+using OpenTK.Graphics.ES11;
 using RubiksCube.OpenCV.TestCase.AugmentedReality;
 
 namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
@@ -30,8 +31,8 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
         private readonly Mat _prevGray;
         private readonly Mat _currGray;
 
-        private Mat _raux;
-        private Mat _taux;
+        private VectorOfFloat _raux;
+        private VectorOfFloat _taux;
 
         private readonly ORBDetector _detector;
 
@@ -48,6 +49,10 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
         public VectorOfPoint3D32F TrackedFeatures3D => _trackedFeatures3D;
         public VectorOfKeyPoint TrackedFeatures => _trackedFeatures;
 
+        public Matrix<double> InitialP1 { get; set; }
+
+        public List<PlaneInfo> Planes { get; set; }
+
         #endregion
 
         #region .ctor
@@ -61,12 +66,17 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             _prevGray = new Mat();
             _currGray = new Mat();
 
-            _raux = new Mat();
-            _taux = new Mat();
+            _raux = new VectorOfFloat();
+            _taux = new VectorOfFloat();
 
             _bootstrapKp = new VectorOfKeyPoint();
             _trackedFeatures = new VectorOfKeyPoint();
             _trackedFeatures3D = new VectorOfPoint3D32F();
+
+            InitialP1 = new Matrix<double>(3, 4);
+            InitialP1.SetIdentity();
+
+            Planes = new List<PlaneInfo>();
         }
 
         #endregion
@@ -83,6 +93,8 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             _detector.DetectRaw(img, _bootstrapKp);
 
             _trackedFeatures = new VectorOfKeyPoint(_bootstrapKp.ToArray());
+
+            _trackedFeatures3D.Clear();
 
             CvInvoke.CvtColor(img, _prevGray, ColorConversion.Bgr2Gray);
         }
@@ -109,7 +121,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             CvInvoke.CvtColor(img, _currGray, ColorConversion.Bgr2Gray);
 
             CvInvoke.CalcOpticalFlowPyrLK(_prevGray, _currGray, Utils.GetPointsVector(_trackedFeatures), corners,
-                status, errors, new Size(11, 11), 3, new MCvTermCriteria(20, 0.03));
+                status, errors, new Size(11, 11), 3, new MCvTermCriteria(30, 0.01));
             _currGray.CopyTo(_prevGray);
 
             for (int j = 0; j < corners.Size; j++)
@@ -164,13 +176,12 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             if (CvInvoke.Norm(matrix.GetCol(2)) > 100)
             {
                 //camera motion is sufficient
-                var result = OpenCvUtilities.CameraPoseAndTriangulationFromFundamental(_calibrationInfo, _trackedFeatures, _bootstrapKp);
-
-                _trackedFeatures = result.FilteredTrackedFeaturesKp;
-                _bootstrapKp = result.FilteredBootstrapKp;
-
+                var result = OpenCvUtilities.CameraPoseAndTriangulationFromFundamental(_calibrationInfo, _trackedFeatures, _bootstrapKp, InitialP1);
                 if (result.Result)
                 {
+                    _trackedFeatures = result.FilteredTrackedFeaturesKp;
+                    _bootstrapKp = result.FilteredBootstrapKp;
+
                     _trackedFeatures3D = result.TrackedFeatures3D;
 
                     var tf3D = new double[_trackedFeatures3D.Size, 3];
@@ -202,7 +213,6 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
                     var normalOfPlaneMatrix = new Matrix<double>(normalOfPlane.Rows, normalOfPlane.Cols, normalOfPlane.DataPointer);
 
                     double pToPlaneThresh = Math.Sqrt(pca.Eigenvalues.ElementAt(2));
-
                     var statusArray = new byte[_trackedFeatures3D.Size];
                     for (int k = 0; k < _trackedFeatures3D.Size; k++)
                     {
@@ -232,6 +242,14 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
                         projectedMatrix.GetCol(2).SetValue(0);
                         projectedMatrix.CopyTo(trackedFeatures3Dm);
 
+                        InitialP1 = result.P2;
+
+                        Planes.Add(new PlaneInfo()
+                        {
+                            Normal = normalOfPlaneMatrix.Clone(),
+                            Points3D = new VectorOfPoint3D32F(_trackedFeatures3D.ToArray())
+                        });
+
                         return true;
                     }
                     else
@@ -244,6 +262,93 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             }
 
             return false;
+        }
+
+        public void Track(Mat img)
+        {
+            //Track detected features
+            if (_prevGray.IsEmpty)
+            {
+                const string error = "Previous frame is empty. Bootstrap first.";
+                throw new Exception(error);
+            }
+
+            if (img.IsEmpty || !img.IsEmpty && img.NumberOfChannels != 3)
+            {
+                const string error = "Image is not appropriate (Empty or wrong number of channels).";
+                throw new Exception(error);
+            }
+
+            var corners = new VectorOfPointF();
+            var status = new VectorOfByte();
+            var errors = new VectorOfFloat();
+
+            CvInvoke.CvtColor(img, _currGray, ColorConversion.Bgr2Gray);
+
+            CvInvoke.CalcOpticalFlowPyrLK(_prevGray, _currGray, Utils.GetPointsVector(_trackedFeatures), corners,
+                status, errors, new Size(11, 11), 3, new MCvTermCriteria(30, 0.01));
+            _currGray.CopyTo(_prevGray);
+
+            if (CvInvoke.CountNonZero(status) < status.Size * 0.8)
+            {
+                throw new Exception("Tracking failed.");
+            }
+
+            _trackedFeatures = Utils.GetKeyPointsVector(corners);
+
+            Utils.KeepVectorsByStatus(ref _trackedFeatures, ref _bootstrapKp, status);
+
+            _canCalcMvm = _trackedFeatures.Size >= MinInliers;
+
+            if (_canCalcMvm)
+            {
+                var rotationVector32F = new VectorOfFloat();
+                var translationVector32F = new VectorOfFloat();
+                var rotationVector = new Mat();
+                var translationVector = new Mat();
+
+                CvInvoke.SolvePnP(_trackedFeatures3D, Utils.GetPointsVector(_trackedFeatures), _calibrationInfo.Intrinsic, _calibrationInfo.Distortion, rotationVector, translationVector);
+
+                rotationVector.ConvertTo(rotationVector32F, DepthType.Cv32F);
+                translationVector.ConvertTo(translationVector32F, DepthType.Cv32F);
+
+                _raux = rotationVector32F;
+                _taux = translationVector32F;
+
+                var rotationMat = new Mat();
+                CvInvoke.Rodrigues(rotationVector32F, rotationMat);
+                var rotationMatrix = new Matrix<double>(rotationMat.Rows, rotationMat.Cols, rotationMat.DataPointer);
+
+                var cvToGl = new Matrix<double>(4, 4);
+                cvToGl.SetZero();
+
+                //cvToGl[0, 0] = 1.0f;
+                //cvToGl[1, 1] = -1.0f;// Invert the y axis
+                //cvToGl[2, 2] = -1.0f;// invert the z axis
+                //cvToGl[3, 3] = 1.0f;
+
+                // [R | t] matrix
+                //Mat_<double> para = Mat_ < double >::eye(4, 4);
+                //Rot.convertTo(para(cv::Rect(0, 0, 3, 3)), CV_64F);
+                //Tvec.copyTo(para(cv::Rect(3, 0, 1, 3)));
+                //para = cvToGl * para;
+
+                var pose3D = new Transformation();
+                // Copy to transformation matrix
+                for (int col = 0; col < 3; col++)
+                {
+                    for (int row = 0; row < 3; row++)
+                    {
+                        pose3D.SetRotationMatrixValue(row, col, (float)rotationMatrix[row, col]); // Copy rotation component
+                    }
+                    pose3D.SetTranslationVectorValue(col, translationVector32F[col]); // Copy translation component
+                }
+
+                // Since solvePnP finds camera location, w.r.t to marker pose, to get marker pose w.r.t to the camera we invert it.
+                pose3D = pose3D.GetInverted();
+
+                //Mat(para.t()).copyTo(modelview_matrix); // transpose to col-major for OpenGL
+            }
         }
 
         //public void Process(Mat img, bool newmap)

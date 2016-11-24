@@ -539,7 +539,9 @@ namespace RubiksCube.OpenCV.TestCase.Tests
                 { 0.297551532077682, 0.001072849756781113, -0.04743653296950803 }
             });
 
-            result = OpenCvUtilities.CameraPoseAndTriangulationFromFundamental(_calibration, Utils.GetKeyPointsVector(_trackedFeatures2), Utils.GetKeyPointsVector(_bootstrapKp));
+            var p1Init = new Matrix<double>(3, 4);
+            p1Init.SetIdentity();
+            result = OpenCvUtilities.CameraPoseAndTriangulationFromFundamental(_calibration, Utils.GetKeyPointsVector(_trackedFeatures2), Utils.GetKeyPointsVector(_bootstrapKp), p1Init);
 
             Assert.AreEqual(196.532, result.Min, 0.1);
             Assert.AreEqual(428.096, result.Max, 0.1);

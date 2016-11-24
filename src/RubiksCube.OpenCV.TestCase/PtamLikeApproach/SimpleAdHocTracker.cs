@@ -215,7 +215,9 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             if (CvInvoke.Norm(matrix.GetCol(2)) > 100)
             {
                 //camera motion is sufficient
-                var result = OpenCvUtilities.CameraPoseAndTriangulationFromFundamental(_calibrationInfo, _trackedFeatures, _bootstrapKp);
+                var p1 = new Matrix<double>(3,4);
+                p1.SetIdentity();
+                var result = OpenCvUtilities.CameraPoseAndTriangulationFromFundamental(_calibrationInfo, _trackedFeatures, _bootstrapKp, p1);
 
                 _trackedFeatures = result.FilteredTrackedFeaturesKp;
                 _bootstrapKp = result.FilteredBootstrapKp;

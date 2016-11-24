@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Emgu.CV;
 using Emgu.CV.CvEnum;
@@ -51,11 +52,12 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             // this is called when the window starts running
         }
 
+        private bool _capture = true;
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
-            Title = "PTAM (Vsync: " + VSync + ") " + "  FPS: " + (1f / e.Time).ToString("0.");
+            Title = $"PTAM (Vsync: {VSync} FPS: {(1f / e.Time):0.} / Plane with normal {Algorithm.Planes.LastOrDefault()?.Normal[0, 0] ?? 0} found.";
 
-            if (Capture != null)
+            if (Capture != null && _capture)
             {
                 var image = Capture.QueryFrame();
                 var result = Algorithm.BootstrapTrack(image);
@@ -63,7 +65,13 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
                 {
                     _currentProcessedFrame = ProcessFrame(image);
                     _backgroundImage = _currentProcessedFrame.Image;
-                    Capture = null;
+                    _capture = false;
+                    //Task.Run(() =>
+                    //{
+                    //    Thread.Sleep(5000);
+                    //    _capture = true;
+                    //    Algorithm.Bootstrap(image);
+                    //});
                 }
                 else
                 {
@@ -98,6 +106,9 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
             var patternPose = info.ComputePose(points3D, points2D, _calibration, out raux, out taux);
 
+            Algorithm.Planes.Last().Raux = raux;
+            Algorithm.Planes.Last().Taux = taux;
+
             var axis = new VectorOfPoint3D32F(new[]
             {
                 new MCvPoint3D32f(-3, 3, -1),
@@ -112,9 +123,26 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             var centerPoints = new VectorOfPointF();
             CvInvoke.ProjectPoints(centers, raux, taux, _calibration.Intrinsic, _calibration.Distortion, centerPoints);
 
-            CvInvoke.Line(_backgroundImage, new Point((int)centerPoints[0].X, (int)centerPoints[0].Y), new Point((int)imgPoints[0].X, (int)imgPoints[0].Y), new MCvScalar(255, 0, 0), 5);
-            CvInvoke.Line(_backgroundImage, new Point((int)centerPoints[0].X, (int)centerPoints[0].Y), new Point((int)imgPoints[1].X, (int)imgPoints[1].Y), new MCvScalar(0, 255, 0), 5);
-            CvInvoke.Line(_backgroundImage, new Point((int)centerPoints[0].X, (int)centerPoints[0].Y), new Point((int)imgPoints[2].X, (int)imgPoints[2].Y), new MCvScalar(0, 0, 255), 5);
+            //CvInvoke.Line(_backgroundImage, new Point((int)centerPoints[0].X, (int)centerPoints[0].Y), new Point((int)imgPoints[0].X, (int)imgPoints[0].Y), new MCvScalar(255, 0, 0), 5);
+            //CvInvoke.Line(_backgroundImage, new Point((int)centerPoints[0].X, (int)centerPoints[0].Y), new Point((int)imgPoints[1].X, (int)imgPoints[1].Y), new MCvScalar(0, 255, 0), 5);
+            //CvInvoke.Line(_backgroundImage, new Point((int)centerPoints[0].X, (int)centerPoints[0].Y), new Point((int)imgPoints[2].X, (int)imgPoints[2].Y), new MCvScalar(0, 0, 255), 5);
+
+            var featuresrPoints = new VectorOfPointF();
+            CvInvoke.ProjectPoints(Algorithm.TrackedFeatures3D, raux, taux, _calibration.Intrinsic,
+                _calibration.Distortion, featuresrPoints);
+            for (int i = 0; i < featuresrPoints.Size; i++)
+            {
+                var feature = featuresrPoints[i];
+                CvInvoke.Circle(_backgroundImage, new Point((int)feature.X, (int)feature.Y), 2,
+                    new MCvScalar(0, 255, 0), 2);
+            }
+
+            for (int i = 0; i < Algorithm.TrackedFeatures.Size; i++)
+            {
+                var feature = Algorithm.TrackedFeatures[i];
+                CvInvoke.Circle(_backgroundImage, new Point((int)feature.Point.X, (int)feature.Point.Y), 1,
+                    new MCvScalar(0, 0, 255), 1);
+            }
 
             return new ProcessedFrame { IsPatternPresent = true, PatternPose = patternPose, Image = img };
         }
@@ -127,7 +155,6 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
             // Render background
             DrawCameraFrame(_backgroundImage);
-            //DrawAugmentedScene(_currentProcessedFrame, _backgroundImage);
 
             SwapBuffers();
         }
@@ -186,63 +213,6 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             GL.DisableClientState(ArrayCap.VertexArray);
             GL.DisableClientState(ArrayCap.TextureCoordArray);
             GL.Disable(EnableCap.Texture2D);
-        }
-
-        private void DrawAugmentedScene(ProcessedFrame processedFrame, Mat image)
-        {
-            // Init augmentation projection
-            int w = image.Cols;
-            int h = image.Rows;
-            var projectionMatrix = BuildProjectionMatrix(_calibration, w, h);
-
-            GL.MatrixMode(MatrixMode.Projection);
-            GL.LoadMatrix(ref projectionMatrix);
-
-            GL.MatrixMode(MatrixMode.Modelview);
-            GL.LoadIdentity();
-
-            if (processedFrame.IsPatternPresent)
-            {
-                // Set the pattern transformation
-                var glMatrix = processedFrame.PatternPose.GetMat44();
-                GL.LoadMatrix(ref glMatrix);
-            }
-        }
-
-        private static Matrix4 BuildProjectionMatrix(CameraCalibrationInfo calibration, int screenWidth, int screenHeight)
-        {
-            float nearPlane = 0.01f;  // Near clipping distance
-            float farPlane = 100.0f;  // Far clipping distance
-
-            // Camera parameters
-            double fX = calibration.Fx; // Focal length in x axis
-            double fY = calibration.Fy; // Focal length in y axis (usually the same?)
-            double cX = calibration.Cx; // Camera primary point x
-            double cY = calibration.Cy; // Camera primary point y
-
-            var projectionMatrix = new Matrix4(
-                (float)(-2.0 * fX / screenWidth),
-                0.0f,
-                0.0f,
-                0.0f,
-                //----------
-                0.0f,
-                (float)(2.0f * fY / screenHeight),
-                0.0f,
-                0.0f,
-                //----------
-                (float)(2.0f * cX / screenWidth - 1.0f),
-                (float)(2.0f * cY / screenHeight - 1.0f),
-                -(farPlane + nearPlane) / (farPlane - nearPlane),
-                -1.0f,
-                //----------
-                0.0f,
-                0.0f,
-                -2.0f * farPlane * nearPlane / (farPlane - nearPlane),
-                0.0f
-            );
-
-            return projectionMatrix;
         }
     }
 }

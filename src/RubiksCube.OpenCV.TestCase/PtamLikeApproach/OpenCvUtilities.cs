@@ -153,9 +153,8 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             if (percentage > 0.75)
             {
                 //calculate reprojection
-                var r = p.GetSubRect(new Rectangle(0, 0, 3, 3));
-                var rvec = new VectorOfFloat(new float[] { 0, 0, 0 }); //Rodrigues(R ,rvec);
-                var tvec = new VectorOfFloat(new float[] { 0, 0, 0 }); // = P.col(3);
+                var rvec = new VectorOfFloat(new float[] { 0, 0, 0 });
+                var tvec = new VectorOfFloat(new float[] { 0, 0, 0 });
                 var reprojectedPtSet1 = new VectorOfPointF();
                 CvInvoke.ProjectPoints(pt3D, rvec, tvec, calibrationInfo.Intrinsic, calibrationInfo.Distortion,
                     reprojectedPtSet1);
@@ -206,8 +205,11 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
         /// <param name="calibrationInfo"></param>
         /// <param name="trackedFeaturesKp"></param>
         /// <param name="bootstrapKp"></param>
+        /// <param name="initialP1"></param>
+        /// <param name="minInliers"></param>
         /// <returns></returns>
-        public static CameraPoseAndTriangulationFromFundamentalResult CameraPoseAndTriangulationFromFundamental(CameraCalibrationInfo calibrationInfo, VectorOfKeyPoint trackedFeaturesKp, VectorOfKeyPoint bootstrapKp, int minInliers=10)
+        public static CameraPoseAndTriangulationFromFundamentalResult CameraPoseAndTriangulationFromFundamental(CameraCalibrationInfo calibrationInfo, VectorOfKeyPoint trackedFeaturesKp, 
+            VectorOfKeyPoint bootstrapKp, Matrix<double> initialP1, int minInliers = 10)
         {
             var result = new CameraPoseAndTriangulationFromFundamentalResult();
 
@@ -272,20 +274,19 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
                 var trPts = Utils.GetPointsVector(trackedFeaturesKp);
                 var btPts = Utils.GetPointsVector(bootstrapKp);
 
-                var p = new Matrix<double>(3, 4);
-                p.SetIdentity(new MCvScalar(1f));
+                var p = initialP1.Clone();
 
                 //TODO: there are 4 different combinations for P1...
-                var pMat1 = new Matrix<double>(new double[3, 4] {
+                var pMat1 = new Matrix<double>(new[,] {
                     { r1[0,0], r1[0,1], r1[0,2], t1[0,0] },
                     { r1[1,0], r1[1,1], r1[1,2], t1[1,0] },
                     { r1[2,0], r1[2,1], r1[2,2], t1[2,0] }
                 });
 
-                var  triangulationResult = TriangulateAndCheckReproj(calibrationInfo, trackedFeaturesKp, bootstrapKp, p, pMat1);
+                var triangulationResult = TriangulateAndCheckReproj(calibrationInfo, trackedFeaturesKp, bootstrapKp, p, pMat1);
                 if (!triangulationResult.Result)
                 {
-                    pMat1 = new Matrix<double>(new double[3, 4] {
+                    pMat1 = new Matrix<double>(new[,] {
                         { r1[0,0], r1[0,1], r1[0,2], t2[0,0] },
                         { r1[1,0], r1[1,1], r1[1,2], t2[1,0] },
                         { r1[2,0], r1[2,1], r1[2,2], t2[2,0] }
@@ -294,7 +295,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
                     triangulationResult = TriangulateAndCheckReproj(calibrationInfo, trackedFeaturesKp, bootstrapKp, p, pMat1);
                     if (!triangulationResult.Result)
                     {
-                        pMat1 = new Matrix<double>(new double[3, 4] {
+                        pMat1 = new Matrix<double>(new[,] {
                             { r2[0,0], r2[0,1], r2[0,2], t2[0,0] },
                             { r2[1,0], r2[1,1], r2[1,2], t2[1,0] },
                             { r2[2,0], r2[2,1], r2[2,2], t2[2,0] }
@@ -303,7 +304,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
                         triangulationResult = TriangulateAndCheckReproj(calibrationInfo, trackedFeaturesKp, bootstrapKp, p, pMat1);
                         if (!triangulationResult.Result)
                         {
-                            pMat1 = new Matrix<double>(new double[3, 4] {
+                            pMat1 = new Matrix<double>(new[,] {
                                 { r2[0,0], r2[0,1], r2[0,2], t1[0,0] },
                                 { r2[1,0], r2[1,1], r2[1,2], t1[1,0] },
                                 { r2[2,0], r2[2,1], r2[2,2], t1[2,0] }

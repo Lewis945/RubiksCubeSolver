@@ -266,45 +266,24 @@ namespace RubiksCube.OpenCV.TestCase.Tests
             new ORBDetector().DetectRaw(prevGray, bootstrapKp);
 
             var trackedFeatures = new VectorOfKeyPoint(bootstrapKp.ToArray());
-            VectorOfPoint3D32F trackedFeatures3D;
 
             //-------------------------------------------------------------------------
 
             var pointComparer = Comparer<PointF>.Create((p1, p2) => Math.Abs(p1.X - p2.X) < 0.0001f && Math.Abs(p1.Y - p2.Y) < 0.0001f ? 0 : 1);
             var point3DComparer = Comparer<MCvPoint3D32f>.Create((p1, p2) => Math.Abs(p1.X - p2.X) < 0.0001f && Math.Abs(p1.Y - p2.Y) < 0.0001f && Math.Abs(p1.Z - p2.Z) < 0.0001f ? 0 : 1);
-            var matrixComparer = Comparer<double>.Create((x, y) => Math.Abs(x - y) < 0.01f ? 0 : 1);
-
-            VectorOfPointF bootstrapPointsBeforeOpticalFlowCplusPlus;
-            VectorOfPointF trackedPointsBeforeOpticalFlowCplusPlus;
-            VectorOfPointF bootstrapPointsAfterOpticalFlowCplusPlus;
-            VectorOfPointF trackedPointsAfterOpticalFlowCplusPlus;
-            VectorOfPointF bootstrapPointsAfterHomographyCplusPlus;
-            VectorOfPointF trackedPointsAfterHomographyCplusPlus;
-
-            Matrix<double> homographyCplusPlus;
-            VectorOfByte homographyMaskCplusPlus;
-
-            VectorOfPoint3D32F points3dCplusPlus;
-            Matrix<double> eigenvectorsCplusPlus;
-            double[] normalOfPlaneCplusPlus;
-
-            double pToPlaneTrashCplusPlus;
-            int numInliersCplusPlus;
-            VectorOfByte statusArrCplusPlus;
-            Matrix<double> trackedFeatures3DMCplusPlus;
-            Matrix<double> projectedTrackedFeaturesCplusPlus;
+            var matrixComparer = Comparer<double>.Create((x, y) => Math.Abs(x - y) < 0.0001f ? 0 : 1);
 
             for (int i = 41; i <= 95; i++)
             {
-                bootstrapPointsBeforeOpticalFlowCplusPlus = GetPoints($"I = {i}txt - Bootstrap points before optical flow.txt");
-                trackedPointsBeforeOpticalFlowCplusPlus = GetPoints($"I = {i}txt - Tracked points before optical flow.txt");
-                bootstrapPointsAfterOpticalFlowCplusPlus = GetPoints($"I = {i}txt - Bootstrap points after optical flow.txt");
-                trackedPointsAfterOpticalFlowCplusPlus = GetPoints($"I = {i}txt - Tracked points after optical flow.txt");
-                bootstrapPointsAfterHomographyCplusPlus = GetPoints($"I = {i}txt - Bootstrap points after homography.txt");
-                trackedPointsAfterHomographyCplusPlus = GetPoints($"I = {i}txt - Tracked points after homography.txt");
+                var bootstrapPointsBeforeOpticalFlowCplusPlus = GetPoints($"I = {i}txt - Bootstrap points before optical flow.txt");
+                var trackedPointsBeforeOpticalFlowCplusPlus = GetPoints($"I = {i}txt - Tracked points before optical flow.txt");
+                var bootstrapPointsAfterOpticalFlowCplusPlus = GetPoints($"I = {i}txt - Bootstrap points after optical flow.txt");
+                var trackedPointsAfterOpticalFlowCplusPlus = GetPoints($"I = {i}txt - Tracked points after optical flow.txt");
+                var bootstrapPointsAfterHomographyCplusPlus = GetPoints($"I = {i}txt - Bootstrap points after homography.txt");
+                var trackedPointsAfterHomographyCplusPlus = GetPoints($"I = {i}txt - Tracked points after homography.txt");
 
-                homographyCplusPlus = Getmatrix3X3($"I = {i}txt - Homography.txt");
-                homographyMaskCplusPlus = GetByteVector($"I = {i}txt - Homography mask.txt");
+                var homographyCplusPlus = Getmatrix3X3($"I = {i}txt - Homography.txt");
+                var homographyMaskCplusPlus = GetByteVector($"I = {i}txt - Homography mask.txt");
 
                 var corners = new VectorOfPointF();
                 var status = new VectorOfByte();
@@ -314,7 +293,7 @@ namespace RubiksCube.OpenCV.TestCase.Tests
                 CollectionAssert.AreEqual(Utils.GetPointsVector(trackedFeatures).ToArray(), trackedPointsBeforeOpticalFlowCplusPlus.ToArray(), pointComparer);
 
                 CvInvoke.CalcOpticalFlowPyrLK(prevGray, currentGray, Utils.GetPointsVector(trackedFeatures), corners,
-                    status, errors, new Size(11, 11), 3, new MCvTermCriteria(20, 0.03));
+                    status, errors, new Size(11, 11), 3, new MCvTermCriteria(30, 0.01));
                 currentGray.CopyTo(prevGray);
 
                 if (CvInvoke.CountNonZero(status) < status.Size * 0.8)
@@ -322,9 +301,7 @@ namespace RubiksCube.OpenCV.TestCase.Tests
                     throw new Exception("Tracking failed.");
                 }
 
-                //trackedFeatures = Utils.GetKeyPointsVector(corners);
-                trackedFeatures = Utils.GetKeyPointsVector(trackedPointsAfterOpticalFlowCplusPlus);
-
+                trackedFeatures = Utils.GetKeyPointsVector(corners);
                 Utils.KeepVectorsByStatus(ref trackedFeatures, ref bootstrapKp, status);
 
                 CollectionAssert.AreEqual(Utils.GetPointsVector(bootstrapKp).ToArray(), bootstrapPointsAfterOpticalFlowCplusPlus.ToArray(), pointComparer);
@@ -371,25 +348,27 @@ namespace RubiksCube.OpenCV.TestCase.Tests
 
                 if (CvInvoke.Norm(matrix.GetCol(2)) > 100)
                 {
-                    points3dCplusPlus = GetPoints3d($"I = {i}txt - 3d points.txt");
-                    eigenvectorsCplusPlus = Getmatrix3X3($"I = {i}txt - eigenvectors.txt");
-                    normalOfPlaneCplusPlus = GetDoubleArray($"I = {i}txt - normal of plane.txt");
+                    var points3DCplusPlus = GetPoints3d($"I = {i}txt - 3d points.txt");
+                    var eigenvectorsCplusPlus = Getmatrix3X3($"I = {i}txt - eigenvectors.txt");
+                    var normalOfPlaneCplusPlus = GetDoubleArray($"I = {i}txt - normal of plane.txt");
 
                     //camera motion is sufficient
-                    var result = OpenCvUtilities.CameraPoseAndTriangulationFromFundamental(_calibration, trackedFeatures, bootstrapKp);
+                    var p1Init = new Matrix<double>(3, 4);
+                    p1Init.SetIdentity();
+                    var result = OpenCvUtilities.CameraPoseAndTriangulationFromFundamental(_calibration, trackedFeatures, bootstrapKp, p1Init);
 
                     trackedFeatures = result.FilteredTrackedFeaturesKp;
                     bootstrapKp = result.FilteredBootstrapKp;
 
                     if (result.Result)
                     {
-                        pToPlaneTrashCplusPlus = GetDouble($"I = {i}txt - p_to_plane_thresh.txt");
-                        numInliersCplusPlus = GetInt($"I = {i}txt - num inliers.txt");
-                        statusArrCplusPlus = GetByteVector($"I = {i}txt - status arr.txt");
+                        double pToPlaneTrashCplusPlus = GetDouble($"I = {i}txt - p_to_plane_thresh.txt");
+                        int numInliersCplusPlus = GetInt($"I = {i}txt - num inliers.txt");
+                        var statusArrCplusPlus = GetByteVector($"I = {i}txt - status arr.txt");
 
-                        trackedFeatures3D = result.TrackedFeatures3D;
+                        var trackedFeatures3D = result.TrackedFeatures3D;
 
-                        CollectionAssert.AreEqual(trackedFeatures3D.ToArray(), points3dCplusPlus.ToArray(), point3DComparer);
+                        CollectionAssert.AreEqual(trackedFeatures3D.ToArray(), points3DCplusPlus.ToArray(), point3DComparer);
 
                         //var trackedFeatures3Dm = Utils.Get3dPointsMat(trackedFeatures3D);
                         var tf3D = new double[trackedFeatures3D.Size, 3];
@@ -412,16 +391,12 @@ namespace RubiksCube.OpenCV.TestCase.Tests
 
                         CollectionAssert.AreEqual(eigenvectorsMatrix.Data, eigenvectorsCplusPlus.Data, matrixComparer);
 
-                        // Step 2. Subtract the mean
-                        double[] meanArr = tf3D.Mean(0);
-                        double[,] dataAdjustArr = tf3D.Subtract(meanArr, 0);
-
                         var method = PrincipalComponentMethod.Center;
                         var pca = new PrincipalComponentAnalysis(method);
                         pca.Learn(tf3D.ToJagged());
-
+                        
                         var meanMatrix = new Matrix<double>(mean.Rows, mean.Cols, mean.DataPointer);
-                        CollectionAssert.AreEqual(meanMatrix.Data.ToJagged()[0], meanArr, matrixComparer);
+                        CollectionAssert.AreEqual(meanMatrix.Data.ToJagged()[0], pca.Means, matrixComparer);
 
                         int numInliers = 0;
                         var normalOfPlane = eigenvectorsMatrix.GetRow(2).ToUMat().ToMat(AccessType.Fast);
@@ -434,13 +409,13 @@ namespace RubiksCube.OpenCV.TestCase.Tests
 
                         double pToPlaneThresh = Math.Sqrt(pca.Eigenvalues.ElementAt(2));
 
-                        Assert.AreEqual(pToPlaneTrashCplusPlus, pToPlaneThresh, 0.2);
+                        Assert.AreEqual(pToPlaneTrashCplusPlus, pToPlaneThresh, 0.0001);
 
                         var statusArray = new byte[trackedFeatures3D.Size];
                         for (int k = 0; k < trackedFeatures3D.Size; k++)
                         {
                             var t1 = new double[] { trackedFeatures3D[k].X, trackedFeatures3D[k].Y, trackedFeatures3D[k].Z };
-                            var t2 = t1.Subtract(meanArr);
+                            var t2 = t1.Subtract(pca.Means);
                             var w = new Matrix<double>(new[,] { { t2[0], t2[1], t2[2] } });
                             double d = Math.Abs(normalOfPlane.Dot(w));
                             if (d < pToPlaneThresh)
@@ -455,7 +430,7 @@ namespace RubiksCube.OpenCV.TestCase.Tests
                         var statusVector = new VectorOfByte(statusArray);
                         CollectionAssert.AreEqual(statusArrCplusPlus.ToArray(), statusVector.ToArray());
 
-                        var bootstrapping = numInliers / (double)trackedFeatures3D.Size < 0.75;
+                        bool bootstrapping = numInliers / (double)trackedFeatures3D.Size < 0.75;
                         if (!bootstrapping)
                         {
                             //enough features are coplanar, keep them and flatten them on the XY plane
@@ -470,13 +445,10 @@ namespace RubiksCube.OpenCV.TestCase.Tests
                         }
                         else
                         {
-                            //cerr << "not enough features are coplanar" << "\n";
                             bootstrapKp = bootstrapKpOrig;
                             trackedFeatures = trackedFeaturesOrig;
                         }
                     }
-
-                    //return true;
                 }
 
                 currentGray = capture.QueryFrame();
