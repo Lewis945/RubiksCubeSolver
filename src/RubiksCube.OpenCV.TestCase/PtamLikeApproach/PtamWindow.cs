@@ -73,8 +73,8 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
             Algorithm.Process(img, _newMap);
 
-            if (Algorithm.Bootstrapping) _newMap = false;
-            if (Algorithm.Bootstrapping || !Algorithm.Tracking) return img;
+            if (Algorithm.IsBootstrapping) _newMap = false;
+            if (Algorithm.IsBootstrapping || !Algorithm.IsTracking) return img;
 
             //Thread.Sleep(1000);
 

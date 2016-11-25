@@ -25,9 +25,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
         private const double RansacThreshold = 0.99;
         private const int MinInliers = 10;
 
-        private bool _bootstrapping;
         private bool _canCalcMvm;
-        private bool _tracking;
 
         private readonly Mat _prevGray;
         private readonly Mat _currGray;
@@ -50,8 +48,8 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
         public VectorOfPoint3D32F TrackedFeatures3D => _trackedFeatures3D;
         public VectorOfKeyPoint TrackedFeatures => _trackedFeatures;
 
-        public bool Bootstrapping => _bootstrapping;
-        public bool Tracking => _tracking;
+        public bool IsBootstrapping { get; private set; }
+        public bool IsTracking { get; private set; }
 
         public VectorOfFloat Raux => _raux;
         public VectorOfFloat Taux => _taux;
@@ -92,9 +90,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
         public void Bootstrap(Mat img)
         {
-            //Detect first features in the image (clear any current tracks)
-            if (img.IsEmpty || !img.IsEmpty && img.NumberOfChannels != 3)
-                throw new Exception("Image is not appropriate (Empty or wrong number of channels).");
+            ValidateImages(null, img);
 
             _bootstrapKp.Clear();
             _detector.DetectRaw(img, _bootstrapKp);
@@ -164,7 +160,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
                         return true;
                     }
-                    
+
                     //cerr << "not enough features are coplanar" << "\n";
                     _bootstrapKp = bootstrapKpOrig;
                     _trackedFeatures = trackedFeaturesOrig;
@@ -196,7 +192,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             rotationVector.ConvertTo(rotationVector32F, DepthType.Cv32F);
             translationVector.ConvertTo(translationVector32F, DepthType.Cv32F);
 
-            ComputeRotationAndTranslation(_trackedFeatures3D,_trackedFeatures,_calibrationInfo, out _raux, out _taux);
+            ComputeRotationAndTranslation(_trackedFeatures3D, _trackedFeatures, _calibrationInfo, out _raux, out _taux);
 
             var rotationMat = new Mat();
             CvInvoke.Rodrigues(rotationVector32F, rotationMat);
@@ -241,22 +237,22 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             if (newMap)
             {
                 Bootstrap(img);
-                _bootstrapping = true;
+                IsBootstrapping = true;
             }
-            else if (_bootstrapping)
+            else if (IsBootstrapping)
             {
                 result = BootstrapTrack(img);
                 if (result)
                 {
-                    _bootstrapping = false;
+                    IsBootstrapping = false;
                 }
             }
-            else if (!_bootstrapping)
+            else if (!IsBootstrapping)
             {
                 result = Track(img);
                 if (result)
                 {
-                    _tracking = true;
+                    IsTracking = true;
                 }
             }
         }
@@ -267,13 +263,13 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
         private static void ValidateImages(Mat prevGray, Mat img)
         {
-            if (prevGray.IsEmpty)
+            if (prevGray != null && prevGray.IsEmpty)
             {
                 const string error = "Previous frame is empty. Bootstrap first.";
                 throw new Exception(error);
             }
 
-            if (img.IsEmpty || !img.IsEmpty && img.NumberOfChannels != 3)
+            if (img != null && img.IsEmpty || !img.IsEmpty && img.NumberOfChannels != 3)
             {
                 const string error = "Image is not appropriate (Empty or wrong number of channels).";
                 throw new Exception(error);
