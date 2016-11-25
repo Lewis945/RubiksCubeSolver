@@ -113,9 +113,6 @@
     <Compile Include="Examples\FreakExamples.cs" />
     <Compile Include="Examples\OrbExamples.cs" />
     <Compile Include="PtamLikeApproach\Bootstrapper.cs" />
-    <Compile Include="Kalman\Bootstrapper.cs" />
-    <Compile Include="Kalman\SimpleLinearKalman.cs" />
-    <Compile Include="Kalman\Voltmeter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Examples\SiftExamples.cs" />

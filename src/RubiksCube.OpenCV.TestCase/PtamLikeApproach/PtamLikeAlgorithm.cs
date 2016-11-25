@@ -27,6 +27,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
         private bool _bootstrapping;
         private bool _canCalcMvm;
+        private bool _tracking;
 
         private readonly Mat _prevGray;
         private readonly Mat _currGray;
@@ -48,6 +49,12 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
         public VectorOfPoint3D32F TrackedFeatures3D => _trackedFeatures3D;
         public VectorOfKeyPoint TrackedFeatures => _trackedFeatures;
+
+        public bool Bootstrapping => _bootstrapping;
+        public bool Tracking => _tracking;
+
+        public VectorOfFloat Raux => _raux;
+        public VectorOfFloat Taux => _taux;
 
         public Matrix<double> InitialP1 { get; set; }
 
@@ -149,7 +156,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             var inlierMask = new VectorOfByte();
             var homography = new Mat();
             if (_trackedFeatures.Size > 4)
-                CvInvoke.FindHomography(Utils.GetPointsVector(_trackedFeatures), Utils.GetPointsVector(_bootstrapKp), homography, HomographyMethod.Ransac, 0.99,
+                CvInvoke.FindHomography(Utils.GetPointsVector(_trackedFeatures), Utils.GetPointsVector(_bootstrapKp), homography, HomographyMethod.Ransac, RansacThreshold,
                     inlierMask);
 
             var homographyMatrix = new Matrix<double>(homography.Rows, homography.Cols, homography.DataPointer);
@@ -264,7 +271,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             return false;
         }
 
-        public void Track(Mat img)
+        public bool Track(Mat img)
         {
             //Track detected features
             if (_prevGray.IsEmpty)
@@ -300,81 +307,83 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
             _canCalcMvm = _trackedFeatures.Size >= MinInliers;
 
-            if (_canCalcMvm)
+            if (!_canCalcMvm) return false;
+
+            var rotationVector32F = new VectorOfFloat();
+            var translationVector32F = new VectorOfFloat();
+            var rotationVector = new Mat();
+            var translationVector = new Mat();
+
+            CvInvoke.SolvePnP(_trackedFeatures3D, Utils.GetPointsVector(_trackedFeatures), _calibrationInfo.Intrinsic, _calibrationInfo.Distortion, rotationVector, translationVector);
+
+            rotationVector.ConvertTo(rotationVector32F, DepthType.Cv32F);
+            translationVector.ConvertTo(translationVector32F, DepthType.Cv32F);
+
+            _raux = rotationVector32F;
+            _taux = translationVector32F;
+
+            var rotationMat = new Mat();
+            CvInvoke.Rodrigues(rotationVector32F, rotationMat);
+            var rotationMatrix = new Matrix<double>(rotationMat.Rows, rotationMat.Cols, rotationMat.DataPointer);
+
+            var cvToGl = new Matrix<double>(4, 4);
+            cvToGl.SetZero();
+
+            //cvToGl[0, 0] = 1.0f;
+            //cvToGl[1, 1] = -1.0f;// Invert the y axis
+            //cvToGl[2, 2] = -1.0f;// invert the z axis
+            //cvToGl[3, 3] = 1.0f;
+
+            // [R | t] matrix
+            //Mat_<double> para = Mat_ < double >::eye(4, 4);
+            //Rot.convertTo(para(cv::Rect(0, 0, 3, 3)), CV_64F);
+            //Tvec.copyTo(para(cv::Rect(3, 0, 1, 3)));
+            //para = cvToGl * para;
+
+            var pose3D = new Transformation();
+            // Copy to transformation matrix
+            for (int col = 0; col < 3; col++)
             {
-                var rotationVector32F = new VectorOfFloat();
-                var translationVector32F = new VectorOfFloat();
-                var rotationVector = new Mat();
-                var translationVector = new Mat();
-
-                CvInvoke.SolvePnP(_trackedFeatures3D, Utils.GetPointsVector(_trackedFeatures), _calibrationInfo.Intrinsic, _calibrationInfo.Distortion, rotationVector, translationVector);
-
-                rotationVector.ConvertTo(rotationVector32F, DepthType.Cv32F);
-                translationVector.ConvertTo(translationVector32F, DepthType.Cv32F);
-
-                _raux = rotationVector32F;
-                _taux = translationVector32F;
-
-                var rotationMat = new Mat();
-                CvInvoke.Rodrigues(rotationVector32F, rotationMat);
-                var rotationMatrix = new Matrix<double>(rotationMat.Rows, rotationMat.Cols, rotationMat.DataPointer);
-
-                var cvToGl = new Matrix<double>(4, 4);
-                cvToGl.SetZero();
-
-                //cvToGl[0, 0] = 1.0f;
-                //cvToGl[1, 1] = -1.0f;// Invert the y axis
-                //cvToGl[2, 2] = -1.0f;// invert the z axis
-                //cvToGl[3, 3] = 1.0f;
-
-                // [R | t] matrix
-                //Mat_<double> para = Mat_ < double >::eye(4, 4);
-                //Rot.convertTo(para(cv::Rect(0, 0, 3, 3)), CV_64F);
-                //Tvec.copyTo(para(cv::Rect(3, 0, 1, 3)));
-                //para = cvToGl * para;
-
-                var pose3D = new Transformation();
-                // Copy to transformation matrix
-                for (int col = 0; col < 3; col++)
+                for (int row = 0; row < 3; row++)
                 {
-                    for (int row = 0; row < 3; row++)
-                    {
-                        pose3D.SetRotationMatrixValue(row, col, (float)rotationMatrix[row, col]); // Copy rotation component
-                    }
-                    pose3D.SetTranslationVectorValue(col, translationVector32F[col]); // Copy translation component
+                    pose3D.SetRotationMatrixValue(row, col, (float)rotationMatrix[row, col]); // Copy rotation component
                 }
-
-                // Since solvePnP finds camera location, w.r.t to marker pose, to get marker pose w.r.t to the camera we invert it.
-                pose3D = pose3D.GetInverted();
-
-                //Mat(para.t()).copyTo(modelview_matrix); // transpose to col-major for OpenGL
+                pose3D.SetTranslationVectorValue(col, translationVector32F[col]); // Copy translation component
             }
+
+            // Since solvePnP finds camera location, w.r.t to marker pose, to get marker pose w.r.t to the camera we invert it.
+            pose3D = pose3D.GetInverted();
+
+            //Mat(para.t()).copyTo(modelview_matrix); // transpose to col-major for OpenGL
+
+            return true;
         }
 
-        //public void Process(Mat img, bool newmap)
-        //{
-        //    bool result;
-        //    if (newmap)
-        //    {
-        //        Bootstrap(img);
-        //        _bootstrapping = true;
-        //    }
-        //    else if (_bootstrapping)
-        //    {
-        //        result = BootstrapTrack(img);
-        //        if (result)
-        //        {
-        //            _bootstrapping = false;
-        //        }
-        //    }
-        //    else if (!newmap && !_bootstrapping)
-        //    {
-        //        result = Track(img);
-        //        if (result)
-        //        {
-        //        }
-        //    }
-        //}
+        public void Process(Mat img, bool newMap)
+        {
+            bool result;
+            if (newMap)
+            {
+                Bootstrap(img);
+                _bootstrapping = true;
+            }
+            else if (_bootstrapping)
+            {
+                result = BootstrapTrack(img);
+                if (result)
+                {
+                    _bootstrapping = false;
+                }
+            }
+            else if (!_bootstrapping)
+            {
+                result = Track(img);
+                if (result)
+                {
+                    _tracking = true;
+                }
+            }
+        }
 
         #endregion
     }

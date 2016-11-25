@@ -16,44 +16,33 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 {
     public class Bootstrapper
     {
-        private static int startinPoint = 40;
-        private static int i = 0;
+        public static void Run()
+        {
+            Run(null);
+        }
 
-        public static void Run(string path, bool preprocess)
+        public static void Run(string path)
         {
             var calibration = new CameraCalibrationInfo(560.764656335266f, 562.763179958161f, 295.849138757436f, 255.022208986073f);
             var algorithm = new PtamLikeAlgorithm(calibration);
 
-            var capture = new Capture(path);
+            var capture = path != null ? new Capture(path) : new Capture();
+            var image = capture.QueryFrame();
 
-            Mat image;
-            for (int j = 0; j < startinPoint; j++)
-                image = capture.QueryFrame();
-
-            image = capture.QueryFrame();
-            algorithm.Bootstrap(image);
-
-            if (preprocess)
-            {
-                while (true)
-                {
-                    image = capture.QueryFrame();
-                    var result = algorithm.BootstrapTrack(image);
-                    if (result)
-                        break;
-                }
-            }
-
-            ShowWindow(image, calibration, algorithm, preprocess, capture);
+            ShowWindow(image, calibration, algorithm, capture);
         }
 
-        private static void ShowWindow(Mat img, CameraCalibrationInfo calibration, PtamLikeAlgorithm algorithm, bool preprocess, Capture capture = null)
+        private static void ShowWindow(Mat img, CameraCalibrationInfo calibration, PtamLikeAlgorithm algorithm, Capture capture = null)
         {
             double fps = capture?.GetCaptureProperty(CapProp.Fps) ?? 30;
             using (var window = new PtamWindow(calibration, img))
             {
-                if (!preprocess)
-                    window.Capture = capture;
+                window.Capture = capture;
+                if (capture != null)
+                {
+                    for (int i = 0; i < 40; i++)
+                        capture.QueryFrame();
+                }
                 window.Algorithm = algorithm;
                 window.Run(fps);
             }

@@ -27,17 +27,17 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
         private readonly CameraCalibrationInfo _calibration;
         private Mat _backgroundImage;
 
-        private ProcessedFrame _currentProcessedFrame;
+        private bool _newMap;
 
         public PtamWindow(CameraCalibrationInfo calibration, Mat img)
-            // set window resolution, title, and default behaviour
             : base(img.Width, img.Height, GraphicsMode.Default, "PTAM",
             GameWindowFlags.Default, DisplayDevice.Default,
-            // ask for an OpenGL 3.0 forward compatible context
             3, 0, GraphicsContextFlags.ForwardCompatible)
         {
             _calibration = calibration;
             _backgroundImage = img;
+
+            _newMap = true;
 
             Console.WriteLine("gl version: " + GL.GetString(StringName.Version));
         }
@@ -52,99 +52,68 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             // this is called when the window starts running
         }
 
-        private bool _capture = true;
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
-            Title = $"PTAM (Vsync: {VSync} FPS: {(1f / e.Time):0.} / Plane with normal {Algorithm.Planes.LastOrDefault()?.Normal[0, 0] ?? 0} found.";
+            Title = $"PTAM (Vsync: {VSync} FPS: {1f / e.Time:0.}";
 
-            if (Capture != null && _capture)
+            if (Capture != null)
             {
                 var image = Capture.QueryFrame();
-                var result = Algorithm.BootstrapTrack(image);
-                if (result)
-                {
-                    _currentProcessedFrame = ProcessFrame(image);
-                    _backgroundImage = _currentProcessedFrame.Image;
-                    _capture = false;
-                    //Task.Run(() =>
-                    //{
-                    //    Thread.Sleep(5000);
-                    //    _capture = true;
-                    //    Algorithm.Bootstrap(image);
-                    //});
-                }
-                else
-                {
-                    _currentProcessedFrame = new ProcessedFrame { Image = image.Clone() };
-                    _backgroundImage = _currentProcessedFrame.Image;
-                }
+                _backgroundImage = ProcessFrame(image);
             }
             else
             {
-                _currentProcessedFrame = ProcessFrame(_backgroundImage);
+                _backgroundImage = ProcessFrame(_backgroundImage);
             }
         }
 
-        private struct ProcessedFrame
-        {
-            public bool IsPatternPresent { get; set; }
-            public Transformation PatternPose { get; set; }
-            public Mat Image { get; set; }
-        }
-
-        private ProcessedFrame ProcessFrame(Mat frame)
+        private Mat ProcessFrame(Mat frame)
         {
             var img = frame.Clone();
 
-            var info = new TrackingInfo();
+            Algorithm.Process(img, _newMap);
 
-            var points3D = Algorithm.TrackedFeatures3D;
-            var points2D = Utils.GetPointsVector(Algorithm.TrackedFeatures);
+            if (Algorithm.Bootstrapping) _newMap = false;
+            if (Algorithm.Bootstrapping || !Algorithm.Tracking) return img;
 
-            VectorOfFloat raux;
-            VectorOfFloat taux;
-
-            var patternPose = info.ComputePose(points3D, points2D, _calibration, out raux, out taux);
-
-            Algorithm.Planes.Last().Raux = raux;
-            Algorithm.Planes.Last().Taux = taux;
+            Thread.Sleep(1000);
 
             var axis = new VectorOfPoint3D32F(new[]
             {
-                new MCvPoint3D32f(-3, 3, -1),
-                new MCvPoint3D32f(-2, 4, -1),
-                new MCvPoint3D32f(-2, 3, -2)
+                new MCvPoint3D32f(0.01f, 0, 0),
+                new MCvPoint3D32f(0, 0.01f, 0),
+                new MCvPoint3D32f(0, 0, 0.01f)
             });
 
             var imgPoints = new VectorOfPointF();
-            CvInvoke.ProjectPoints(axis, raux, taux, _calibration.Intrinsic, _calibration.Distortion, imgPoints);
+            CvInvoke.ProjectPoints(axis, Algorithm.Raux, Algorithm.Taux, _calibration.Intrinsic, _calibration.Distortion, imgPoints);
 
-            var centers = new VectorOfPoint3D32F(new[] { new MCvPoint3D32f(-2, 3, -1) });
+            var centers = new VectorOfPoint3D32F(new[] { new MCvPoint3D32f(0, 0, 0) });
             var centerPoints = new VectorOfPointF();
-            CvInvoke.ProjectPoints(centers, raux, taux, _calibration.Intrinsic, _calibration.Distortion, centerPoints);
+            CvInvoke.ProjectPoints(centers, Algorithm.Raux, Algorithm.Taux, _calibration.Intrinsic, _calibration.Distortion,
+                centerPoints);
 
-            //CvInvoke.Line(_backgroundImage, new Point((int)centerPoints[0].X, (int)centerPoints[0].Y), new Point((int)imgPoints[0].X, (int)imgPoints[0].Y), new MCvScalar(255, 0, 0), 5);
-            //CvInvoke.Line(_backgroundImage, new Point((int)centerPoints[0].X, (int)centerPoints[0].Y), new Point((int)imgPoints[1].X, (int)imgPoints[1].Y), new MCvScalar(0, 255, 0), 5);
-            //CvInvoke.Line(_backgroundImage, new Point((int)centerPoints[0].X, (int)centerPoints[0].Y), new Point((int)imgPoints[2].X, (int)imgPoints[2].Y), new MCvScalar(0, 0, 255), 5);
+            CvInvoke.Line(img, new Point((int)centerPoints[0].X, (int)centerPoints[0].Y), new Point((int)imgPoints[0].X, (int)imgPoints[0].Y), new MCvScalar(255, 0, 0), 5);
+            CvInvoke.Line(img, new Point((int)centerPoints[0].X, (int)centerPoints[0].Y), new Point((int)imgPoints[1].X, (int)imgPoints[1].Y), new MCvScalar(0, 255, 0), 5);
+            CvInvoke.Line(img, new Point((int)centerPoints[0].X, (int)centerPoints[0].Y), new Point((int)imgPoints[2].X, (int)imgPoints[2].Y), new MCvScalar(0, 0, 255), 5);
 
-            var featuresrPoints = new VectorOfPointF();
-            CvInvoke.ProjectPoints(Algorithm.TrackedFeatures3D, raux, taux, _calibration.Intrinsic,
-                _calibration.Distortion, featuresrPoints);
-            for (int i = 0; i < featuresrPoints.Size; i++)
+            var projected3DfeaturesrPoints = new VectorOfPointF();
+            CvInvoke.ProjectPoints(Algorithm.TrackedFeatures3D, Algorithm.Raux, Algorithm.Taux, _calibration.Intrinsic,
+                _calibration.Distortion, projected3DfeaturesrPoints);
+            for (int i = 0; i < projected3DfeaturesrPoints.Size; i++)
             {
-                var feature = featuresrPoints[i];
-                CvInvoke.Circle(_backgroundImage, new Point((int)feature.X, (int)feature.Y), 2,
+                var feature = projected3DfeaturesrPoints[i];
+                CvInvoke.Circle(img, new Point((int)feature.X, (int)feature.Y), 2,
                     new MCvScalar(0, 255, 0), 2);
             }
 
             for (int i = 0; i < Algorithm.TrackedFeatures.Size; i++)
             {
                 var feature = Algorithm.TrackedFeatures[i];
-                CvInvoke.Circle(_backgroundImage, new Point((int)feature.Point.X, (int)feature.Point.Y), 1,
+                CvInvoke.Circle(img, new Point((int)feature.Point.X, (int)feature.Point.Y), 1,
                     new MCvScalar(0, 0, 255), 1);
             }
-
-            return new ProcessedFrame { IsPatternPresent = true, PatternPose = patternPose, Image = img };
+            return img;
         }
 
         protected override void OnRenderFrame(FrameEventArgs e)
