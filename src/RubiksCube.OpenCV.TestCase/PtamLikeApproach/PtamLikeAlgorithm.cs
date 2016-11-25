@@ -108,74 +108,17 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
         public bool BootstrapTrack(Mat img)
         {
-            //Track detected features
-            if (_prevGray.IsEmpty)
-            {
-                const string error = "Previous frame is empty. Bootstrap first.";
-                throw new Exception(error);
-            }
-
-            if (img.IsEmpty || !img.IsEmpty && img.NumberOfChannels != 3)
-            {
-                const string error = "Image is not appropriate (Empty or wrong number of channels).";
-                throw new Exception(error);
-            }
-
-            var corners = new VectorOfPointF();
-            var status = new VectorOfByte();
-            var errors = new VectorOfFloat();
+            ValidateImages(_prevGray, img);
 
             CvInvoke.CvtColor(img, _currGray, ColorConversion.Bgr2Gray);
 
-            CvInvoke.CalcOpticalFlowPyrLK(_prevGray, _currGray, Utils.GetPointsVector(_trackedFeatures), corners,
-                status, errors, new Size(11, 11), 3, new MCvTermCriteria(30, 0.01));
-            _currGray.CopyTo(_prevGray);
+            ComputeOpticalFlowAndValidate(_prevGray, _currGray, ref _trackedFeatures, ref _bootstrapKp, img);
 
-            for (int j = 0; j < corners.Size; j++)
-            {
-                if (status[j] == 1)
-                    CvInvoke.Line(img, new Point((int)_trackedFeatures[j].Point.X, (int)_trackedFeatures[j].Point.Y), new Point((int)corners[j].X, (int)corners[j].Y), new MCvScalar(120, 10, 20));
-            }
-
-            if (CvInvoke.CountNonZero(status) < status.Size * 0.8)
-            {
-                throw new Exception("Tracking failed.");
-            }
-
-            _trackedFeatures = Utils.GetKeyPointsVector(corners);
-
-            Utils.KeepVectorsByStatus(ref _trackedFeatures, ref _bootstrapKp, status);
-
-            if (_trackedFeatures.Size != _bootstrapKp.Size)
-            {
-                const string error = "Tracked features vector size is not equal to bootstrapped one.";
-                throw new Exception(error);
-            }
-
-            //verify features with a homography
-            var inlierMask = new VectorOfByte();
-            var homography = new Mat();
-            if (_trackedFeatures.Size > 4)
-                CvInvoke.FindHomography(Utils.GetPointsVector(_trackedFeatures), Utils.GetPointsVector(_bootstrapKp), homography, HomographyMethod.Ransac, RansacThreshold,
-                    inlierMask);
-
-            var homographyMatrix = new Matrix<double>(homography.Rows, homography.Cols, homography.DataPointer);
-
-            int inliersNum = CvInvoke.CountNonZero(inlierMask);
-
-            if (inliersNum != _trackedFeatures.Size && inliersNum >= 4 && !homography.IsEmpty)
-            {
-                Utils.KeepVectorsByStatus(ref _trackedFeatures, ref _bootstrapKp, inlierMask);
-            }
-            else if (inliersNum < 10)
-            {
-                throw new Exception("Not enough features survived homography.");
-            }
+            ComputeHomographyAndValidate(ref _trackedFeatures, ref _bootstrapKp);
 
             var bootstrapKpOrig = new VectorOfKeyPoint(_bootstrapKp.ToArray());
             var trackedFeaturesOrig = new VectorOfKeyPoint(_trackedFeatures.ToArray());
 
-            //TODO: Compare all these to c++ version
             //Attempt at 3D reconstruction (triangulation) if conditions are right
             var rigidT = CvInvoke.EstimateRigidTransform(Utils.GetPointsVector(_trackedFeatures).ToArray(), Utils.GetPointsVector(_bootstrapKp).ToArray(), false);
             var matrix = new Matrix<double>(rigidT.Rows, rigidT.Cols, rigidT.DataPointer);
@@ -191,52 +134,14 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
                     _trackedFeatures3D = result.TrackedFeatures3D;
 
-                    var tf3D = new double[_trackedFeatures3D.Size, 3];
-                    var trackedFeatures3Dm = new Matrix<double>(_trackedFeatures3D.Size, 3);
-                    for (int k = 0; k < _trackedFeatures3D.Size; k++)
-                    {
-                        trackedFeatures3Dm[k, 0] = _trackedFeatures3D[k].X;
-                        trackedFeatures3Dm[k, 1] = _trackedFeatures3D[k].Y;
-                        trackedFeatures3Dm[k, 2] = _trackedFeatures3D[k].Z;
+                    int numInliers;
+                    Matrix<double> trackedFeatures3Dm;
+                    Mat mean;
+                    Mat eigenvectors;
+                    Matrix<double> normalOfPlaneMatrix;
+                    var statusVector = ComputeNormalAndPlaneInliers(_trackedFeatures3D, out trackedFeatures3Dm, out mean, out eigenvectors, out numInliers, out normalOfPlaneMatrix);
 
-                        tf3D[k, 0] = _trackedFeatures3D[k].X;
-                        tf3D[k, 1] = _trackedFeatures3D[k].Y;
-                        tf3D[k, 2] = _trackedFeatures3D[k].Z;
-                    }
-
-                    var eigenvectors = new Mat();
-                    var mean = new Mat();
-                    CvInvoke.PCACompute(trackedFeatures3Dm, mean, eigenvectors);
-                    var eigenvectorsMatrix = new Matrix<double>(eigenvectors.Rows, eigenvectors.Cols, eigenvectors.DataPointer);
-
-                    double[] meanArr = tf3D.Mean(0);
-                    var method = PrincipalComponentMethod.Center;
-                    var pca = new PrincipalComponentAnalysis(method);
-                    pca.Learn(tf3D.ToJagged());
-
-                    int numInliers = 0;
-                    var normalOfPlane = eigenvectorsMatrix.GetRow(2).ToUMat().ToMat(AccessType.Fast);
-                    CvInvoke.Normalize(normalOfPlane, normalOfPlane);
-                    var normalOfPlaneMatrix = new Matrix<double>(normalOfPlane.Rows, normalOfPlane.Cols, normalOfPlane.DataPointer);
-
-                    double pToPlaneThresh = Math.Sqrt(pca.Eigenvalues.ElementAt(2));
-                    var statusArray = new byte[_trackedFeatures3D.Size];
-                    for (int k = 0; k < _trackedFeatures3D.Size; k++)
-                    {
-                        var t1 = new double[] { _trackedFeatures3D[k].X, _trackedFeatures3D[k].Y, _trackedFeatures3D[k].Z };
-                        var t2 = t1.Subtract(meanArr);
-                        var w = new Matrix<double>(new[,] { { t2[0], t2[1], t2[2] } });
-                        double d = Math.Abs(normalOfPlane.Dot(w));
-                        if (d < pToPlaneThresh)
-                        {
-                            numInliers++;
-                            statusArray[k] = 1;
-                        }
-                    }
-
-                    var statusVector = new VectorOfByte(statusArray);
-
-                    var bootstrapping = numInliers / (double)_trackedFeatures3D.Size < 0.75;
+                    bool bootstrapping = numInliers / (double)_trackedFeatures3D.Size < 0.75;
                     if (!bootstrapping)
                     {
                         //enough features are coplanar, keep them and flatten them on the XY plane
@@ -259,12 +164,10 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
                         return true;
                     }
-                    else
-                    {
-                        //cerr << "not enough features are coplanar" << "\n";
-                        _bootstrapKp = bootstrapKpOrig;
-                        _trackedFeatures = trackedFeaturesOrig;
-                    }
+                    
+                    //cerr << "not enough features are coplanar" << "\n";
+                    _bootstrapKp = bootstrapKpOrig;
+                    _trackedFeatures = trackedFeaturesOrig;
                 }
             }
 
@@ -273,37 +176,11 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
         public bool Track(Mat img)
         {
-            //Track detected features
-            if (_prevGray.IsEmpty)
-            {
-                const string error = "Previous frame is empty. Bootstrap first.";
-                throw new Exception(error);
-            }
-
-            if (img.IsEmpty || !img.IsEmpty && img.NumberOfChannels != 3)
-            {
-                const string error = "Image is not appropriate (Empty or wrong number of channels).";
-                throw new Exception(error);
-            }
-
-            var corners = new VectorOfPointF();
-            var status = new VectorOfByte();
-            var errors = new VectorOfFloat();
+            ValidateImages(_prevGray, img);
 
             CvInvoke.CvtColor(img, _currGray, ColorConversion.Bgr2Gray);
 
-            CvInvoke.CalcOpticalFlowPyrLK(_prevGray, _currGray, Utils.GetPointsVector(_trackedFeatures), corners,
-                status, errors, new Size(11, 11), 3, new MCvTermCriteria(30, 0.01));
-            _currGray.CopyTo(_prevGray);
-
-            if (CvInvoke.CountNonZero(status) < status.Size * 0.8)
-            {
-                throw new Exception("Tracking failed.");
-            }
-
-            _trackedFeatures = Utils.GetKeyPointsVector(corners);
-
-            Utils.KeepVectorsByStatus(ref _trackedFeatures, ref _bootstrapKp, status);
+            ComputeOpticalFlowAndValidate(_prevGray, _currGray, ref _trackedFeatures, ref _bootstrapKp);
 
             _canCalcMvm = _trackedFeatures.Size >= MinInliers;
 
@@ -319,8 +196,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             rotationVector.ConvertTo(rotationVector32F, DepthType.Cv32F);
             translationVector.ConvertTo(translationVector32F, DepthType.Cv32F);
 
-            _raux = rotationVector32F;
-            _taux = translationVector32F;
+            ComputeRotationAndTranslation(_trackedFeatures3D,_trackedFeatures,_calibrationInfo, out _raux, out _taux);
 
             var rotationMat = new Mat();
             CvInvoke.Rodrigues(rotationVector32F, rotationMat);
@@ -383,6 +259,152 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
                     _tracking = true;
                 }
             }
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private static void ValidateImages(Mat prevGray, Mat img)
+        {
+            if (prevGray.IsEmpty)
+            {
+                const string error = "Previous frame is empty. Bootstrap first.";
+                throw new Exception(error);
+            }
+
+            if (img.IsEmpty || !img.IsEmpty && img.NumberOfChannels != 3)
+            {
+                const string error = "Image is not appropriate (Empty or wrong number of channels).";
+                throw new Exception(error);
+            }
+        }
+
+        private static void ComputeOpticalFlowAndValidate(Mat prevGray, Mat currGray, ref VectorOfKeyPoint trackedFeatures, ref VectorOfKeyPoint bootstrapKp, Mat img = null)
+        {
+            var corners = new VectorOfPointF();
+            var status = new VectorOfByte();
+            var errors = new VectorOfFloat();
+
+            CvInvoke.CalcOpticalFlowPyrLK(prevGray, currGray, Utils.GetPointsVector(trackedFeatures), corners,
+              status, errors, new Size(11, 11), 3, new MCvTermCriteria(30, 0.01));
+            currGray.CopyTo(prevGray);
+
+            if (img != null)
+            {
+                for (int j = 0; j < corners.Size; j++)
+                {
+                    if (status[j] == 1)
+                        CvInvoke.Line(img, new Point((int)trackedFeatures[j].Point.X, (int)trackedFeatures[j].Point.Y),
+                            new Point((int)corners[j].X, (int)corners[j].Y), new MCvScalar(120, 10, 20));
+                }
+            }
+
+            if (CvInvoke.CountNonZero(status) < status.Size * 0.8)
+                throw new Exception("Tracking failed.");
+
+            trackedFeatures = Utils.GetKeyPointsVector(corners);
+
+            Utils.KeepVectorsByStatus(ref trackedFeatures, ref bootstrapKp, status);
+
+            if (trackedFeatures.Size != bootstrapKp.Size)
+            {
+                const string error = "Tracked features vector size is not equal to bootstrapped one.";
+                throw new Exception(error);
+            }
+        }
+
+        private static void ComputeHomographyAndValidate(ref VectorOfKeyPoint trackedFeatures, ref VectorOfKeyPoint bootstrapKp)
+        {
+            //verify features with a homography
+            var inlierMask = new VectorOfByte();
+            var homography = new Mat();
+            if (trackedFeatures.Size > 4)
+                CvInvoke.FindHomography(Utils.GetPointsVector(trackedFeatures), Utils.GetPointsVector(bootstrapKp), homography, HomographyMethod.Ransac, RansacThreshold,
+                    inlierMask);
+
+            var homographyMatrix = new Matrix<double>(homography.Rows, homography.Cols, homography.DataPointer);
+
+            int inliersNum = CvInvoke.CountNonZero(inlierMask);
+
+            if (inliersNum != trackedFeatures.Size && inliersNum >= 4 && !homography.IsEmpty)
+            {
+                Utils.KeepVectorsByStatus(ref trackedFeatures, ref bootstrapKp, inlierMask);
+            }
+            else if (inliersNum < 10)
+            {
+                throw new Exception("Not enough features survived homography.");
+            }
+        }
+
+        private static VectorOfByte ComputeNormalAndPlaneInliers(VectorOfPoint3D32F trackedFeatures3D, out Matrix<double> trackedFeatures3Dm, out Mat mean, out Mat eigenvectors, out int numInliers, out Matrix<double> normalOfPlaneMatrix)
+        {
+            //var tf3D = new double[_trackedFeatures3D.Size, 3];
+            //var trackedFeatures3Dm = new Matrix<double>(trackedFeatures3D.Size, 3);
+            trackedFeatures3Dm = new Matrix<double>(trackedFeatures3D.Size, 3);
+            for (int k = 0; k < trackedFeatures3D.Size; k++)
+            {
+                trackedFeatures3Dm[k, 0] = trackedFeatures3D[k].X;
+                trackedFeatures3Dm[k, 1] = trackedFeatures3D[k].Y;
+                trackedFeatures3Dm[k, 2] = trackedFeatures3D[k].Z;
+
+                //tf3D[k, 0] = _trackedFeatures3D[k].X;
+                //tf3D[k, 1] = _trackedFeatures3D[k].Y;
+                //tf3D[k, 2] = _trackedFeatures3D[k].Z;
+            }
+
+            //var eigenvectors = new Mat();
+            //var mean = new Mat();
+            eigenvectors = new Mat();
+            mean = new Mat();
+            CvInvoke.PCACompute(trackedFeatures3Dm, mean, eigenvectors);
+            var eigenvectorsMatrix = new Matrix<double>(eigenvectors.Rows, eigenvectors.Cols, eigenvectors.DataPointer);
+
+            //double[] meanArr = tf3D.Mean(0);
+            var meanArr = trackedFeatures3Dm.Data.Mean(0);
+            var pca = new PrincipalComponentAnalysis(PrincipalComponentMethod.Center);
+            pca.Learn(trackedFeatures3Dm.Data.ToJagged());
+
+            //int numInliers = 0;
+            numInliers = 0;
+            var normalOfPlane = eigenvectorsMatrix.GetRow(2).ToUMat().ToMat(AccessType.Fast);
+            CvInvoke.Normalize(normalOfPlane, normalOfPlane);
+            //var normalOfPlaneMatrix = new Matrix<double>(normalOfPlane.Rows, normalOfPlane.Cols, normalOfPlane.DataPointer);
+            normalOfPlaneMatrix = new Matrix<double>(normalOfPlane.Rows, normalOfPlane.Cols, normalOfPlane.DataPointer);
+
+            double pToPlaneThresh = Math.Sqrt(pca.Eigenvalues.ElementAt(2));
+            var statusArray = new byte[trackedFeatures3D.Size];
+            for (int k = 0; k < trackedFeatures3D.Size; k++)
+            {
+                var t1 = new double[] { trackedFeatures3D[k].X, trackedFeatures3D[k].Y, trackedFeatures3D[k].Z };
+                var t2 = t1.Subtract(meanArr);
+                var w = new Matrix<double>(new[,] { { t2[0], t2[1], t2[2] } });
+                double d = Math.Abs(normalOfPlane.Dot(w));
+                if (d < pToPlaneThresh)
+                {
+                    numInliers++;
+                    statusArray[k] = 1;
+                }
+            }
+
+            var statusVector = new VectorOfByte(statusArray);
+            return statusVector;
+        }
+
+        private static void ComputeRotationAndTranslation(VectorOfPoint3D32F trackedFeatures3D, VectorOfKeyPoint trackedFeatures, CameraCalibrationInfo calibrationInfo, out VectorOfFloat raux, out VectorOfFloat taux)
+        {
+            var rotationVector32F = new VectorOfFloat();
+            var translationVector32F = new VectorOfFloat();
+            var rotationVector = new Mat();
+            var translationVector = new Mat();
+
+            CvInvoke.SolvePnP(trackedFeatures3D, Utils.GetPointsVector(trackedFeatures), calibrationInfo.Intrinsic, calibrationInfo.Distortion, rotationVector, translationVector);
+
+            rotationVector.ConvertTo(rotationVector32F, DepthType.Cv32F);
+            translationVector.ConvertTo(translationVector32F, DepthType.Cv32F);
+
+            raux = rotationVector32F;
+            taux = translationVector32F;
         }
 
         #endregion

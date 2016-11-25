@@ -76,26 +76,32 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             if (Algorithm.Bootstrapping) _newMap = false;
             if (Algorithm.Bootstrapping || !Algorithm.Tracking) return img;
 
-            Thread.Sleep(1000);
+            //Thread.Sleep(1000);
 
-            var axis = new VectorOfPoint3D32F(new[]
-            {
-                new MCvPoint3D32f(0.01f, 0, 0),
-                new MCvPoint3D32f(0, 0.01f, 0),
-                new MCvPoint3D32f(0, 0, 0.01f)
-            });
+            #region Draw axis
 
-            var imgPoints = new VectorOfPointF();
-            CvInvoke.ProjectPoints(axis, Algorithm.Raux, Algorithm.Taux, _calibration.Intrinsic, _calibration.Distortion, imgPoints);
+            //var axis = new VectorOfPoint3D32F(new[]
+            //{
+            //    new MCvPoint3D32f(0.01f, 0, 0),
+            //    new MCvPoint3D32f(0, 0.01f, 0),
+            //    new MCvPoint3D32f(0, 0, 0.01f)
+            //});
 
-            var centers = new VectorOfPoint3D32F(new[] { new MCvPoint3D32f(0, 0, 0) });
-            var centerPoints = new VectorOfPointF();
-            CvInvoke.ProjectPoints(centers, Algorithm.Raux, Algorithm.Taux, _calibration.Intrinsic, _calibration.Distortion,
-                centerPoints);
+            //var imgPoints = new VectorOfPointF();
+            //CvInvoke.ProjectPoints(axis, Algorithm.Raux, Algorithm.Taux, _calibration.Intrinsic, _calibration.Distortion, imgPoints);
 
-            CvInvoke.Line(img, new Point((int)centerPoints[0].X, (int)centerPoints[0].Y), new Point((int)imgPoints[0].X, (int)imgPoints[0].Y), new MCvScalar(255, 0, 0), 5);
-            CvInvoke.Line(img, new Point((int)centerPoints[0].X, (int)centerPoints[0].Y), new Point((int)imgPoints[1].X, (int)imgPoints[1].Y), new MCvScalar(0, 255, 0), 5);
-            CvInvoke.Line(img, new Point((int)centerPoints[0].X, (int)centerPoints[0].Y), new Point((int)imgPoints[2].X, (int)imgPoints[2].Y), new MCvScalar(0, 0, 255), 5);
+            //var centers = new VectorOfPoint3D32F(new[] { new MCvPoint3D32f(0, 0, 0) });
+            //var centerPoints = new VectorOfPointF();
+            //CvInvoke.ProjectPoints(centers, Algorithm.Raux, Algorithm.Taux, _calibration.Intrinsic, _calibration.Distortion,
+            //    centerPoints);
+
+            //CvInvoke.Line(img, new Point((int)centerPoints[0].X, (int)centerPoints[0].Y), new Point((int)imgPoints[0].X, (int)imgPoints[0].Y), new MCvScalar(255, 0, 0), 5);
+            //CvInvoke.Line(img, new Point((int)centerPoints[0].X, (int)centerPoints[0].Y), new Point((int)imgPoints[1].X, (int)imgPoints[1].Y), new MCvScalar(0, 255, 0), 5);
+            //CvInvoke.Line(img, new Point((int)centerPoints[0].X, (int)centerPoints[0].Y), new Point((int)imgPoints[2].X, (int)imgPoints[2].Y), new MCvScalar(0, 0, 255), 5);
+
+            #endregion
+
+            #region Draw keypoints and projected 3D points
 
             var projected3DfeaturesrPoints = new VectorOfPointF();
             CvInvoke.ProjectPoints(Algorithm.TrackedFeatures3D, Algorithm.Raux, Algorithm.Taux, _calibration.Intrinsic,
@@ -113,6 +119,9 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
                 CvInvoke.Circle(img, new Point((int)feature.Point.X, (int)feature.Point.Y), 1,
                     new MCvScalar(0, 0, 255), 1);
             }
+
+            #endregion
+
             return img;
         }
 
