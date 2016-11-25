@@ -54,9 +54,9 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
         public VectorOfFloat Raux => _raux;
         public VectorOfFloat Taux => _taux;
 
-        public Matrix<double> InitialP1 { get; set; }
+        public Matrix<double> InitialP1 { get; private set; }
 
-        public List<PlaneInfo> Planes { get; set; }
+        public List<PlaneInfo> Planes { get; }
 
         #endregion
 
@@ -152,7 +152,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
                         InitialP1 = result.P2;
 
-                        Planes.Add(new PlaneInfo()
+                        Planes.Add(new PlaneInfo
                         {
                             Normal = normalOfPlaneMatrix.Clone(),
                             Points3D = new VectorOfPoint3D32F(_trackedFeatures3D.ToArray())
