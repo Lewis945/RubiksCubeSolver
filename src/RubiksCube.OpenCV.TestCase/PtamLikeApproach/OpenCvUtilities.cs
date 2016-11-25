@@ -242,7 +242,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
                 result.Esential = e;
 
                 //according to http://en.wikipedia.org/wiki/Essential_matrix#Properties_of_the_essential_matrix
-                var determinant = Math.Abs(CvInvoke.Determinant(e));
+                double determinant = Math.Abs(CvInvoke.Determinant(e));
                 if (determinant > 1e-07)
                 {
                     Console.WriteLine($"det(E) != 0 : {determinant}");
@@ -270,9 +270,6 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
                     Trace.WriteLine($"det(R) != +-1.0, this is not a rotation matrix");
                     return result;
                 }
-
-                var trPts = Utils.GetPointsVector(trackedFeaturesKp);
-                var btPts = Utils.GetPointsVector(bootstrapKp);
 
                 var p = initialP1.Clone();
 
