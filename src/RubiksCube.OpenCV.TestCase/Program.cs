@@ -30,10 +30,13 @@ namespace RubiksCube.OpenCV.TestCase
 
             #region PtamLikeApproach
 
-            RubiksCube.OpenCV.TestCase.PtamLikeApproach.Bootstrapper.Run("Videos\\cube2.avi");
+            //RubiksCube.OpenCV.TestCase.PtamLikeApproach.Bootstrapper.Run("Videos\\cube2.avi");
+            //RubiksCube.OpenCV.TestCase.PtamLikeApproach.Bootstrapper.Run("Videos\\rubik.avi");
             //RubiksCube.OpenCV.TestCase.PtamLikeApproach.Bootstrapper.Run();
 
             #endregion
+
+            //Utilities.WriteVideo("Videos\\rubik.avi");
         }
     }
 }

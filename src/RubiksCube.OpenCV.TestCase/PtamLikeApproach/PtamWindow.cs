@@ -142,6 +142,8 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             DrawCameraFrame(_backgroundImage);
 
             SwapBuffers();
+
+            Thread.Sleep(1000);
         }
 
         private void DrawCameraFrame(Mat image)

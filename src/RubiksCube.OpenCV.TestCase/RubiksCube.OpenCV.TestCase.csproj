@@ -124,6 +124,7 @@
     <Compile Include="PtamLikeApproach\SimpleAdHocTracker.cs" />
     <Compile Include="PtamLikeApproach\TrackingInfo.cs" />
     <Compile Include="PtamLikeApproach\Utils.cs" />
+    <Compile Include="Utilities.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
