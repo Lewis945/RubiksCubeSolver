@@ -56,8 +56,6 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
         public Matrix<double> InitialP1 { get; private set; }
 
-        public List<PlaneInfo> Planes { get; }
-
         #endregion
 
         #region .ctor
@@ -80,13 +78,17 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
             InitialP1 = new Matrix<double>(3, 4);
             InitialP1.SetIdentity();
-
-            Planes = new List<PlaneInfo>();
         }
 
         #endregion
 
         #region Public Methods
+
+        public void ResetAlgorithm()
+        {
+            IsBootstrapping = false;
+            IsTracking = false;
+        }
 
         public void Bootstrap(Mat img)
         {
@@ -102,7 +104,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             CvInvoke.CvtColor(img, _prevGray, ColorConversion.Bgr2Gray);
         }
 
-        public bool BootstrapTrack(Mat img)
+        public bool BootstrapTrack(Mat img, Action<Matrix<double>, VectorOfPoint3D32F> onPlaneFound)
         {
             ValidateImages(_prevGray, img);
 
@@ -152,11 +154,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
                         InitialP1 = result.P2;
 
-                        Planes.Add(new PlaneInfo
-                        {
-                            Normal = normalOfPlaneMatrix.Clone(),
-                            Points3D = new VectorOfPoint3D32F(_trackedFeatures3D.ToArray())
-                        });
+                        onPlaneFound(normalOfPlaneMatrix.Clone(), new VectorOfPoint3D32F(_trackedFeatures3D.ToArray()));
 
                         return true;
                     }
@@ -231,7 +229,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             return true;
         }
 
-        public void Process(Mat img, bool newMap)
+        public void Process(Mat img, bool newMap, Action<Matrix<double>, VectorOfPoint3D32F> onPlaneFound)
         {
             bool result;
             if (newMap)
@@ -241,20 +239,20 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             }
             else if (IsBootstrapping)
             {
-                result = BootstrapTrack(img);
+                result = BootstrapTrack(img, onPlaneFound);
                 if (result)
                 {
                     IsBootstrapping = false;
                 }
             }
-            else if (!IsBootstrapping)
-            {
-                result = Track(img);
-                if (result)
-                {
-                    IsTracking = true;
-                }
-            }
+            //else if (!IsBootstrapping)
+            //{
+            //    result = Track(img);
+            //    if (result)
+            //    {
+            //        IsTracking = true;
+            //    }
+            //}
         }
 
         #endregion

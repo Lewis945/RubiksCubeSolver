@@ -29,6 +29,8 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
         private bool _newMap;
 
+        public List<PlaneInfo> Planes { get; }
+
         public PtamWindow(CameraCalibrationInfo calibration, Mat img)
             : base(img.Width, img.Height, GraphicsMode.Default, "PTAM",
             GameWindowFlags.Default, DisplayDevice.Default,
@@ -38,6 +40,8 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             _backgroundImage = img;
 
             _newMap = true;
+
+            Planes = new List<PlaneInfo>();
 
             Console.WriteLine("gl version: " + GL.GetString(StringName.Version));
         }
@@ -71,7 +75,24 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
         {
             var img = frame.Clone();
 
-            Algorithm.Process(img, _newMap);
+            try
+            {
+                Algorithm.Process(img, _newMap, (normal, points) =>
+                {
+                    Planes.Add(new PlaneInfo
+                    {
+                        Normal = normal,
+                        Points3D = points
+                    });
+
+                    Console.WriteLine($"Normal: [{normal.Data[0, 0]}, {normal.Data[0, 1]}, {normal.Data[0, 2]}]");
+                });
+            }
+            catch (Exception)
+            {
+                _newMap = true;
+                Algorithm.ResetAlgorithm();
+            }
 
             if (Algorithm.IsBootstrapping)
             {
@@ -143,7 +164,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
             SwapBuffers();
 
-            Thread.Sleep(1000);
+            //Thread.Sleep(1000);
         }
 
         private void DrawCameraFrame(Mat image)

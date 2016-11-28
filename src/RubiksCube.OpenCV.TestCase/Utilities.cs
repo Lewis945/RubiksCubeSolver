@@ -17,7 +17,7 @@ namespace RubiksCube.OpenCV.TestCase
 
             int counter = 0;
 
-            int fps = 24;
+            const int fps = 24;
 
             Task.Run(() =>
             {
