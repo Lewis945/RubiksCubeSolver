@@ -86,6 +86,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
                     });
 
                     Console.WriteLine($"Normal: [{normal.Data[0, 0]}, {normal.Data[0, 1]}, {normal.Data[0, 2]}]");
+                    //Console.WriteLine($"Points: [{string.Join(",", points.ToArray().Select(p => $"[{p.X}, {p.Y}, {p.Z}]").ToArray())}]");
                 });
             }
             catch (Exception)
@@ -100,7 +101,10 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
                 return img;
             }
             if (Algorithm.IsBootstrapping || !Algorithm.IsTracking)
+            {
+                _newMap = true;
                 return img;
+            }
 
             //Thread.Sleep(1000);
 

@@ -26,30 +26,5 @@ namespace RubiksCube.OpenCV.TestCase.Tests
             _calibration = new CameraCalibrationInfo(560.764656335266f, 562.763179958161f, 295.849138757436f, 255.022208986073f);
             _algorithm = new PtamLikeAlgorithm(_calibration);
         }
-
-        [Test]
-        public void Bootstrap_Track_Test()
-        {
-            var capture = new Capture($@"{TestCaseProjectPath}\Videos\cube2.avi");
-            for (int i = 0; i < 40; i++)
-            {
-                capture.QueryFrame();
-            }
-
-            var img = capture.QueryFrame();
-            _algorithm.Bootstrap(img);
-
-            for (int i = 41; i <= 95; i++)
-            {
-                img = capture.QueryFrame();
-                var result = _algorithm.BootstrapTrack(img);
-                if (result)
-                {
-
-
-                    //File.WriteAllLines($@"{TestCaseTestProjectPath}\cpluspluslogs\{item.Key}.txt", item.Value);
-                }
-            }
-        }
     }
 }
