@@ -104,7 +104,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             CvInvoke.CvtColor(img, _prevGray, ColorConversion.Bgr2Gray);
         }
 
-        public bool BootstrapTrack(Mat img, Action<Matrix<double>, VectorOfPoint3D32F> onPlaneFound)
+        public bool BootstrapTrack(Mat img, Action<Matrix<double>, VectorOfPoint3D32F, Matrix<double>> onPlaneFound)
         {
             ValidateImages(_prevGray, img);
 
@@ -112,7 +112,8 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
             ComputeOpticalFlowAndValidate(_prevGray, _currGray, ref _trackedFeatures, ref _bootstrapKp, img);
 
-            ComputeHomographyAndValidate(ref _trackedFeatures, ref _bootstrapKp);
+            Matrix<double> homography;
+            ComputeHomographyAndValidate(ref _trackedFeatures, ref _bootstrapKp, out homography);
 
             var bootstrapKpOrig = new VectorOfKeyPoint(_bootstrapKp.ToArray());
             var trackedFeaturesOrig = new VectorOfKeyPoint(_trackedFeatures.ToArray());
@@ -154,7 +155,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
                         InitialP1 = result.P2;
 
-                        onPlaneFound(normalOfPlaneMatrix.Clone(), new VectorOfPoint3D32F(_trackedFeatures3D.ToArray()));
+                        onPlaneFound(normalOfPlaneMatrix.Clone(), new VectorOfPoint3D32F(_trackedFeatures3D.ToArray()), homography);
 
                         return true;
                     }
@@ -180,20 +181,10 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
             if (!_canCalcMvm) return false;
 
-            var rotationVector32F = new VectorOfFloat();
-            var translationVector32F = new VectorOfFloat();
-            var rotationVector = new Mat();
-            var translationVector = new Mat();
-
-            CvInvoke.SolvePnP(_trackedFeatures3D, Utils.GetPointsVector(_trackedFeatures), _calibrationInfo.Intrinsic, _calibrationInfo.Distortion, rotationVector, translationVector);
-
-            rotationVector.ConvertTo(rotationVector32F, DepthType.Cv32F);
-            translationVector.ConvertTo(translationVector32F, DepthType.Cv32F);
-
             ComputeRotationAndTranslation(_trackedFeatures3D, _trackedFeatures, _calibrationInfo, out _raux, out _taux);
 
             var rotationMat = new Mat();
-            CvInvoke.Rodrigues(rotationVector32F, rotationMat);
+            CvInvoke.Rodrigues(_raux, rotationMat);
             var rotationMatrix = new Matrix<double>(rotationMat.Rows, rotationMat.Cols, rotationMat.DataPointer);
 
             var cvToGl = new Matrix<double>(4, 4);
@@ -218,7 +209,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
                 {
                     pose3D.SetRotationMatrixValue(row, col, (float)rotationMatrix[row, col]); // Copy rotation component
                 }
-                pose3D.SetTranslationVectorValue(col, translationVector32F[col]); // Copy translation component
+                pose3D.SetTranslationVectorValue(col, _taux[col]); // Copy translation component
             }
 
             // Since solvePnP finds camera location, w.r.t to marker pose, to get marker pose w.r.t to the camera we invert it.
@@ -229,7 +220,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             return true;
         }
 
-        public void Process(Mat img, bool newMap, Action<Matrix<double>, VectorOfPoint3D32F> onPlaneFound)
+        public void Process(Mat img, bool newMap, Action<Matrix<double>, VectorOfPoint3D32F, Matrix<double>> onPlaneFound)
         {
             bool result;
             if (newMap)
@@ -308,7 +299,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             }
         }
 
-        private static void ComputeHomographyAndValidate(ref VectorOfKeyPoint trackedFeatures, ref VectorOfKeyPoint bootstrapKp)
+        private static void ComputeHomographyAndValidate(ref VectorOfKeyPoint trackedFeatures, ref VectorOfKeyPoint bootstrapKp, out Matrix<double> homographyMatrix)
         {
             //verify features with a homography
             var inlierMask = new VectorOfByte();
@@ -317,7 +308,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
                 CvInvoke.FindHomography(Utils.GetPointsVector(trackedFeatures), Utils.GetPointsVector(bootstrapKp), homography, HomographyMethod.Ransac, RansacThreshold,
                     inlierMask);
 
-            var homographyMatrix = new Matrix<double>(homography.Rows, homography.Cols, homography.DataPointer);
+            homographyMatrix = new Matrix<double>(homography.Rows, homography.Cols, homography.DataPointer);
 
             int inliersNum = CvInvoke.CountNonZero(inlierMask);
 

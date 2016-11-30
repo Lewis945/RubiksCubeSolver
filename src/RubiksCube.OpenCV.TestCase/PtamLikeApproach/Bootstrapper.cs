@@ -38,11 +38,11 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             using (var window = new PtamWindow(calibration, img))
             {
                 window.Capture = capture;
-                //if (capture != null)
-                //{
-                //    for (int i = 0; i < 40; i++)
-                //        capture.QueryFrame();
-                //}
+                if (capture != null)
+                {
+                    for (int i = 0; i < 40; i++)
+                        capture.QueryFrame();
+                }
                 window.Algorithm = algorithm;
                 window.Run(fps);
             }
