@@ -90,7 +90,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
                     Points3D = points
                 });
 
-                //Capture = null;
+                Capture = null;
 
                 #region Rectangle
 
@@ -173,6 +173,13 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
                 double t = dotProduct;
 
+                //var projected = CvInvoke.ProjectPoints(Algorithm.TrackedFeatures3D.ToArray(), rotationVector32F, translationVector32F, _calibration.Intrinsic, _calibration.Distortion);
+
+                //foreach (var pr in projected)
+                //{
+                //    CvInvoke.Circle(img, new Point((int)pr.X, (int)pr.Y), 2, new MCvScalar(0, 255, 0), 2, LineType.AntiAlias);
+                //}
+
                 #endregion
 
                 //CvInvoke.Rectangle(img, rect, new MCvScalar(0, 0, 255), 3, LineType.AntiAlias);
@@ -180,6 +187,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
                 Console.WriteLine($"Normal: [{normal.Data[0, 0]}, {normal.Data[0, 1]}, {normal.Data[0, 2]}]");
                 Console.WriteLine($"Angle: {angle5}");
+                Console.WriteLine($"Dot product: {dotProduct}");
                 //Console.WriteLine($"Points: [{string.Join(",", points.ToArray().Select(p => $"[{p.X}, {p.Y}, {p.Z}]").ToArray())}]");
             });
             }
