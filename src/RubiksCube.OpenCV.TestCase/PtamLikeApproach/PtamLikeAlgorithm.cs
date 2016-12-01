@@ -153,7 +153,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
                         projectedMatrix.GetCol(2).SetValue(0);
                         projectedMatrix.CopyTo(trackedFeatures3Dm);
 
-                        InitialP1 = result.P2;
+                        //InitialP1 = result.P2;
 
                         onPlaneFound(normalOfPlaneMatrix.Clone(), new VectorOfPoint3D32F(_trackedFeatures3D.ToArray()), homography);
 
