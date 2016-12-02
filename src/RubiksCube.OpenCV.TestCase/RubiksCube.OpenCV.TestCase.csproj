@@ -118,6 +118,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Examples\SiftExamples.cs" />
     <Compile Include="Examples\SurfExamples.cs" />
+    <Compile Include="PtamLikeApproach\FaceCorners.cs" />
     <Compile Include="PtamLikeApproach\OpenCvUtilities.cs" />
     <Compile Include="PtamLikeApproach\PlaneInfo.cs" />
     <Compile Include="PtamLikeApproach\PtamLikeAlgorithm.cs" />

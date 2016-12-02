@@ -82,114 +82,138 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
             try
             {
-                Algorithm.Process(img, _newMap, (normal, points, homography) =>
-            {
-                Planes.Add(new PlaneInfo
+                Algorithm.Process(img, _newMap, (normal, points, points2D) =>
                 {
-                    Normal = normal,
-                    Points3D = points
+                    Planes.Add(new PlaneInfo
+                    {
+                        Normal = normal,
+                        Points3D = points
+                    });
+
+                    var edges = new Mat();
+                    CvInvoke.Canny(img, edges, 0.1, 99);
+                    var contours = new VectorOfVectorOfPoint();
+                    var hierarchy = new Mat();
+
+                    CvInvoke.FindContours(edges, contours, hierarchy, RetrType.Tree, ChainApproxMethod.ChainApproxSimple);
+
+                    for (int i = 0; i < contours.Size; i++)
+                    {
+                        var approx = new Mat();
+                        CvInvoke.ApproxPolyDP(contours[i], approx, 9, true);
+
+                        var approxMat = new Matrix<double>(approx.Rows, approx.Cols, approx.DataPointer);
+
+                        double a = Math.Abs(CvInvoke.ContourArea(approx));
+                        if (approxMat.Rows == 4 && Math.Abs(CvInvoke.ContourArea(approx)) > 3000 &&
+                                CvInvoke.IsContourConvex(approx))
+                        {
+                            CvInvoke.DrawContours(img, contours, i, new MCvScalar(0, 255, 0), 2);
+                        }
+                    }
+
+                    CvInvoke.Polylines(img, points2D, true, new MCvScalar(0, 0, 255), 3, LineType.AntiAlias);
+
+                    Capture = null;
+
+                    #region Rectangle
+
+                    //var rect = CvInvoke.BoundingRectangle(Utils.GetPointsVector(Algorithm.TrackedFeatures));
+                    //var rectPoints = new[]
+                    //{
+                    //    new PointF(rect.Location.X, rect.Location.Y + rect.Y),
+                    //    rect.Location,
+                    //    new PointF(rect.Location.X + rect.X, rect.Location.Y),
+                    //    new PointF(rect.Location.X + rect.X, rect.Location.Y + rect.Y)
+                    //};
+                    //rectPoints = CvInvoke.PerspectiveTransform(rectPoints, homography);
+                    //var points2D = Array.ConvertAll(rectPoints, Point.Round);
+
+                    ////CvInvoke.CvtColor(img, img, ColorConversion.Bgr2Gray);
+                    //var edges = new Mat();
+                    //CvInvoke.Canny(img, edges, 0.1, 99);
+
+                    //var contours = new VectorOfVectorOfPoint();
+                    //var hierarchy = new Mat();
+
+                    //CvInvoke.FindContours(edges, contours, hierarchy, RetrType.Tree, ChainApproxMethod.ChainApproxSimple);
+
+                    //int largestContourIndex = 0;
+                    //double largestArea = 0;
+                    //VectorOfPoint largestContour;
+
+                    //for (int i = 0; i < contours.Size; i++)
+                    //{
+                    //    var approx = new Mat();
+                    //    CvInvoke.ApproxPolyDP(contours[i], approx, 9, true);
+
+                    //    var approxMat = new Matrix<double>(approx.Rows, approx.Cols, approx.DataPointer);
+
+                    //    double a = Math.Abs(CvInvoke.ContourArea(approx));
+                    //    if (approxMat.Rows == 4 && Math.Abs(CvInvoke.ContourArea(approx)) > 500 &&
+                    //            CvInvoke.IsContourConvex(approx))
+                    //    {
+                    //        CvInvoke.DrawContours(img, contours, i, new MCvScalar(0, 255, 0), 2);
+                    //    }
+                    //}
+
+                    //while (true)
+                    //{
+                    //    rect.Inflate(20, 20);
+                    //    if (rect.Size.Width > 200 || rect.Height > 200)
+                    //        break;
+                    //}
+
+                    #endregion
+
+                    #region Dot product
+
+                    //var rotationVector32F = new VectorOfFloat();
+                    //var translationVector32F = new VectorOfFloat();
+                    //var rotationVector = new Mat();
+                    //var translationVector = new Mat();
+
+                    //CvInvoke.SolvePnP(Algorithm.TrackedFeatures3D, Utils.GetPointsVector(Algorithm.TrackedFeatures), _calibration.Intrinsic, _calibration.Distortion, rotationVector, translationVector);
+
+                    //rotationVector.ConvertTo(rotationVector32F, DepthType.Cv32F);
+                    //translationVector.ConvertTo(translationVector32F, DepthType.Cv32F);
+
+                    //var rotationMat = new Mat();
+                    //CvInvoke.Rodrigues(rotationVector32F, rotationMat);
+                    //var rotationMatrix = new Matrix<double>(rotationMat.Rows, rotationMat.Cols, rotationMat.DataPointer);
+
+                    //var tvec = translationVector32F.ToArray().Select(i => (double)i).ToArray();
+
+                    //var cameraPosition = rotationMatrix.Transpose() * new Matrix<double>(tvec);
+                    //var cameraPositionPoint = new MCvPoint3D32f((float)cameraPosition[0, 0], (float)cameraPosition[1, 0], (float)cameraPosition[2, 0]);
+
+                    //var cameraVector = Algorithm.TrackedFeatures3D[0] - cameraPositionPoint;
+
+                    //Func<double, double> radianToDegree = angle => angle * (180.0 / Math.PI);
+
+                    //double dotProduct = new double[] { cameraVector.X, cameraVector.Y, cameraVector.Z }.Dot(new[] { normal[0, 0], normal[0, 1], normal[0, 2] });
+                    //double acos = Math.Acos(dotProduct);
+                    //double angle5 = radianToDegree(acos);
+
+                    //double t = dotProduct;
+
+                    //var projected = CvInvoke.ProjectPoints(Algorithm.TrackedFeatures3D.ToArray(), rotationVector32F, translationVector32F, _calibration.Intrinsic, _calibration.Distortion);
+
+                    //foreach (var pr in projected)
+                    //{
+                    //    CvInvoke.Circle(img, new Point((int)pr.X, (int)pr.Y), 2, new MCvScalar(0, 255, 0), 2, LineType.AntiAlias);
+                    //}
+
+                    #endregion
+
+                    //CvInvoke.Rectangle(img, rect, new MCvScalar(0, 0, 255), 3, LineType.AntiAlias);
+                    //CvInvoke.Polylines(img, points2D, true, new MCvScalar(0, 255, 0), 3, LineType.AntiAlias);
+
+                    //Console.WriteLine($"Normal: [{normal.Data[0, 0]}, {normal.Data[0, 1]}, {normal.Data[0, 2]}]");
+                    //Console.WriteLine($"Angle: {angle5}");
+                    //Console.WriteLine($"Dot product: {dotProduct}");
+                    //Console.WriteLine($"Points: [{string.Join(",", points.ToArray().Select(p => $"[{p.X}, {p.Y}, {p.Z}]").ToArray())}]");
                 });
-
-                Capture = null;
-
-                #region Rectangle
-
-                //var rect = CvInvoke.BoundingRectangle(Utils.GetPointsVector(Algorithm.TrackedFeatures));
-                //var rectPoints = new[]
-                //{
-                //    new PointF(rect.Location.X, rect.Location.Y + rect.Y),
-                //    rect.Location,
-                //    new PointF(rect.Location.X + rect.X, rect.Location.Y),
-                //    new PointF(rect.Location.X + rect.X, rect.Location.Y + rect.Y)
-                //};
-                //rectPoints = CvInvoke.PerspectiveTransform(rectPoints, homography);
-                //var points2D = Array.ConvertAll(rectPoints, Point.Round);
-
-                ////CvInvoke.CvtColor(img, img, ColorConversion.Bgr2Gray);
-                //var edges = new Mat();
-                //CvInvoke.Canny(img, edges, 0.1, 99);
-
-                //var contours = new VectorOfVectorOfPoint();
-                //var hierarchy = new Mat();
-
-                //CvInvoke.FindContours(edges, contours, hierarchy, RetrType.Tree, ChainApproxMethod.ChainApproxSimple);
-
-                //int largestContourIndex = 0;
-                //double largestArea = 0;
-                //VectorOfPoint largestContour;
-
-                //for (int i = 0; i < contours.Size; i++)
-                //{
-                //    var approx = new Mat();
-                //    CvInvoke.ApproxPolyDP(contours[i], approx, 9, true);
-
-                //    var approxMat = new Matrix<double>(approx.Rows, approx.Cols, approx.DataPointer);
-
-                //    double a = Math.Abs(CvInvoke.ContourArea(approx));
-                //    if (approxMat.Rows == 4 && Math.Abs(CvInvoke.ContourArea(approx)) > 500 &&
-                //            CvInvoke.IsContourConvex(approx))
-                //    {
-                //        CvInvoke.DrawContours(img, contours, i, new MCvScalar(0, 255, 0), 2);
-                //    }
-                //}
-
-                //while (true)
-                //{
-                //    rect.Inflate(20, 20);
-                //    if (rect.Size.Width > 200 || rect.Height > 200)
-                //        break;
-                //}
-
-                #endregion
-
-                #region MyRegion
-
-                var rotationVector32F = new VectorOfFloat();
-                var translationVector32F = new VectorOfFloat();
-                var rotationVector = new Mat();
-                var translationVector = new Mat();
-
-                CvInvoke.SolvePnP(Algorithm.TrackedFeatures3D, Utils.GetPointsVector(Algorithm.TrackedFeatures), _calibration.Intrinsic, _calibration.Distortion, rotationVector, translationVector);
-
-                rotationVector.ConvertTo(rotationVector32F, DepthType.Cv32F);
-                translationVector.ConvertTo(translationVector32F, DepthType.Cv32F);
-
-                var rotationMat = new Mat();
-                CvInvoke.Rodrigues(rotationVector32F, rotationMat);
-                var rotationMatrix = new Matrix<double>(rotationMat.Rows, rotationMat.Cols, rotationMat.DataPointer);
-
-                var tvec = translationVector32F.ToArray().Select(i => (double)i).ToArray();
-
-                var cameraPosition = rotationMatrix.Transpose() * new Matrix<double>(tvec);
-                var cameraPositionPoint = new MCvPoint3D32f((float)cameraPosition[0, 0], (float)cameraPosition[1, 0], (float)cameraPosition[2, 0]);
-
-                var cameraVector = Algorithm.TrackedFeatures3D[0] - cameraPositionPoint;
-
-                Func<double, double> radianToDegree = angle => angle * (180.0 / Math.PI);
-
-                double dotProduct = new double[] { cameraVector.X, cameraVector.Y, cameraVector.Z }.Dot(new[] { normal[0, 0], normal[0, 1], normal[0, 2] });
-                double acos = Math.Acos(dotProduct);
-                double angle5 = radianToDegree(acos);
-
-                double t = dotProduct;
-
-                //var projected = CvInvoke.ProjectPoints(Algorithm.TrackedFeatures3D.ToArray(), rotationVector32F, translationVector32F, _calibration.Intrinsic, _calibration.Distortion);
-
-                //foreach (var pr in projected)
-                //{
-                //    CvInvoke.Circle(img, new Point((int)pr.X, (int)pr.Y), 2, new MCvScalar(0, 255, 0), 2, LineType.AntiAlias);
-                //}
-
-                #endregion
-
-                //CvInvoke.Rectangle(img, rect, new MCvScalar(0, 0, 255), 3, LineType.AntiAlias);
-                //CvInvoke.Polylines(img, points2D, true, new MCvScalar(0, 255, 0), 3, LineType.AntiAlias);
-
-                Console.WriteLine($"Normal: [{normal.Data[0, 0]}, {normal.Data[0, 1]}, {normal.Data[0, 2]}]");
-                Console.WriteLine($"Angle: {angle5}");
-                Console.WriteLine($"Dot product: {dotProduct}");
-                //Console.WriteLine($"Points: [{string.Join(",", points.ToArray().Select(p => $"[{p.X}, {p.Y}, {p.Z}]").ToArray())}]");
-            });
             }
             catch (Exception ex)
             {

@@ -104,7 +104,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             CvInvoke.CvtColor(img, _prevGray, ColorConversion.Bgr2Gray);
         }
 
-        public bool BootstrapTrack(Mat img, Action<Matrix<double>, VectorOfPoint3D32F, Matrix<double>> onPlaneFound)
+        public bool BootstrapTrack(Mat img, Action<Matrix<double>, VectorOfPoint3D32F, Point[]> onPlaneFound)
         {
             ValidateImages(_prevGray, img);
 
@@ -155,7 +155,20 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
                         //InitialP1 = result.P2;
 
-                        onPlaneFound(normalOfPlaneMatrix.Clone(), new VectorOfPoint3D32F(_trackedFeatures3D.ToArray()), homography);
+                        VectorOfFloat raux;
+                        VectorOfFloat taux;
+
+                        ComputeRotationAndTranslation(_trackedFeatures3D, _trackedFeatures, _calibrationInfo, out raux, out taux);
+
+                        double angle = ComputeAngleBetweenCameraNormAndPlaneNorm(_trackedFeatures3D, normalOfPlaneMatrix, raux, taux);
+                        if (angle > 65 && angle < 110)
+                        {
+                            var points2D = FindFaceCorners(_currGray, _trackedFeatures);
+                            onPlaneFound(normalOfPlaneMatrix.Clone(), new VectorOfPoint3D32F(_trackedFeatures3D.ToArray()), points2D.Points);
+
+                            var face = ExtractFace(img, points2D);
+                            face.Save("C:\\Users\\zakharov\\Documents\\Repos\\Mine\\Rc\\src\\RubiksCube.OpenCV.TestCase\\extracted.jpg");
+                        }
 
                         return true;
                     }
@@ -220,7 +233,7 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
             return true;
         }
 
-        public void Process(Mat img, bool newMap, Action<Matrix<double>, VectorOfPoint3D32F, Matrix<double>> onPlaneFound)
+        public void Process(Mat img, bool newMap, Action<Matrix<double>, VectorOfPoint3D32F, Point[]> onPlaneFound)
         {
             bool result;
             if (newMap)
@@ -390,6 +403,133 @@ namespace RubiksCube.OpenCV.TestCase.PtamLikeApproach
 
             raux = rotationVector32F;
             taux = translationVector32F;
+        }
+
+        private static double ComputeAngleBetweenCameraNormAndPlaneNorm(VectorOfPoint3D32F trackedFeatures3D, Matrix<double> normal, VectorOfFloat raux, VectorOfFloat taux)
+        {
+            var tvec = taux.ToArray().Select(i => (double)i).ToArray();
+
+            var rotationMat = new Mat();
+            CvInvoke.Rodrigues(raux, rotationMat);
+            var rotationMatrix = new Matrix<double>(rotationMat.Rows, rotationMat.Cols, rotationMat.DataPointer);
+
+            // ???
+            Utils.Negotiate(ref rotationMatrix);
+
+            var cameraPosition = rotationMatrix * new Matrix<double>(tvec);
+            var cameraPositionPoint = new MCvPoint3D32f((float)cameraPosition[0, 0], (float)cameraPosition[1, 0], (float)cameraPosition[2, 0]);
+
+            var cameraVector = trackedFeatures3D[0] - cameraPositionPoint;
+
+            Func<double, double> radianToDegree = angle => angle * (180.0 / Math.PI);
+
+            double dotProduct = new double[] { cameraVector.X, cameraVector.Y, cameraVector.Z }.Dot(new[] { normal[0, 0], normal[0, 1], normal[0, 2] });
+            double acos = Math.Acos(dotProduct);
+            double anglResult = radianToDegree(acos);
+
+            Console.WriteLine($"Normal: [{normal.Data[0, 0]}, {normal.Data[0, 1]}, {normal.Data[0, 2]}]");
+            Console.WriteLine($"Angle: {anglResult}");
+            Console.WriteLine($"Dot product: {dotProduct}");
+
+            return anglResult;
+        }
+
+        private static FaceCorners FindFaceCorners(Mat img, VectorOfKeyPoint trackedFeatures)
+        {
+            var rect = CvInvoke.BoundingRectangle(Utils.GetPointsVector(trackedFeatures));
+
+            var edges = new Mat();
+            CvInvoke.Canny(img, edges, 0.1, 99);
+
+            var contours = new VectorOfVectorOfPoint();
+            var hierarchy = new Mat();
+
+            var matchedContours = new List<VectorOfPoint>();
+
+            CvInvoke.FindContours(edges, contours, hierarchy, RetrType.Tree, ChainApproxMethod.ChainApproxSimple);
+
+            for (int i = 0; i < contours.Size; i++)
+            {
+                var approx = new Mat();
+                CvInvoke.ApproxPolyDP(contours[i], approx, 9, true);
+
+                var approxMat = new Matrix<double>(approx.Rows, approx.Cols, approx.DataPointer);
+
+                double a = Math.Abs(CvInvoke.ContourArea(approx));
+                if (approxMat.Rows == 4 && Math.Abs(CvInvoke.ContourArea(approx)) > 3000 &&
+                        CvInvoke.IsContourConvex(approx))
+                {
+                    matchedContours.Add(contours[i]);
+                }
+            }
+
+            var contoursArray = matchedContours.ToArray().SelectMany(c => c.ToArray()).ToArray();
+
+            var contour = matchedContours.FirstOrDefault();
+            var bbox = CvInvoke.BoundingRectangle(contour);
+
+            int minX = contoursArray.Min(p => p.X);
+            int maxX = contoursArray.Max(p => p.X);
+
+            if (!(maxX - minX > 2.9 * bbox.Width))
+                return new FaceCorners();
+
+            while (true)
+            {
+                bool sutisfied = contoursArray.All(p => p.X > rect.X && p.Y > rect.Y && p.X < (rect.X + rect.Width) && p.Y < (rect.Y + rect.Height));
+                if (sutisfied)
+                    break;
+
+                if (contoursArray.Any(c => c.X < rect.X))
+                    rect.X -= 5;
+
+                if (contoursArray.Any(c => c.Y < rect.Y))
+                    rect.Y -= 5;
+
+                if (contoursArray.Any(c => c.X > (rect.X + rect.Width)))
+                    rect.Width += 5;
+
+                if (contoursArray.Any(c => c.Y > (rect.Y + rect.Height)))
+                    rect.Height += 5;
+            }
+
+            var rectPoints = new[]
+            {
+                rect.Location,
+                new PointF(rect.X, rect.Y + rect.Height),
+                new PointF(rect.X + rect.Width, rect.Y),
+                new PointF(rect.X + rect.Width, rect.Y + rect.Height)
+            };
+            var points2D = Array.ConvertAll(rectPoints, Point.Round);
+
+            var corners = new FaceCorners(points2D);
+
+            return corners;
+        }
+
+        private static Mat ExtractFace(Mat img, FaceCorners corners)
+        {
+            double widthA = Math.Sqrt(Math.Pow(corners.BottomRight.X - corners.BottomLeft.X, 2) + Math.Pow(corners.BottomRight.Y - corners.BottomLeft.Y, 2));
+            double widthB = Math.Sqrt(Math.Pow(corners.TopRight.X - corners.TopLeft.X, 2) + Math.Pow(corners.TopRight.Y - corners.TopLeft.Y, 2));
+            double maxWidth = Math.Max(widthA, widthB);
+
+            double heightA = Math.Sqrt(Math.Pow(corners.TopRight.X - corners.BottomRight.X, 2) + Math.Pow(corners.TopRight.Y - corners.BottomRight.Y, 2));
+            double heightB = Math.Sqrt(Math.Pow(corners.TopLeft.X - corners.BottomLeft.X, 2) + Math.Pow(corners.TopLeft.Y - corners.BottomLeft.Y, 2));
+            double maxHeight = Math.Max(heightA, heightB);
+
+            var a = Array.ConvertAll(corners.Points, p => (PointF)p);
+
+            var perspectiveTransformationMatrix = CvInvoke.GetPerspectiveTransform(new VectorOfPointF(a), new VectorOfPointF(new[] {
+                new PointF(0, 0),
+                new PointF((int)maxWidth - 1, 0),
+                new PointF((int)maxWidth - 1, (int)maxHeight - 1),
+                new PointF(0, (int)maxHeight - 1),
+            }));
+
+            var warped = new Mat((int)maxWidth, (int)maxHeight, DepthType.Cv32F, 1);
+            CvInvoke.WarpPerspective(img, warped, perspectiveTransformationMatrix, new Size((int)maxWidth, (int)maxHeight));
+
+            return warped;
         }
 
         #endregion

@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 namespace RubiksCube.OpenCV.TestCase.Tests
 {
     [TestFixture]
-    public class Class1
+    public class DotProductTests
     {
-        public Class1()
+        public DotProductTests()
         {
             //Normal: [-0.646031086055159, 0.751958713237675, 0.131156126186813]
             //Normal: [0.525444735828459, 0.850455524374977, -0.0251640745954108]
