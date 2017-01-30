@@ -1,0 +1,46 @@
+1. Abstract
+
+
+2. Acknowledgements
+
+
+3. Introduction
+
+
+4. Background and Related work
+
+4.1 Computer Vision
+4.1.1 Intro
+4.1.2 OpenCV
+4.1.3 more alternatives
+4.1.4 OCR and etc
+
+4.2 Kalman Filter
+
+4.3 Sudoku related work approach
+4.4 Rubik's cube related work approach
+
+4.5 Pose estimation
+4.6 Optical flow
+
+4.7 Stereovision
+4.7.1 PTAM
+4.7.2 PTAM like approach
+4.7.3 SLAM
+
+
+5. Contribution
+
+5.1 Design
+5.1.1 .... сюда писать описание моих решений из семинаров? ведь они в итоге и вытекли в то, что я имею.
+
+5.2 Implementation
+5.2.1 .... что сюда пойдет?
+
+5.3 Validation
+5.4.1 .... ну тут описывать результат, так?
+
+
+6. Conclusion
+
+Future work сюда записывать?

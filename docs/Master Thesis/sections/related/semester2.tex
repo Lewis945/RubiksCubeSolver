@@ -1,0 +1,64 @@
+\documentclass[../../main]{subfiles}
+\graphicspath{{images/related/semester2/}}
+
+\begin{document}
+
+\subsubsection{Cube Localization via Convolutional Neural}
+The main idea and probably the most innovational step in their algorithm was to use a convolutional neural network to extract bounding box of Rubik’s cube from an image with one on it. This approach allows to ignore noisy background for future work that can be affected by noise, reduce the amount of needed computational power due to relatively mild investment of CPU time.
+They trained a six-layer convolutional neural network in order to get set of numbers that approximate center’s coordinates of any cube on the image as well as ox and oy scale factors.
+Author’s highest-performing architecture was like that:
+Layer 1
+Conv-Relu-Pool 16 3x3 filters; Max Pooling; Pool stride of 2, kernel of 2.
+Layer 2
+Conv-Relu-Pool 16 3x3 filters; Max Pooling; Pool stride of 2, kernel of 2.
+Layer 3
+Conv-Relu-Pool 32 3x3 filters; Max Pooling; Pool stride of 2, kernel of 2.
+Layer 4
+Conv-Relu-Pool 16 3x3 filters; Max Pooling; Pool stride of 2, kernel of 2.
+Layer 5
+Affine-Relu 64 neurons.
+Layer 6
+Affine 4 neurons.
+
+Raw input data consisted of 640x360 RGB images captured from a web camera under different lighting conditions: indoors, outdoors, dimly-lit rooms, night time and in direct sunlight. They resized the images to 100 by 100 pixels for this step in order boost accuracy (empirically was determined that for this case 100 by 100 resolution improved accuracy) and significantly lower the computational cost. First of all, they trained their neural network against hand-labelled bounding boxes (Euclidian loss function). Usually, these kind of tasks are quite high-performing and the speed is much better than real time under a variety of lightning conditions. 
+
+\subsubsection{Finding Cube Pieces via SLIC Superpixel Classification}
+The authors were thinking about Rubik’s Cube structure and since the standard cube’s pieces are all colored, sized and shaped uniformly they came to the point that SLIC superpixel segmentation is the best choice to detect pieces via segmenting the image into rectangular superpixels. The next step was to classify all the detected pieces using internal color histograms and shape descriptors. Actually, their approach proceeded following steps. The first one was to run MiniBatch Kmeans algorithm on pixel values and delegate each pixel to its corresponding centroid in order stimulate clustering of similar pixels, that was needed as a support for superpixel segmentation. The next one was to run SLIC superpixel segmentation algorithm on the results from Kmeans image which produced a set of candidates for Rubik’s Cube pieces. The following step was to collect histogram of HSV pixel values, to compute the third moment of the covered area and to add computations to the resulting vector. The last step was to classify all superpixels as a cube piece or otherwise using a random forest classifier trained on hand-labelled ground-truth data.
+
+
+
+
+\begin{figure} [ht]
+\begin{center}
+\includegraphics[width=\textwidth]{kmeansAndSlicSuperpixels}
+\caption{Kmeans / SLIC superpixels}
+\label{fig:kmeansAndSlicSuperpixels}
+\end{center}
+\end{figure}
+
+\begin{figure} [ht]
+\begin{center}
+\includegraphics[width=\textwidth]{classifiedSuperpixels}
+\caption{Classified superpixels}
+\label{fig:classifiedSuperpixels}
+\end{center}
+\end{figure} 
+
+\begin{figure} [ht]
+\begin{center}
+\includegraphics[width=\textwidth]{candidatePiecesCenters}
+\caption{Candidate piece’s centers}
+\label{fig:candidatePiecesCenters}
+\end{center}
+\end{figure}
+
+\subsubsection{Pinpointing Centers of Cube Faces}
+They accomplished quite reliable performance in identifying locations of cube piece’s candidates, as can be seen from the previous section, but still cannot be meant as a full reconstruction of Rubik’s cube. With a view to grasping the structure of Rubik’s cube they had find point-wise locations correspondences between the pieces of cube and locations in the image. Their approach contained training of a convolutional neural network in order to identify the location of center pieces for each visible face. After that they assigned the cube piece surrounding candidate centers their cube coordinates based on relative positions to the identified face centers. The authors used a six layer neural network with exactly the same architecture as in the section 2.1 with a small change, last layer was reverted to two coordinates. To predict the centers of faces they trained 3 networks, one for yellow and white, second for blue and green, and the last one for orange and red. As can be seen they picked opposite faces of the cube in order to take the advantage of that opposite sides would never be seen at the same time so they did not require separate network for prediction that is why only 3 neural network were used.
+
+\subsubsection{Bootstrap Learning for Data Acquisition}
+The authors thought on such a problem that their algorithm is running in the real time and any additional data for the machine learning portions made a benefit so they decided to use an output from the various classifiers on real data as additional training data. As a next step, they developed a module that allows to record person with a Rubik’s cube, after that sanitize the output of the classifiers for rejecting labels and inferences that are far away of the mark in order to keep training data precise and at high-quality level. The used 10 – 15 seconds long videos, in average, and it took about 15 minutes to hand-label one video, this process produced from 150 to 300 labelled data samples. Actually, drawing bounding boxes on each frame consumes the majority of the time in hand-labelling. And, finally, the bootstrap learning step is meant to ask one to decide whether to accept or reject labels produced by the algorithm, which is closely immediate for each frame; this process shortens the time to label 10-15 seconds video to 2-3 minutes.
+
+\subsubsection{Extracting Cube Face Information}
+Using resulted predictions of the face’s centers they were able to compute a projective transform to get the cube orientation and to extract face’s colors. These procedures made possible the classification of each square’s color by a manually-tuned support vector machine (SVM).
+
+\end{document}

@@ -41,7 +41,7 @@
 
 % Including graphical images and setting the figure directory
 \usepackage{graphicx}
-\graphicspath{{figures/}}
+\graphicspath{{images/}}
 
 % Packages for getting clickable links in PDF file
 \usepackage{hyperref}
@@ -137,6 +137,16 @@
 % A way to define theorems and lemmata
 \newtheorem{theorem}{Theorem}
 
+%http://tex.stackexchange.com/questions/60209/how-to-add-an-extra-level-of-sections-with-headings-below-subsubsection
+\makeatletter
+\renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
+            {-2.5ex\@plus -1ex \@minus -.25ex}%
+            {1.25ex \@plus .25ex}%
+            {\normalfont\normalsize\bfseries}}
+\makeatother
+\setcounter{secnumdepth}{4} % how many sectioning levels to assign numbers to
+\setcounter{tocdepth}{4}    % how many sectioning levels to show in ToC
+
 \begin{document}
 
 %\maketitle
@@ -148,13 +158,27 @@
 \tableofcontents
 \newpage
 
-\section{Introduction}
+\section{Abstract}
+\subfile{sections/abstract}
+\newpage
 
+\section{Acknowledgements}
+\subfile{sections/acknowledgements}
+\newpage
+
+\section{Introduction}
 \subfile{sections/introduction}
 \newpage
 
-\section{Conclusion}
+\section{Background and Related work}
+\subfile{sections/related/index}
+\newpage
 
+\section{Contribution}
+\subfile{sections/contribution/index}
+\newpage
+
+\section{Conclusion}
 \subfile{sections/conclusion}
 \newpage
 

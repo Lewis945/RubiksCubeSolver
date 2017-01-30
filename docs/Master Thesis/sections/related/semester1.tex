@@ -1,0 +1,107 @@
+\documentclass[../../main]{subfiles}
+\graphicspath{{images/related/semester1/}}
+
+\begin{document}
+
+\subsubsection{Thresholding}
+Nowadays, there are no options for OCR applications to process colored image that is why all OCR applications need to convert input image to grayscale (monochrome). There are two basic methods for thresholding: global thresholding and adaptive thresholding. Global thresholding is the simplest method. It takes an image, goes through all the pixels, calculates intensity ((R+G+B)/3) and compare it to a global thresholding value (256/2 = 128). If a pixel intensity is larger than thresholding value than the pixel is converted to white, otherwise to black. Global thresholding it is not useful in real world.
+
+\begin{figure} [ht]
+\begin{center}
+\includegraphics[width=\textwidth]{comparisonOfImageThresholding}
+\caption{Comparison of image thresholding}
+\label{fig:comparisonOfImageThresholding}
+\end{center}
+\end{figure}
+
+Adaptive thresholding is used to get a better result. It does not use a fixed thresholding value (128), the value is calculated for each pixel separately. For instance, it takes 11*11 (121) surrounding pixels, computes the sum of their intensities and divides it by the number of pixels (121). If the mean intensity of the current pixel, located in the center of that area, is greater than the mean thresholding value, it will become white, otherwise black. This algorithm needs to do all of that for each pixel so it is much slower than the previous but it gives much better results.
+
+\begin{figure} [ht]
+\begin{center}
+\includegraphics[width=\textwidth]{findingLogicOfAdaptiveThresholdingValue}
+\caption{Finding logic of adaptive thresholding value}
+\label{fig:findingLogicOfAdaptiveThresholdingValue}
+\end{center}
+\end{figure}
+
+\subsubsection{Contour and corner detection}
+
+Researchers decided to make an assumption that Sudoku grid on any image should have strong borders and take from 10 to 100 percent of the image.
+In order to start the image processing they applied adaptive thresholding. Returned image was suitable for finding and extracting contours. Basically, numbers and lines on that image were turned to black while the background and other light pixels were turned to white. 
+Code responsible for that consists of contour scanner that iterates through all contours and stores threshold-passed contours to an array. 
+A contour is a list of points. Its representation can be different depending on the circumstances.
+In order to find a contour in a binary image all connected components (pixels connected to each other) in the image should be considered. In this case, 4-connectivity of neighbor pixels is considered (see Figure 3 below), in order to find connected components.
+
+\begin{figure} [ht]
+\begin{center}
+\includegraphics[width=\textwidth]{connectivityPixelMatrix}
+\caption{4-connectivity pixel matrix}
+\label{fig:connectivityPixelMatrix}
+\end{center}
+\end{figure}
+
+Then it founds the largest contour and applies polynomial approximation, which means it discovers all the straight lines in the contour. For a typical Sudoku grid four lines create bounding rectangle that returns coordinates of lines intersections. If exactly four lines are found then four corners are returned and it is supposed that Sudoku grid has been detected.
+
+\subsubsection{Extraction}
+
+They took the maximal area contour, computed the bounding rectangle of this contour and extracted it. The extracted rectangle and its corners are passed to the linear transformation method.
+Limitations. If an image quality is quite poor, Sudoku grid borders are broken into pieces or do not exist than it is not possible to detect grid corners and extract the Sudoku grid from the image. However if the image quality is good enough than this algorithm is very sufficient because it performs well and it is reliable enough.
+
+\subsubsection{Hough Transformation}
+
+\begin{figure} [ht]
+\begin{center}
+\includegraphics[width=\textwidth]{houghLinesTransformation}
+\caption{Hough lines transformation}
+\label{fig:houghLinesTransformation}
+\end{center}
+\end{figure}
+
+Hough transformation is a numerical method algorithm used to extract features from an image. In this case, it extracts lines. It skips all the white pixels and draws 180 virtual lines through each black pixel. Pixels ‘vote’ for the lines and the virtual line with the largest number of votes in the accumulator is the winner and most probably the real line.
+Researchers used this algorithm to extract Sudoku grid corners in case if the previous extraction algorithm have not been used so it is just an option.
+
+\subsubsection{Transforming Image}
+
+When authors received the grid corners coordinates, they extracted them and applid linear transformation in order to get a square shape image. They used perspective transformation equations:
+
+In these 2 equations there are 8 unknown variables but they could be found using construction of 8 equations system (four for each of two equations). Using this system, they were able to map points from distorted image to a flat square image.
+
+\subsubsection{Segmentation}
+
+This part of the program is responsible for determining where the numbers on the image are. Usually segmentation is the hardest part of the OCR process but, in this case, software should process standard 9 by 9 Sudoku, which grid is square and its size is already known, that is why there is no need to do complex segmentation operations. Authors just computed cell size and cut the image into 81 equal parts.
+After that they extracted small area in the middle of a rectangle, checked whether something is in it, if not than it meant that no number was in the rectangle. Otherwise, they expanded selected area until it has covered all the number (all surrounding pixels are white). Extracted number was sent to the OCR.
+
+\begin{figure} [ht]
+\begin{center}
+\includegraphics[width=\textwidth]{extractingNumberFromSegment}
+\caption{Extracting a number from the segment.}
+\label{fig:extractingNumberFromSegment.}
+\end{center}
+\end{figure}
+
+\subsubsection{Optical Character Recognition}
+
+The purpose of the OCR is to take an image, process it and return character that is presented on the image.
+Every recognition algorithms has steps:
+1.	Determine input image features
+2.	Train a classification algorithm with some training data.
+3.	Classify input image
+
+\begin{figure} [ht]
+\begin{center}
+\includegraphics[width=\textwidth]{extractingNumberFromSegment}
+\caption{Example of an input image}
+\label{fig:exampleOfInputImage}
+\end{center}
+\end{figure}
+
+Determine input image features.
+Figure 6 represents an input image for the OCR algorithm. Images may have different parameters (shape, color scheme, borders, etc.). Before classifying, it is needed to bring all the images to the same standard (shape, binary color). For this software, researchers resized images to 40 by 40 and vectorized image matrix because vector must represent an image in a classification algorithm. Optimal size of the image was chosen by experiment, what was found out is that for sizes less than 30 there were many wrong recognitions due to the lack of information, and if the size is more than 50 performance significantly dropped. They also changed pixel values to zero for black and one for white. That was done because SVM classification algorithm requires that kind of representation.
+Training the classification algorithm. Researchers collected more than 40 samples from different Sudokus for each number. They used Support Vector Machine (SVM) with linear kernel. OpenCV SVM implementation was used for classification.
+Classification of Sudoku numbers. Classification method of authors does next, it receives matrix with segments matrices in positions where some numbers are supposed to be and NONE objects where it is not. Than it transposes matrix to a vector and passes it to the classification algorithm. SVM returns the class of the classified image, which is the needed number. Their method returns matrix with integer numbers or dashes (there was no number).
+
+\subsubsection{Solving Sudoku} 
+
+Researchers used solution of Peter Norvig. There are two functions: constraint propagation and search. This functions are used together in order to solve every Sudoku that has an existing solution. Algorithm propagates values received from the OCR to the neighboring cells. This step is called constraint propagation (CP) and for most of Sudokus it is enough to solve them. If there were more than one competitor for the same cell then the search is applied, it tries all the competitors one-by-one in a brute-force manner. Algorithm could use constraint propagation again in order to speed up. As a result, solving every Sudoku takes a few milliseconds on an average PC.
+
+\end{document}
