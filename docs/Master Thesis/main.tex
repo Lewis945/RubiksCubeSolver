@@ -151,6 +151,8 @@
 
 %\maketitle
 
+% Section without numbering http://tex.stackexchange.com/questions/30122/generate-table-of-contents-when-section-sections-without-numbering-has-been
+
 \subfile{sections/title-page}
 
 \newpage
@@ -158,12 +160,19 @@
 \tableofcontents
 \newpage
 
-\section{Abstract}
+\section*{Abstract}
+\addcontentsline{toc}{section}{\protect\numberline{}Abstract}
 \subfile{sections/abstract}
 \newpage
 
-\section{Acknowledgements}
+\section*{Acknowledgements}
+\addcontentsline{toc}{section}{\protect\numberline{}Acknowledgements} 
 \subfile{sections/acknowledgements}
+\newpage
+
+\section*{Abbreviations and Acronyms}
+\addcontentsline{toc}{section}{\protect\numberline{}Abbreviations and Acronyms} 
+\subfile{sections/abbreviations-and-acronyms}
 \newpage
 
 \section{Introduction}
@@ -172,6 +181,10 @@
 
 \section{Background and Related work}
 \subfile{sections/related/index}
+\newpage
+
+\section{Experimentsk}
+\subfile{sections/experiments/index}
 \newpage
 
 \section{Contribution}
