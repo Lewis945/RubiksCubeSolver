@@ -1,69 +1,11 @@
-Abstract
-~300 слов в начале
+1. Abstract
 
-Acknowledgements
-~1-4 предложений в начале
+2. Acknowledgements
 
-Abbreviations and Acronyms
+3. Introduction
 
-1. Introduction
-	1.1 Problem statement
-	1.2 Contributions
-	1.3 Road map
-	
-	Постановка проблемы. Откуда взялась необходимость такого решения ?
-	Почему именно так ? В общем нужно подвести к читателя проблемной области.
-	(описать немного саму область и очертить проблему). Сказать о немного возмыных
-	вариантах решения подчеркивая их несовершенность. Наконец предложить свое решение
-	и сказать что об этом как раз речь пойдет далее в этой статье.
+4. Background and Related work
 
-2. Background and Related work
-	2.1 Computer Vision
-		2.1.1 Theoretical
-			2.1.1.1 Computer vision basics (Feature detection (Freak, ORB, FAST. SURF), Contour and corner detection, Thresholding, Hough Transformation, image transformations, 
-				Optical Character Recognition, Feature classification (k-Nearest Neighbour (kNN), Support Vector Machines (SVM), Neural Networks))
-			2.1.1.2 Stereovision basics (Pose estimation, Optical flow, points triangulation, Epipolar geometry, Fundamental matrix, Homography, camera calibration, Converting 2D to 3D)
-			2.1.1.3 Structure from motion
-			2.1.1.4 Tracking and Mapping (PTAM, DTAM, PTAM like approach, SLAM, Edge-Based Markerless Real-Time 3D Tracking of Rigid Objects, and others)
-		
-		2.1.1 Implementational
-			2.1.1.1 Computer vision librarries (OpenCV, its competitors (AForge.Vision, Accord.NET, VlFeat, MATLAB, libCVD) and their implementations (APIs) in different languages)
-				If you are trying to do anything in real-time you should seriously consider libCVD.
-				For example, PTAM (Parallel Tracking And Mapping) framework by Georg Klein uses this library.
-			2.1.1.2 Computer vision algorithms implementations
+5. Contribution
 
-	2.2 Kalman Filter
-
-
-3. Еxperiments
-	3.1 hypothesis 1 (Sudoku related work approach)
-		 * description 
-		 * implementation 
-		 * testing
-	3.2 hypothesis 2 (Rubik's cube 1 related work approach)
-		 * description 
-		 * implementation 
-		 * testing
-	3.3 hypothesis 3 (Rubik's cube 2 related work approach)
-		 * description 
-		 * implementation 
-		 * testing
-			 
-	3.4 Summary
-		но только семинарами ограничиваться нельзя поэтому следующий параграф уже по главному решению ...
-
-4. Contribution
-	4.2 Design
-		4.1.1 .... сюда писать описание моих решений из семинаров? ведь они в итоге и вытекли в то, что я имею.
-			здесь опишешь что на основе экспериментов в 3 парагрефе финальное решение будет выглядеть так ...
-	4.2 Implementation
-		4.2.1 .... что сюда пойдет?
-			все технические детали, на чем писал, какие библиотеки какие алгоритмы использовал и откуда, какие написал сам какие взял готовые и изменил ...
-	4.3 Validation
-		4.4.1 .... ну тут описывать результат, так?
-			Oписать как проверял и что позволило тебе сказать хорошо ли работает твое решение или нет. Желательно сравнить с 
-			похожими решениями если таковых нет то расписать как проверялся каждый 
-			этап и как ты решал результат "достаточно хорош или нет"
-
-5. Conclusion
-	Да future work сюда пойдет.
+6. Conclusion

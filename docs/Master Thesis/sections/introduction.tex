@@ -2,28 +2,46 @@
 
 \begin{document}
 
-\TODO{What is it in simple terms (title)?}
-\TODO{Why should anyone care?}
-\TODO{What was my contribution?} 
-\TODO{What you are doing in each section (a sentence or two per section)}
+Nowadays computer vision is a widely used technology. It has started developing since the late 1960s but a real leap into the future has been done in 1990s, when a lot of research topics got a second chance, for instance, projective 3D reconstruction, camera calibration, multi-view stereo techniques and etc. On the other side, hardware world was rapidly evolving which resulted to the current situation in computer vision field of research. Today the level of development (IoT devices, smart phones, tablets and etc.) allow to integrate computer vision tightly into humans life. There can be enormous amount of examples like parking systems when there is a camera mounted on a barrier at an entrance of a parking and a car number is recognized with this camera to decide whether the barrier will be opened or not; cameras mounted on the roads for catching speeding offenders; OCR technologies for analyzing text on images which allows to take a picture of a document and receive a typed version of it without typing by yourself; applications for finding pedestrians on a road; applications for face recognition, they help to find criminals in the streets, airports or any public place where cameras are mounted; this list can be almost infinite.
+
+Human need for these technologies motivates researches to develop new techniques, improve algorithms that already exist and that what we have for the past decade. This decade changed the world, there have been created dozens of new concepts like social media, video platforms, 3d printing, cameras in mobile phones and etc. All of these have made a great influence on a human life. Peoples appetite is growing significantly and that is why new entertainment systems appear. Microsoft created Kinect, Sony has Move, Nintendo has Remote Plus and such kind of tools are based on computer vision but the technologies beneath them are not ideal, they need to gather a lot of data with a good quality, proceed complex computations and the result is not always as good as expected. All of that leads to the creation of new algorithms and attempts to get as much as possible of existing hardware. 
 
 \subsection{Problem statement}
 
+Tools mentioned above allow to capture objects movements, recognize patterns and etc. With their help it is possible to analyze density of an image, create a 3d reconstruction, control game objects with our hands moving, shaking and many other interactive activity become real. But what if we look closer at Kinect and Move; it is clearly seen that they are just an expensive set of sensors for computer vision but in addition to multiple cameras they have infrared sensors, color sensors, depth sensors, microphones and so on; all these sets of sensors allow them to gather a huge amount of data. From this perspective, even the simplest algorithms may provide quite a good result but what if we do not have such an expensive hardware; that is the case where algorithmic part takes the leading role.
+
+There are dozens of different algorithms already invented, some of them are applicable to the nowadays situation and some of them need an improvement. Algorithms could have concrete purpose at the beginning but with a time they might be applied to other field and become a real breakthrough there. This thesis will focus on experiments with the algorithms that allow to get the same result as with Kinect or another expensive hardware while having a simple monocular camera. These experiments are needed for understanding whether it is possible to build an approach for successful tracking of objects and mapping them to their 3d representations on a computer. All existing algorithms have different purposes and can't be easily applied to the mentioned problem out of the box.
+
+Towards this end, main research goals of this thesis are:
+\begin{enumerate}
+\item  Analyze every existing algorithm that can be applied to this problem.
+\item  Take the parts of the theory beneath those algorithms and combine them together.
+\item  Design a new approach for a mentioned problem based on the main seeds of the already existing algorithms. 
+\end{enumerate}
+
 \subsection{Contributions}
+
+Methodology of this thesis is so called empirical research and it targets to achieve next goals:
+
+\begin{itemize}
+  \item Examine feature detection methods in computer vision.
+  \item Examine feature classification methods in computer vision.
+  \item Examine theory of stereovision (camera calibration, epipolar geometry, triangulation, pose estimation) in computer vision.
+  \item Analyze theory beneath "Structure from Motion" approach.
+  \item Analyze theory beneath "Tracking and Mapping" approaches (PTAM, DTAM, SLAM).
+  \item Build a framework for tracking and recognizing objects using monocular camera. Since Rubik's cube was picked as a simple shape object, using captured data it will be reconstructed and solved with an already implemented module of the framework.
+\end{itemize}
 
 \subsection{Road map}
 
-Semester 1
+The rest of the master thesis has the following chapters: 
 
-This project based on the previous work of Artjom Lind, Rauno Ots, Vilen Looga, and Murad Kamalov at the University of Tartu, Estonia. Author’s goal was to create software that can take image, taken on the mobile phone camera, with Sudoku as an input, process it and solve Sudoku, which is a content of the image. Researches of the base work had no experience working with image recognition; author of the current project is in the same situation. Another goal of researchers was to apply knowledges gained from data mining course. They figured out how to use classification algorithms for numbers recognition, tried some of them, and picked the one that performs the best for their purposes. Another task for them was to find out how many data is needed to train classification algorithms. This project gave all the developers opportunity to gain new knowledges, clear understanding of things which are hidden under the mysterious OCR, and digging dipper into data mining course in order to understand how classification works. As a result, software for solving Sudoku using received content from an image was developed. Since the previous implementation was created using opencv 2.4 that was using c++ methods as they are just in python syntax but now opencv 3.0 is released, it is tightly coupled with NumPy library and a lot of useful features were encapsulated it was decided to write the new version of the program.
+Chapter 2: Presents an overview of all related theory in computer vision: basic theory as feature detection/classification, basics of stereo vision as a camera calibration, "Structure from Motion" concept overview, "Tracking and Mapping" concept and its derivatives overview, Kalman filter explanations.
 
-Semester 2
+Chapter 3: Contains overview of all experiments with algorithms and their implementations from the Chapter 2. Includes descriptions of test cases, used approaches, used implementations or self written ones. Covers testing and validating results.
 
-This project based on the previous work of Jay Hack and Kevin Shutzberg at Stanford University, Stanford, USA. Author’s goal was to create software that can transfer state of a Rubik’s cube (highly mathematical puzzle) to a computer from a computer vision perspective. They decided that this problem is good for convolutional neural networks due to cube’s faces are highly structured and have distinct pattern and textures.
-They presented an approach that is based on two separately trained convolutional networks. One network is used for localization of the cube on a video stream and another is used to detect centers of the cube faces from cropped images. Furthermore, the presented some techniques from classical computer vision: featuring SLIC superpixel segmentation, projective transforms and color histogram classifications. In addition, they used technique for gathering large amount amounts of labeled data for similar problems that is based on iterative training and supported by labeling procedure. In the end, they analyze the performance gains. Authors have their code hosted on GitHub, it is fully open source. Link: https://github.com/jayhack/ConvCube.
+Chapter 4: Covers a solution to the mentioned problem based on the results of experiments. Self written PTAM based approach covered and reasoned. Results are validated, pros and cons are presented.
 
-Semester 3
-
-This project is based on multiple projects: the first one is Sudoku Solver by Artjom Lind and his fellows and my one approach of the same task; the second one is my own approach of Rubik’s cube detection and extraction of data for cube reconstruction and solving; and the last one but not the least one is Bootstrapping planar AR and tracking without markers [1]. Since in the previous work it was managed to extract cube faces from the video stream this time the goal was set to do the same but with different approach that will help me to expand abilities of the program, for instance, make the program to be able to extract, track, and analyze any figure, not only a cube. To complete my goals I analyzed different source and PTAM (Parallel Tracking and Mapping for Small AR Workspaces) [2] was somehow an answer to the current problem. Since this algorithm was too complicated to write it by myself and running C++ Linux code under .NET platform was not an easy task too there was found another approach [1] which behaves the same as PTAM but in much simpler way. In this project running this algorithm was a goal and it was successfully gained. Since this project is a part of the master thesis, full project goals are covered in this paper.
+Chapter 5: Overviews the results of the thesis and possible future work and perspectives of designed approach.
 
 \end{document}
