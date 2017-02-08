@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RubiksCube.Game.Rendering
+namespace RubiksCube.Game.GraphicsEngine
 {
     public class Point3D
     {

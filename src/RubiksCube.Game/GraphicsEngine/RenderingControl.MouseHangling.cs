@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace RubiksCube.Game.Rendering
+namespace RubiksCube.Game.GraphicsEngine
 {
     public abstract partial class RenderingControl<T>
     {
@@ -24,7 +28,7 @@ namespace RubiksCube.Game.Rendering
         {
             if (_oldMousePos.X != -1 && _oldMousePos.Y != -1)
             {
-                if (e.Button == MouseButtons.Right)
+                if (e.Button == System.Windows.Forms.MouseButtons.Right)
                 {
                     Cursor = Cursors.SizeAll;
                     int dx = e.X - _oldMousePos.X;

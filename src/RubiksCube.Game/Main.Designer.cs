@@ -1,4 +1,6 @@
-﻿namespace RubiksCube.Game
+﻿using RubiksCubeSolver.Cube.Rendering.Controls;
+
+namespace RubiksCube.Game
 {
     partial class Main
     {
@@ -28,11 +30,25 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.rubicsCubeControl = new RubiksCubeSolver.Cube.Rendering.Controls.RubicsCubeControl();
             this.radioButton3dCube = new System.Windows.Forms.RadioButton();
             this.radioButton2dCube = new System.Windows.Forms.RadioButton();
             this.groupBoxDimensions = new System.Windows.Forms.GroupBox();
             this.groupBoxDimensions.SuspendLayout();
             this.SuspendLayout();
+
+            // 
+            // rubicsCubeControl
+            // 
+            this.rubicsCubeControl.DrawingMode = GraphicsEngine.DrawingMode.Mode3D;
+            this.rubicsCubeControl.Location = new System.Drawing.Point(12, 12);
+            this.rubicsCubeControl.MaxFps = 30D;
+            this.rubicsCubeControl.Name = "rubicsCubeControl";
+            this.rubicsCubeControl.RotationSpeed = 250;
+            this.rubicsCubeControl.Size = new System.Drawing.Size(381, 348);
+            this.rubicsCubeControl.TabIndex = 0;
+            this.rubicsCubeControl.Zoom = 1D;
+
             // 
             // radioButton3dCube
             // 
@@ -76,6 +92,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(587, 372);
             this.Controls.Add(this.groupBoxDimensions);
+            this.Controls.Add(this.rubicsCubeControl);
             this.Name = "Main";
             this.Text = "Form1";
             this.groupBoxDimensions.ResumeLayout(false);
@@ -86,6 +103,7 @@
 
         #endregion
 
+        private RubicsCubeControl rubicsCubeControl;
         private System.Windows.Forms.RadioButton radioButton3dCube;
         private System.Windows.Forms.RadioButton radioButton2dCube;
         private System.Windows.Forms.GroupBox groupBoxDimensions;

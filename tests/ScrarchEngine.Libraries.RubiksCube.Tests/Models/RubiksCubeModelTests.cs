@@ -70,21 +70,57 @@ namespace ScrarchEngine.Libraries.RubiksCube.Tests.Models
             var backFace = _cube.GetFace(FaceType.Back);
             var rightFace = _cube.GetFace(FaceType.Right);
 
+            // rotated
             Assert.AreEqual(FacePieceType.Orange, frontFace[0, 0]);
-            Assert.AreEqual(FacePieceType.Orange, frontFace[0, 1]);
-            Assert.AreEqual(FacePieceType.Orange, frontFace[0, 2]);
+            Assert.AreEqual(FacePieceType.Orange, frontFace[1, 0]);
+            Assert.AreEqual(FacePieceType.Orange, frontFace[2, 0]);
 
+            // unchanged
+            Assert.AreEqual(FacePieceType.Blue, frontFace[0, 1]);
+            Assert.AreEqual(FacePieceType.Blue, frontFace[1, 1]);
+            Assert.AreEqual(FacePieceType.Blue, frontFace[2, 1]);
+            Assert.AreEqual(FacePieceType.Blue, frontFace[0, 2]);
+            Assert.AreEqual(FacePieceType.Blue, frontFace[1, 2]);
+            Assert.AreEqual(FacePieceType.Blue, frontFace[2, 2]);
+
+            // rotated
             Assert.AreEqual(FacePieceType.Blue, leftFace[0, 0]);
-            Assert.AreEqual(FacePieceType.Blue, leftFace[0, 1]);
-            Assert.AreEqual(FacePieceType.Blue, leftFace[0, 2]);
+            Assert.AreEqual(FacePieceType.Blue, leftFace[1, 0]);
+            Assert.AreEqual(FacePieceType.Blue, leftFace[2, 0]);
 
+            // unchanged
+            Assert.AreEqual(FacePieceType.Red, leftFace[0, 1]);
+            Assert.AreEqual(FacePieceType.Red, leftFace[1, 1]);
+            Assert.AreEqual(FacePieceType.Red, leftFace[2, 1]);
+            Assert.AreEqual(FacePieceType.Red, leftFace[0, 2]);
+            Assert.AreEqual(FacePieceType.Red, leftFace[1, 2]);
+            Assert.AreEqual(FacePieceType.Red, leftFace[2, 2]);
+
+            // rotated
             Assert.AreEqual(FacePieceType.Red, backFace[0, 0]);
-            Assert.AreEqual(FacePieceType.Red, backFace[0, 1]);
-            Assert.AreEqual(FacePieceType.Red, backFace[0, 2]);
+            Assert.AreEqual(FacePieceType.Red, backFace[1, 0]);
+            Assert.AreEqual(FacePieceType.Red, backFace[2, 0]);
 
+            // unchanged
+            Assert.AreEqual(FacePieceType.Green, backFace[0, 1]);
+            Assert.AreEqual(FacePieceType.Green, backFace[1, 1]);
+            Assert.AreEqual(FacePieceType.Green, backFace[2, 1]);
+            Assert.AreEqual(FacePieceType.Green, backFace[0, 2]);
+            Assert.AreEqual(FacePieceType.Green, backFace[1, 2]);
+            Assert.AreEqual(FacePieceType.Green, backFace[2, 2]);
+
+            // rotated
             Assert.AreEqual(FacePieceType.Green, rightFace[0, 0]);
-            Assert.AreEqual(FacePieceType.Green, rightFace[0, 1]);
-            Assert.AreEqual(FacePieceType.Green, rightFace[0, 2]);
+            Assert.AreEqual(FacePieceType.Green, rightFace[1, 0]);
+            Assert.AreEqual(FacePieceType.Green, rightFace[2, 0]);
+
+            // unchanged
+            Assert.AreEqual(FacePieceType.Orange, rightFace[0, 1]);
+            Assert.AreEqual(FacePieceType.Orange, rightFace[1, 1]);
+            Assert.AreEqual(FacePieceType.Orange, rightFace[2, 1]);
+            Assert.AreEqual(FacePieceType.Orange, rightFace[0, 1]);
+            Assert.AreEqual(FacePieceType.Orange, rightFace[1, 1]);
+            Assert.AreEqual(FacePieceType.Orange, rightFace[2, 1]);
         }
 
         [Test]
@@ -97,21 +133,57 @@ namespace ScrarchEngine.Libraries.RubiksCube.Tests.Models
             var backFace = _cube.GetFace(FaceType.Back);
             var rightFace = _cube.GetFace(FaceType.Right);
 
+            // rotated
             Assert.AreEqual(FacePieceType.Red, frontFace[0, 0]);
-            Assert.AreEqual(FacePieceType.Red, frontFace[0, 1]);
-            Assert.AreEqual(FacePieceType.Red, frontFace[0, 2]);
+            Assert.AreEqual(FacePieceType.Red, frontFace[1, 0]);
+            Assert.AreEqual(FacePieceType.Red, frontFace[2, 0]);
 
+            // unchanged
+            Assert.AreEqual(FacePieceType.Blue, frontFace[0, 1]);
+            Assert.AreEqual(FacePieceType.Blue, frontFace[1, 1]);
+            Assert.AreEqual(FacePieceType.Blue, frontFace[2, 1]);
+            Assert.AreEqual(FacePieceType.Blue, frontFace[0, 2]);
+            Assert.AreEqual(FacePieceType.Blue, frontFace[1, 2]);
+            Assert.AreEqual(FacePieceType.Blue, frontFace[2, 2]);
+
+            // rotated
             Assert.AreEqual(FacePieceType.Green, leftFace[0, 0]);
-            Assert.AreEqual(FacePieceType.Green, leftFace[0, 1]);
-            Assert.AreEqual(FacePieceType.Green, leftFace[0, 2]);
+            Assert.AreEqual(FacePieceType.Green, leftFace[1, 0]);
+            Assert.AreEqual(FacePieceType.Green, leftFace[2, 0]);
 
+            // unchanged
+            Assert.AreEqual(FacePieceType.Red, leftFace[0, 1]);
+            Assert.AreEqual(FacePieceType.Red, leftFace[1, 1]);
+            Assert.AreEqual(FacePieceType.Red, leftFace[2, 1]);
+            Assert.AreEqual(FacePieceType.Red, leftFace[0, 2]);
+            Assert.AreEqual(FacePieceType.Red, leftFace[1, 2]);
+            Assert.AreEqual(FacePieceType.Red, leftFace[2, 2]);
+
+            // rotated
             Assert.AreEqual(FacePieceType.Orange, backFace[0, 0]);
-            Assert.AreEqual(FacePieceType.Orange, backFace[0, 1]);
-            Assert.AreEqual(FacePieceType.Orange, backFace[0, 2]);
+            Assert.AreEqual(FacePieceType.Orange, backFace[1, 0]);
+            Assert.AreEqual(FacePieceType.Orange, backFace[2, 0]);
 
+            // unchanged
+            Assert.AreEqual(FacePieceType.Green, backFace[0, 1]);
+            Assert.AreEqual(FacePieceType.Green, backFace[1, 1]);
+            Assert.AreEqual(FacePieceType.Green, backFace[2, 1]);
+            Assert.AreEqual(FacePieceType.Green, backFace[0, 2]);
+            Assert.AreEqual(FacePieceType.Green, backFace[1, 2]);
+            Assert.AreEqual(FacePieceType.Green, backFace[2, 2]);
+
+            // rotated
             Assert.AreEqual(FacePieceType.Blue, rightFace[0, 0]);
-            Assert.AreEqual(FacePieceType.Blue, rightFace[0, 1]);
-            Assert.AreEqual(FacePieceType.Blue, rightFace[0, 2]);
+            Assert.AreEqual(FacePieceType.Blue, rightFace[1, 0]);
+            Assert.AreEqual(FacePieceType.Blue, rightFace[2, 0]);
+
+            // unchanged
+            Assert.AreEqual(FacePieceType.Orange, rightFace[0, 1]);
+            Assert.AreEqual(FacePieceType.Orange, rightFace[1, 1]);
+            Assert.AreEqual(FacePieceType.Orange, rightFace[2, 1]);
+            Assert.AreEqual(FacePieceType.Orange, rightFace[0, 1]);
+            Assert.AreEqual(FacePieceType.Orange, rightFace[1, 1]);
+            Assert.AreEqual(FacePieceType.Orange, rightFace[2, 1]);
         }
 
         #endregion
@@ -128,20 +200,24 @@ namespace ScrarchEngine.Libraries.RubiksCube.Tests.Models
             var backFace = _cube.GetFace(FaceType.Back);
             var rightFace = _cube.GetFace(FaceType.Right);
 
-            Assert.AreEqual(FacePieceType.Red, frontFace[2, 0]);
-            Assert.AreEqual(FacePieceType.Red, frontFace[2, 1]);
+            // rotated
+            Assert.AreEqual(FacePieceType.Red, frontFace[0, 2]);
+            Assert.AreEqual(FacePieceType.Red, frontFace[1, 2]);
             Assert.AreEqual(FacePieceType.Red, frontFace[2, 2]);
 
-            Assert.AreEqual(FacePieceType.Green, leftFace[2, 0]);
-            Assert.AreEqual(FacePieceType.Green, leftFace[2, 1]);
+            // rotated
+            Assert.AreEqual(FacePieceType.Green, leftFace[0, 2]);
+            Assert.AreEqual(FacePieceType.Green, leftFace[1, 2]);
             Assert.AreEqual(FacePieceType.Green, leftFace[2, 2]);
 
-            Assert.AreEqual(FacePieceType.Orange, backFace[2, 0]);
-            Assert.AreEqual(FacePieceType.Orange, backFace[2, 1]);
+            // rotated
+            Assert.AreEqual(FacePieceType.Orange, backFace[0, 2]);
+            Assert.AreEqual(FacePieceType.Orange, backFace[1, 2]);
             Assert.AreEqual(FacePieceType.Orange, backFace[2, 2]);
 
-            Assert.AreEqual(FacePieceType.Blue, rightFace[2, 0]);
-            Assert.AreEqual(FacePieceType.Blue, rightFace[2, 1]);
+            // rotated
+            Assert.AreEqual(FacePieceType.Blue, rightFace[0, 2]);
+            Assert.AreEqual(FacePieceType.Blue, rightFace[1, 2]);
             Assert.AreEqual(FacePieceType.Blue, rightFace[2, 2]);
         }
 
@@ -155,20 +231,24 @@ namespace ScrarchEngine.Libraries.RubiksCube.Tests.Models
             var backFace = _cube.GetFace(FaceType.Back);
             var rightFace = _cube.GetFace(FaceType.Right);
 
-            Assert.AreEqual(FacePieceType.Orange, frontFace[2, 0]);
-            Assert.AreEqual(FacePieceType.Orange, frontFace[2, 1]);
+            // rotated
+            Assert.AreEqual(FacePieceType.Orange, frontFace[0, 2]);
+            Assert.AreEqual(FacePieceType.Orange, frontFace[1, 2]);
             Assert.AreEqual(FacePieceType.Orange, frontFace[2, 2]);
 
-            Assert.AreEqual(FacePieceType.Blue, leftFace[2, 0]);
-            Assert.AreEqual(FacePieceType.Blue, leftFace[2, 1]);
+            // rotated
+            Assert.AreEqual(FacePieceType.Blue, leftFace[0, 2]);
+            Assert.AreEqual(FacePieceType.Blue, leftFace[1, 2]);
             Assert.AreEqual(FacePieceType.Blue, leftFace[2, 2]);
 
-            Assert.AreEqual(FacePieceType.Red, backFace[2, 0]);
-            Assert.AreEqual(FacePieceType.Red, backFace[2, 1]);
+            // rotated
+            Assert.AreEqual(FacePieceType.Red, backFace[0, 2]);
+            Assert.AreEqual(FacePieceType.Red, backFace[1, 2]);
             Assert.AreEqual(FacePieceType.Red, backFace[2, 2]);
 
-            Assert.AreEqual(FacePieceType.Green, rightFace[2, 0]);
-            Assert.AreEqual(FacePieceType.Green, rightFace[2, 1]);
+            // rotated
+            Assert.AreEqual(FacePieceType.Green, rightFace[0, 2]);
+            Assert.AreEqual(FacePieceType.Green, rightFace[1, 2]);
             Assert.AreEqual(FacePieceType.Green, rightFace[2, 2]);
         }
 
@@ -186,21 +266,25 @@ namespace ScrarchEngine.Libraries.RubiksCube.Tests.Models
             var backFace = _cube.GetFace(FaceType.Back);
             var bottomFace = _cube.GetFace(FaceType.Bottom);
 
+            // rotated
             Assert.AreEqual(FacePieceType.White, frontFace[0, 0]);
-            Assert.AreEqual(FacePieceType.White, frontFace[1, 0]);
-            Assert.AreEqual(FacePieceType.White, frontFace[2, 0]);
+            Assert.AreEqual(FacePieceType.White, frontFace[0, 1]);
+            Assert.AreEqual(FacePieceType.White, frontFace[0, 2]);
 
+            // rotated
             Assert.AreEqual(FacePieceType.Green, topFace[0, 0]);
-            Assert.AreEqual(FacePieceType.Green, topFace[1, 0]);
-            Assert.AreEqual(FacePieceType.Green, topFace[2, 0]);
+            Assert.AreEqual(FacePieceType.Green, topFace[0, 1]);
+            Assert.AreEqual(FacePieceType.Green, topFace[0, 2]);
 
-            Assert.AreEqual(FacePieceType.Yellow, backFace[0, 2]);
-            Assert.AreEqual(FacePieceType.Yellow, backFace[1, 2]);
+            // rotated
+            Assert.AreEqual(FacePieceType.Yellow, backFace[2, 0]);
+            Assert.AreEqual(FacePieceType.Yellow, backFace[2, 1]);
             Assert.AreEqual(FacePieceType.Yellow, backFace[2, 2]);
 
+            // rotated
             Assert.AreEqual(FacePieceType.Blue, bottomFace[0, 0]);
-            Assert.AreEqual(FacePieceType.Blue, bottomFace[1, 0]);
-            Assert.AreEqual(FacePieceType.Blue, bottomFace[2, 0]);
+            Assert.AreEqual(FacePieceType.Blue, bottomFace[0, 1]);
+            Assert.AreEqual(FacePieceType.Blue, bottomFace[0, 2]);
         }
 
         [Test]
@@ -213,21 +297,25 @@ namespace ScrarchEngine.Libraries.RubiksCube.Tests.Models
             var backFace = _cube.GetFace(FaceType.Back);
             var bottomFace = _cube.GetFace(FaceType.Bottom);
 
+            // rotated
             Assert.AreEqual(FacePieceType.Yellow, frontFace[0, 0]);
-            Assert.AreEqual(FacePieceType.Yellow, frontFace[1, 0]);
-            Assert.AreEqual(FacePieceType.Yellow, frontFace[2, 0]);
+            Assert.AreEqual(FacePieceType.Yellow, frontFace[0, 1]);
+            Assert.AreEqual(FacePieceType.Yellow, frontFace[0, 2]);
 
+            // rotated
             Assert.AreEqual(FacePieceType.Blue, topFace[0, 0]);
-            Assert.AreEqual(FacePieceType.Blue, topFace[1, 0]);
-            Assert.AreEqual(FacePieceType.Blue, topFace[2, 0]);
+            Assert.AreEqual(FacePieceType.Blue, topFace[0, 1]);
+            Assert.AreEqual(FacePieceType.Blue, topFace[0, 2]);
 
-            Assert.AreEqual(FacePieceType.White, backFace[0, 2]);
-            Assert.AreEqual(FacePieceType.White, backFace[1, 2]);
+            // rotated
+            Assert.AreEqual(FacePieceType.White, backFace[2, 0]);
+            Assert.AreEqual(FacePieceType.White, backFace[2, 1]);
             Assert.AreEqual(FacePieceType.White, backFace[2, 2]);
 
+            // rotated
             Assert.AreEqual(FacePieceType.Green, bottomFace[0, 0]);
-            Assert.AreEqual(FacePieceType.Green, bottomFace[1, 0]);
-            Assert.AreEqual(FacePieceType.Green, bottomFace[2, 0]);
+            Assert.AreEqual(FacePieceType.Green, bottomFace[0, 1]);
+            Assert.AreEqual(FacePieceType.Green, bottomFace[0, 2]);
         }
 
         #endregion
@@ -244,20 +332,24 @@ namespace ScrarchEngine.Libraries.RubiksCube.Tests.Models
             var backFace = _cube.GetFace(FaceType.Back);
             var bottomFace = _cube.GetFace(FaceType.Bottom);
 
-            Assert.AreEqual(FacePieceType.Yellow, frontFace[0, 2]);
-            Assert.AreEqual(FacePieceType.Yellow, frontFace[1, 2]);
+            // rotated
+            Assert.AreEqual(FacePieceType.Yellow, frontFace[2, 0]);
+            Assert.AreEqual(FacePieceType.Yellow, frontFace[2, 1]);
             Assert.AreEqual(FacePieceType.Yellow, frontFace[2, 2]);
 
-            Assert.AreEqual(FacePieceType.Blue, topFace[0, 2]);
-            Assert.AreEqual(FacePieceType.Blue, topFace[1, 2]);
+            // rotated
+            Assert.AreEqual(FacePieceType.Blue, topFace[2, 0]);
+            Assert.AreEqual(FacePieceType.Blue, topFace[2, 1]);
             Assert.AreEqual(FacePieceType.Blue, topFace[2, 2]);
 
+            // rotated
             Assert.AreEqual(FacePieceType.White, backFace[0, 0]);
-            Assert.AreEqual(FacePieceType.White, backFace[1, 0]);
-            Assert.AreEqual(FacePieceType.White, backFace[2, 0]);
+            Assert.AreEqual(FacePieceType.White, backFace[0, 1]);
+            Assert.AreEqual(FacePieceType.White, backFace[0, 2]);
 
-            Assert.AreEqual(FacePieceType.Green, bottomFace[0, 2]);
-            Assert.AreEqual(FacePieceType.Green, bottomFace[1, 2]);
+            // rotated
+            Assert.AreEqual(FacePieceType.Green, bottomFace[2, 0]);
+            Assert.AreEqual(FacePieceType.Green, bottomFace[2, 1]);
             Assert.AreEqual(FacePieceType.Green, bottomFace[2, 2]);
         }
 
@@ -271,20 +363,24 @@ namespace ScrarchEngine.Libraries.RubiksCube.Tests.Models
             var backFace = _cube.GetFace(FaceType.Back);
             var bottomFace = _cube.GetFace(FaceType.Bottom);
 
-            Assert.AreEqual(FacePieceType.White, frontFace[0, 2]);
-            Assert.AreEqual(FacePieceType.White, frontFace[1, 2]);
+            // rotated
+            Assert.AreEqual(FacePieceType.White, frontFace[2, 0]);
+            Assert.AreEqual(FacePieceType.White, frontFace[2, 1]);
             Assert.AreEqual(FacePieceType.White, frontFace[2, 2]);
 
-            Assert.AreEqual(FacePieceType.Green, topFace[0, 2]);
-            Assert.AreEqual(FacePieceType.Green, topFace[1, 2]);
-            Assert.AreEqual(FacePieceType.Green, topFace[2, 2]);
+            // rotated
+            Assert.AreEqual(FacePieceType.Green, topFace[2, 0]);
+            Assert.AreEqual(FacePieceType.Green, topFace[2,1]);
+            Assert.AreEqual(FacePieceType.Green, topFace[2,2]);
 
+            // rotated
             Assert.AreEqual(FacePieceType.Yellow, backFace[0, 0]);
-            Assert.AreEqual(FacePieceType.Yellow, backFace[1, 0]);
-            Assert.AreEqual(FacePieceType.Yellow, backFace[2, 0]);
+            Assert.AreEqual(FacePieceType.Yellow, backFace[0, 1]);
+            Assert.AreEqual(FacePieceType.Yellow, backFace[0, 2]);
 
-            Assert.AreEqual(FacePieceType.Blue, bottomFace[0, 2]);
-            Assert.AreEqual(FacePieceType.Blue, bottomFace[1, 2]);
+            // rotated
+            Assert.AreEqual(FacePieceType.Blue, bottomFace[2, 0]);
+            Assert.AreEqual(FacePieceType.Blue, bottomFace[2, 1]);
             Assert.AreEqual(FacePieceType.Blue, bottomFace[2, 2]);
         }
 
@@ -302,21 +398,25 @@ namespace ScrarchEngine.Libraries.RubiksCube.Tests.Models
             var bootomFace = _cube.GetFace(FaceType.Bottom);
             var rightFace = _cube.GetFace(FaceType.Right);
 
-            Assert.AreEqual(FacePieceType.Red, topFace[2, 0]);
-            Assert.AreEqual(FacePieceType.Red, topFace[2, 1]);
+            // rotated
+            Assert.AreEqual(FacePieceType.Red, topFace[0, 2]);
+            Assert.AreEqual(FacePieceType.Red, topFace[1, 2]);
             Assert.AreEqual(FacePieceType.Red, topFace[2, 2]);
 
-            Assert.AreEqual(FacePieceType.Yellow, leftFace[0, 2]);
-            Assert.AreEqual(FacePieceType.Yellow, leftFace[1, 2]);
+            // rotated
+            Assert.AreEqual(FacePieceType.Yellow, leftFace[2, 0]);
+            Assert.AreEqual(FacePieceType.Yellow, leftFace[2, 1]);
             Assert.AreEqual(FacePieceType.Yellow, leftFace[2, 2]);
 
+            // rotated
             Assert.AreEqual(FacePieceType.Orange, bootomFace[0, 0]);
-            Assert.AreEqual(FacePieceType.Orange, bootomFace[0, 1]);
-            Assert.AreEqual(FacePieceType.Orange, bootomFace[0, 2]);
+            Assert.AreEqual(FacePieceType.Orange, bootomFace[1, 0]);
+            Assert.AreEqual(FacePieceType.Orange, bootomFace[2, 0]);
 
+            // rotated
             Assert.AreEqual(FacePieceType.White, rightFace[0, 0]);
-            Assert.AreEqual(FacePieceType.White, rightFace[1, 0]);
-            Assert.AreEqual(FacePieceType.White, rightFace[2, 0]);
+            Assert.AreEqual(FacePieceType.White, rightFace[0, 1]);
+            Assert.AreEqual(FacePieceType.White, rightFace[0, 2]);
         }
 
         [Test]
@@ -329,21 +429,25 @@ namespace ScrarchEngine.Libraries.RubiksCube.Tests.Models
             var bootomFace = _cube.GetFace(FaceType.Bottom);
             var rightFace = _cube.GetFace(FaceType.Right);
 
-            Assert.AreEqual(FacePieceType.Orange, topFace[2, 0]);
-            Assert.AreEqual(FacePieceType.Orange, topFace[2, 1]);
+            // rotated
+            Assert.AreEqual(FacePieceType.Orange, topFace[0, 2]);
+            Assert.AreEqual(FacePieceType.Orange, topFace[1, 2]);
             Assert.AreEqual(FacePieceType.Orange, topFace[2, 2]);
 
-            Assert.AreEqual(FacePieceType.White, leftFace[0, 2]);
-            Assert.AreEqual(FacePieceType.White, leftFace[1, 2]);
+            // rotated
+            Assert.AreEqual(FacePieceType.White, leftFace[2, 0]);
+            Assert.AreEqual(FacePieceType.White, leftFace[2, 1]);
             Assert.AreEqual(FacePieceType.White, leftFace[2, 2]);
 
+            // rotated
             Assert.AreEqual(FacePieceType.Red, bootomFace[0, 0]);
-            Assert.AreEqual(FacePieceType.Red, bootomFace[0, 1]);
-            Assert.AreEqual(FacePieceType.Red, bootomFace[0, 2]);
+            Assert.AreEqual(FacePieceType.Red, bootomFace[1, 0]);
+            Assert.AreEqual(FacePieceType.Red, bootomFace[2, 0]);
 
+            // rotated
             Assert.AreEqual(FacePieceType.Yellow, rightFace[0, 0]);
-            Assert.AreEqual(FacePieceType.Yellow, rightFace[1, 0]);
-            Assert.AreEqual(FacePieceType.Yellow, rightFace[2, 0]);
+            Assert.AreEqual(FacePieceType.Yellow, rightFace[0, 1]);
+            Assert.AreEqual(FacePieceType.Yellow, rightFace[0, 2]);
         }
 
         #endregion
@@ -360,20 +464,24 @@ namespace ScrarchEngine.Libraries.RubiksCube.Tests.Models
             var bootomFace = _cube.GetFace(FaceType.Bottom);
             var rightFace = _cube.GetFace(FaceType.Right);
 
+            // rotated
             Assert.AreEqual(FacePieceType.Orange, topFace[0, 0]);
-            Assert.AreEqual(FacePieceType.Orange, topFace[0, 1]);
-            Assert.AreEqual(FacePieceType.Orange, topFace[0, 2]);
+            Assert.AreEqual(FacePieceType.Orange, topFace[1, 0]);
+            Assert.AreEqual(FacePieceType.Orange, topFace[2, 0]);
 
+            // rotated
             Assert.AreEqual(FacePieceType.White, leftFace[0, 0]);
-            Assert.AreEqual(FacePieceType.White, leftFace[1, 0]);
-            Assert.AreEqual(FacePieceType.White, leftFace[2, 0]);
+            Assert.AreEqual(FacePieceType.White, leftFace[0, 1]);
+            Assert.AreEqual(FacePieceType.White, leftFace[0, 2]);
 
-            Assert.AreEqual(FacePieceType.Red, bootomFace[2, 0]);
-            Assert.AreEqual(FacePieceType.Red, bootomFace[2, 1]);
+            // rotated
+            Assert.AreEqual(FacePieceType.Red, bootomFace[0, 2]);
+            Assert.AreEqual(FacePieceType.Red, bootomFace[1, 2]);
             Assert.AreEqual(FacePieceType.Red, bootomFace[2, 2]);
 
-            Assert.AreEqual(FacePieceType.Yellow, rightFace[0, 2]);
-            Assert.AreEqual(FacePieceType.Yellow, rightFace[1, 2]);
+            // rotated
+            Assert.AreEqual(FacePieceType.Yellow, rightFace[2, 0]);
+            Assert.AreEqual(FacePieceType.Yellow, rightFace[2, 1]);
             Assert.AreEqual(FacePieceType.Yellow, rightFace[2, 2]);
         }
 
@@ -387,20 +495,24 @@ namespace ScrarchEngine.Libraries.RubiksCube.Tests.Models
             var bootomFace = _cube.GetFace(FaceType.Bottom);
             var rightFace = _cube.GetFace(FaceType.Right);
 
+            // rotated
             Assert.AreEqual(FacePieceType.Red, topFace[0, 0]);
-            Assert.AreEqual(FacePieceType.Red, topFace[0, 1]);
-            Assert.AreEqual(FacePieceType.Red, topFace[0, 2]);
+            Assert.AreEqual(FacePieceType.Red, topFace[1, 0]);
+            Assert.AreEqual(FacePieceType.Red, topFace[2, 0]);
 
+            // rotated
             Assert.AreEqual(FacePieceType.Yellow, leftFace[0, 0]);
-            Assert.AreEqual(FacePieceType.Yellow, leftFace[1, 0]);
-            Assert.AreEqual(FacePieceType.Yellow, leftFace[2, 0]);
+            Assert.AreEqual(FacePieceType.Yellow, leftFace[0, 1]);
+            Assert.AreEqual(FacePieceType.Yellow, leftFace[0, 2]);
 
-            Assert.AreEqual(FacePieceType.Orange, bootomFace[2, 0]);
-            Assert.AreEqual(FacePieceType.Orange, bootomFace[2, 1]);
+            // rotated
+            Assert.AreEqual(FacePieceType.Orange, bootomFace[0, 2]);
+            Assert.AreEqual(FacePieceType.Orange, bootomFace[1, 2]);
             Assert.AreEqual(FacePieceType.Orange, bootomFace[2, 2]);
 
-            Assert.AreEqual(FacePieceType.White, rightFace[0, 2]);
-            Assert.AreEqual(FacePieceType.White, rightFace[1, 2]);
+            // rotated
+            Assert.AreEqual(FacePieceType.White, rightFace[2, 0]);
+            Assert.AreEqual(FacePieceType.White, rightFace[2, 1]);
             Assert.AreEqual(FacePieceType.White, rightFace[2, 2]);
         }
 

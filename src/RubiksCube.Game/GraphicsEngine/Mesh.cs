@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace RubiksCube.Game.Rendering
+namespace RubiksCube.Game.GraphicsEngine
 {
     public abstract class Mesh<TM, TP>
-        where TM : Mesh<TM, TP>
+        where TM : Mesh<TM,TP>
         where TP : Polygon<TP>
     {
         #region Properties

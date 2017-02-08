@@ -1,6 +1,6 @@
-﻿namespace RubiksCube.Game.Rendering
+﻿namespace RubiksCube.Game.GraphicsEngine
 {
-    partial class RenderingControl<T>
+    public abstract partial class RenderingControl<T>
     {
         /// <summary> 
         /// Required designer variable.
@@ -17,6 +17,7 @@
             {
                 components.Dispose();
             }
+            AbortRender();
             base.Dispose(disposing);
         }
 

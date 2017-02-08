@@ -15,6 +15,26 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
 
         public FacePieceType[,] _field;
 
+        public FacePieceType this[int index]
+        {
+            get
+            {
+                int x = 0;
+                int y = 0;
+                GetIndecies(index,out x, out y);
+
+                return _field[x, y];
+            }
+            set
+            {
+                int x = 0;
+                int y = 0;
+                GetIndecies(index, out x, out y);
+
+                _field[x, y] = value;
+            }
+        }
+
         public FacePieceType this[int x, int y]
         {
             get
@@ -37,6 +57,15 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
             for (int i = 0; i < _field.GetLength(0); i++)
                 for (int j = 0; j < _field.GetLength(1); j++)
                     _field[i, j] = FacePieceTypeMap[type];
+        }
+
+        public LayerType GetLayer(int index)
+        {
+            int x = 0;
+            int y = 0;
+            GetIndecies(index, out x, out y);
+
+            return GetLayer(x, y);
         }
 
         public LayerType GetLayer(int x, int y)
@@ -109,6 +138,27 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
         public FacePieceType[,] GetField()
         {
             return _field;
+        }
+
+        private void GetIndecies(int index, out int x, out int y)
+        {
+            x = 0;
+            y = 0;
+
+            if (index > 0 && index < 3)
+            {
+                x = index;
+            }
+            else if (index > 2 && index < 6)
+            {
+                y = 1;
+                x = index - 3;
+            }
+            else if (index > 5 && index < 9)
+            {
+                y = 2;
+                x = index - 6;
+            }
         }
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
-namespace RubiksCube.Game.Rendering
+namespace RubiksCube.Game.GraphicsEngine
 {
     public class Polygon<T>
         where T : class

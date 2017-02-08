@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace RubiksCube.Game.Rendering
+namespace RubiksCube.Game.GraphicsEngine
 {
     public abstract partial class RenderingControl<T> : UserControl
         where T : class

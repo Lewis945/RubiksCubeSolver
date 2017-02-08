@@ -5,7 +5,7 @@ using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace RubiksCube.Game.Rendering
+namespace RubiksCube.Game.GraphicsEngine
 {
     public abstract partial class RenderingControl<T>
     {
@@ -17,7 +17,7 @@ namespace RubiksCube.Game.Rendering
         private AutoResetEvent[] _updateHandle;
         private AutoResetEvent[] _renderHandle;
         private int _currentBufferIndex;
-
+        
         protected double zoom;
 
         #endregion

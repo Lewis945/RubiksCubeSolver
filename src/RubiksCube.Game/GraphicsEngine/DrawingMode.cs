@@ -1,4 +1,4 @@
-﻿namespace RubiksCube.Game.Rendering
+﻿namespace RubiksCube.Game.GraphicsEngine
 {
     public enum DrawingMode
     {
