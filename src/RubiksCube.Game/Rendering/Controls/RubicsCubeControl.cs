@@ -18,21 +18,18 @@ namespace RubiksCubeSolver.Cube.Rendering.Controls
     {
         #region Properties
 
-        public RubiksCube.Game.Models.RubiksCube RubiksCube { get; private set; }
-
         public Dictionary<LayerType, double> LayerRotation { get; private set; }
 
         public ScrarchEngine.Libraries.RubiksCube.Models.RubiksCubeModel RubiksCubeModel { get; private set; }
 
         #endregion
 
-        public RubicsCubeControl() : this(new RubiksCube.Game.Models.RubiksCube()) { }
+        public RubicsCubeControl() : this(new ScrarchEngine.Libraries.RubiksCube.Models.RubiksCubeModel()) { }
 
-        public RubicsCubeControl(RubiksCube.Game.Models.RubiksCube rubiksCube)
+        public RubicsCubeControl(ScrarchEngine.Libraries.RubiksCube.Models.RubiksCubeModel rubiksCube)
             : base()
         {
-            RubiksCube = rubiksCube;
-            RubiksCubeModel = new ScrarchEngine.Libraries.RubiksCube.Models.RubiksCubeModel();
+            RubiksCubeModel = rubiksCube;
 
             ResetLayerRotation();
             StartRender();

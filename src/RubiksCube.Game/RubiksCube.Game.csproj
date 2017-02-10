@@ -72,9 +72,7 @@
     <Compile Include="Models\Cube.cs" />
     <Compile Include="Models\Face.cs" />
     <Compile Include="Models\FacePosition.cs" />
-    <Compile Include="Models\Layer.cs" />
     <Compile Include="Models\LayerType.cs" />
-    <Compile Include="Models\RubiksCube.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rendering\Controls\RubicsCubeControl.cs">
