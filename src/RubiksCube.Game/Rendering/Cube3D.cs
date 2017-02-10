@@ -1,8 +1,9 @@
 ﻿using RubiksCube.Game.GraphicsEngine;
-using RubiksCube.Game.Models;
+using ScrarchEngine.Libraries.RubiksCube.Models;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using static ScrarchEngine.Libraries.RubiksCube.Models.RubiksCubeModel;
 
 namespace RubiksCube.Game.Rendering
 {
@@ -11,6 +12,24 @@ namespace RubiksCube.Game.Rendering
         #region Properties
 
         public List<LayerType> Positions { get; set; }
+
+        private Dictionary<FacePosition, FaceType> _faceMappings = new Dictionary<FacePosition, FaceType> {
+            { FacePosition.Top, FaceType.Top },
+            { FacePosition.Bottom, FaceType.Bottom },
+            { FacePosition.Front, FaceType.Front },
+            { FacePosition.Back, FaceType.Back },
+            { FacePosition.Left, FaceType.Left },
+            { FacePosition.Right, FaceType.Right }
+        };
+
+        private Dictionary<FacePieceType, Color> _colorMappings = new Dictionary<FacePieceType, Color> {
+            { FacePieceType.Blue, Color.Blue },
+            { FacePieceType.Green, Color.Green },
+            { FacePieceType.Orange, Color.Orange },
+            { FacePieceType.Red, Color.Red },
+            { FacePieceType.White, Color.White },
+            { FacePieceType.Yellow, Color.Yellow }
+        };
 
         #endregion
 
@@ -27,16 +46,17 @@ namespace RubiksCube.Game.Rendering
             Positions = positions;
         }
 
-        public Cube3D(Point3D location, double scale, List<LayerType> positions, IEnumerable<Face> faces)
+        public Cube3D(Point3D location, double scale, Cubie cubie)
             : base(location, scale)
         {
-            Polygons = GenerateFaces3D(positions);
+            Polygons = GenerateFaces3D(cubie.Layers);
             Polygons.ToList().ForEach(f =>
             {
                 var t = f.Position;
-                var faceItem = faces.FirstOrDefault(face => face.Position == f.Position);
+                var type = _faceMappings[f.Position];
+                var piece = cubie.Pieces.FirstOrDefault(p => p.Face == type);
 
-                f.Color = faceItem != null ? faceItem.Color : Color.Black;
+                f.Color = (!piece.Equals(default(FacePiece)) && piece.CurrentType.HasValue) ? _colorMappings[piece.CurrentType.Value] : Color.Black;
                 f.Vertices.ToList().ForEach(e =>
                 {
                     e.X *= scale;
@@ -90,7 +110,7 @@ namespace RubiksCube.Game.Rendering
 
         #region Methods
 
-        public override Cube3D Rotate(RotationType type, double angle, Point3D center)
+        public override Cube3D Rotate(GraphicsEngine.RotationDirection type, double angle, Point3D center)
         {
             var cube3D = DeepClone();
             Rotate(cube3D, type, angle, center);

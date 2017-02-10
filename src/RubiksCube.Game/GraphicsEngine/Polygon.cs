@@ -33,7 +33,7 @@ namespace RubiksCube.Game.GraphicsEngine
 
         #region Methods
 
-        public void Rotate(RotationType type, double angleInDeg)
+        public void Rotate(RotationDirection type, double angleInDeg)
         {
             Vertices.ToList().ForEach(v => v.Rotate(type, angleInDeg));
         }

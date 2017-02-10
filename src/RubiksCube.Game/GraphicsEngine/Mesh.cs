@@ -37,9 +37,9 @@ namespace RubiksCube.Game.GraphicsEngine
 
         #region Methods
 
-        public abstract TM Rotate(RotationType type, double angle, Point3D center);
+        public abstract TM Rotate(RotationDirection type, double angle, Point3D center);
 
-        protected static void Rotate(TM mesh, RotationType type, double angle, Point3D center)
+        protected static void Rotate(TM mesh, RotationDirection type, double angle, Point3D center)
         {
             foreach (var poligon in mesh.Polygons)
             {

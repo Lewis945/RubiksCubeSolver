@@ -27,7 +27,7 @@ namespace RubiksCube.Game.GraphicsEngine
 
         #region Methods
 
-        public void Rotate(RotationType type, double angleInDeg)
+        public void Rotate(RotationDirection type, double angleInDeg)
         {
             // Rotation matrix: http://de.wikipedia.org/wiki/Drehmatrix
             double rad = angleInDeg * Math.PI / 180;
@@ -38,15 +38,15 @@ namespace RubiksCube.Game.GraphicsEngine
 
             switch (type)
             {
-                case RotationType.X:
+                case RotationDirection.X:
                     Y = old.Y * cosa - old.Z * sina;
                     Z = old.Y * sina + old.Z * cosa;
                     break;
-                case RotationType.Y:
+                case RotationDirection.Y:
                     X = old.Z * sina + old.X * cosa;
                     Z = old.Z * cosa - old.X * sina;
                     break;
-                case RotationType.Z:
+                case RotationDirection.Z:
                     X = old.X * cosa - old.Y * sina;
                     Y = old.X * sina + old.Y * cosa;
                     break;

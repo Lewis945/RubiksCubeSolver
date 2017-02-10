@@ -1,4 +1,4 @@
-﻿using RubiksCube.Game.Models;
+﻿using ScrarchEngine.Libraries.RubiksCube.Models;
 using System.Collections.Generic;
 
 namespace RubiksCube.Game.Rendering
@@ -9,13 +9,13 @@ namespace RubiksCube.Game.Rendering
 
         public List<LayerType> Positions { get; set; }
 
-        public FacePosition FacePosition { get; set; }
+        public FacePosition Position { get; set; }
 
         public bool IsDefault
         {
             get
             {
-                return (Positions == null || FacePosition == Models.FacePosition.None);
+                return (Positions == null || Position == FacePosition.None);
             }
         }
 
@@ -27,7 +27,7 @@ namespace RubiksCube.Game.Rendering
         {
             get
             {
-                return new PositionSpec() { Positions = null, FacePosition = Models.FacePosition.None };
+                return new PositionSpec() { Positions = null, Position = FacePosition.None };
             }
         }
 
@@ -37,7 +37,7 @@ namespace RubiksCube.Game.Rendering
 
         public bool Equals(PositionSpec compare)
         {
-            return (compare.Positions == Positions && compare.FacePosition == FacePosition);
+            return (compare.Positions == Positions && compare.Position == Position);
         }
 
         #endregion

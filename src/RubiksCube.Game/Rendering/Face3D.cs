@@ -1,5 +1,5 @@
 ﻿using RubiksCube.Game.GraphicsEngine;
-using RubiksCube.Game.Models;
+using ScrarchEngine.Libraries.RubiksCube.Models;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;

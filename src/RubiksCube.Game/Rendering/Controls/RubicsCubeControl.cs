@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using System.Drawing.Drawing2D;
 using RubiksCube.Game.GraphicsEngine;
 using RubiksCube.Game.Rendering;
-using RubiksCube.Game.Models;
+using ScrarchEngine.Libraries.RubiksCube.Models;
 
 namespace RubiksCubeSolver.Cube.Rendering.Controls
 {
@@ -87,7 +87,7 @@ namespace RubiksCubeSolver.Cube.Rendering.Controls
                 var vertice = face.Vertices.Select(p => new PointF((float)p.X, (float)p.Y)).ToArray();
                 var facePos = new PositionSpec()
                 {
-                    FacePosition = face.Position,
+                    Position = face.Position,
                     Positions = face.Positions
                 };
 
@@ -472,23 +472,23 @@ namespace RubiksCubeSolver.Cube.Rendering.Controls
         //    }
         //}
 
-        private static RotationType GetOrientation(LayerType flag)
+        private static RotationDirection GetOrientation(LayerType flag)
         {
-            var xFlags = new List<LayerType>() { LayerType.RightSlice, LayerType.LeftSlice, LayerType.MiddleSliceSides };
-            var yFlags = new List<LayerType>() { LayerType.TopLayer, LayerType.BottomLayer, LayerType.MiddleLayer };
-            var zFlags = new List<LayerType>() { LayerType.FrontSlice, LayerType.BackSlice, LayerType.MiddleSlice };
+            var xFlags = new List<LayerType>() { LayerType.Right, LayerType.Left, LayerType.MiddleFromLeft };
+            var yFlags = new List<LayerType>() { LayerType.Top, LayerType.Bottom, LayerType.MiddleFromTop };
+            var zFlags = new List<LayerType>() { LayerType.Front, LayerType.Back, LayerType.MiddleFromFront };
 
             if (xFlags.Contains(flag))
             {
-                return RotationType.X;
+                return RotationDirection.X;
             }
             else if (yFlags.Contains(flag))
             {
-                return RotationType.Y;
+                return RotationDirection.Y;
             }
             else if (zFlags.Contains(flag))
             {
-                return RotationType.Z;
+                return RotationDirection.Z;
             }
             else
             {
@@ -498,38 +498,38 @@ namespace RubiksCubeSolver.Cube.Rendering.Controls
 
         private static int ToInt(LayerType flag)
         {
-            if (GetOrientation(flag) == RotationType.X)
+            if (GetOrientation(flag) == RotationDirection.X)
             {
                 switch (flag)
                 {
-                    case LayerType.RightSlice:
+                    case LayerType.Right:
                         return 1;
-                    case LayerType.MiddleSliceSides:
+                    case LayerType.MiddleFromLeft:
                         return 0;
                     default:
                         return -1;
                 }
             }
 
-            else if (GetOrientation(flag) == RotationType.Y)
+            else if (GetOrientation(flag) == RotationDirection.Y)
             {
                 switch (flag)
                 {
-                    case LayerType.TopLayer:
+                    case LayerType.Top:
                         return -1;
-                    case LayerType.MiddleLayer:
+                    case LayerType.MiddleFromTop:
                         return 0;
                     default:
                         return 1;
                 }
             }
-            else if (GetOrientation(flag) == RotationType.Z)
+            else if (GetOrientation(flag) == RotationDirection.Z)
             {
                 switch (flag)
                 {
-                    case LayerType.BackSlice:
+                    case LayerType.Back:
                         return 1;
-                    case LayerType.MiddleSlice:
+                    case LayerType.MiddleFromFront:
                         return 0;
                     default:
                         return -1;
@@ -541,21 +541,21 @@ namespace RubiksCubeSolver.Cube.Rendering.Controls
                 throw new Exception("Flag can not be converted to an integer");
         }
 
-        private static LayerType GetLayer(List<LayerType> layers, RotationType type)
+        private static LayerType GetLayer(List<LayerType> layers, RotationDirection type)
         {
-            var xFlags = new List<LayerType>() { LayerType.RightSlice, LayerType.LeftSlice, LayerType.MiddleSliceSides };
-            var yFlags = new List<LayerType>() { LayerType.TopLayer, LayerType.BottomLayer, LayerType.MiddleLayer };
-            var zFlags = new List<LayerType>() { LayerType.FrontSlice, LayerType.BackSlice, LayerType.MiddleSlice };
+            var xFlags = new List<LayerType>() { LayerType.Right, LayerType.Left, LayerType.MiddleFromLeft };
+            var yFlags = new List<LayerType>() { LayerType.Top, LayerType.Bottom, LayerType.MiddleFromTop };
+            var zFlags = new List<LayerType>() { LayerType.Front, LayerType.Back, LayerType.MiddleFromFront };
 
-            if (type == RotationType.X)
+            if (type == RotationDirection.X)
             {
                 return layers.FirstOrDefault(l => xFlags.Contains(l));
             }
-            else if (type == RotationType.Y)
+            else if (type == RotationDirection.Y)
             {
                 return layers.FirstOrDefault(l => yFlags.Contains(l));
             }
-            else if (type == RotationType.Z)
+            else if (type == RotationDirection.Z)
             {
                 return layers.FirstOrDefault(l => zFlags.Contains(l));
             }
@@ -567,175 +567,57 @@ namespace RubiksCubeSolver.Cube.Rendering.Controls
 
         private List<Cube3D> GenerateCubes3D()
         {
-            var cubes = GetCubes(RubiksCubeModel);
+            var cubes = RubiksCubeModel.GetCubies();
 
             var cubes3D = new List<Cube3D>();
 
             double d = 2.0 / 3.0;
             foreach (var c in cubes)
             {
-                var cr = new Cube3D(new Point3D(d * ToInt(GetLayer(c.Positions, RotationType.X)), d * ToInt(GetLayer(c.Positions, RotationType.Y)), d * ToInt(GetLayer(c.Positions, RotationType.Z))), d / 2, c.Positions, c.Faces);
-                if (cr.Positions.Contains(LayerType.TopLayer))
+                var cr = new Cube3D(new Point3D(d * ToInt(GetLayer(c.Layers, RotationDirection.X)), d * ToInt(GetLayer(c.Layers, RotationDirection.Y)), d * ToInt(GetLayer(c.Layers, RotationDirection.Z))), d / 2, c);
+                if (cr.Positions.Contains(LayerType.Top))
                 {
-                    cr = cr.Rotate(RotationType.Y, LayerRotation[LayerType.TopLayer], new Point3D(0, d, 0));
+                    cr = cr.Rotate(RotationDirection.Y, LayerRotation[LayerType.Top], new Point3D(0, d, 0));
                 }
-                if (cr.Positions.Contains(LayerType.MiddleLayer))
+                if (cr.Positions.Contains(LayerType.MiddleFromTop))
                 {
-                    cr = cr.Rotate(RotationType.Y, LayerRotation[LayerType.MiddleLayer], new Point3D(0, 0, 0));
+                    cr = cr.Rotate(RotationDirection.Y, LayerRotation[LayerType.MiddleFromTop], new Point3D(0, 0, 0));
                 }
-                if (cr.Positions.Contains(LayerType.BottomLayer))
+                if (cr.Positions.Contains(LayerType.Bottom))
                 {
-                    cr = cr.Rotate(RotationType.Y, LayerRotation[LayerType.BottomLayer], new Point3D(0, -d, 0));
+                    cr = cr.Rotate(RotationDirection.Y, LayerRotation[LayerType.Bottom], new Point3D(0, -d, 0));
                 }
-                if (cr.Positions.Contains(LayerType.FrontSlice))
+                if (cr.Positions.Contains(LayerType.Front))
                 {
-                    cr = cr.Rotate(RotationType.Z, LayerRotation[LayerType.FrontSlice], new Point3D(0, 0, d));
+                    cr = cr.Rotate(RotationDirection.Z, LayerRotation[LayerType.Front], new Point3D(0, 0, d));
                 }
-                if (cr.Positions.Contains(LayerType.MiddleSlice))
+                if (cr.Positions.Contains(LayerType.MiddleFromFront))
                 {
-                    cr = cr.Rotate(RotationType.Z, LayerRotation[LayerType.MiddleSlice], new Point3D(0, 0, 0));
+                    cr = cr.Rotate(RotationDirection.Z, LayerRotation[LayerType.MiddleFromFront], new Point3D(0, 0, 0));
                 }
-                if (cr.Positions.Contains(LayerType.BackSlice))
+                if (cr.Positions.Contains(LayerType.Back))
                 {
-                    cr = cr.Rotate(RotationType.Z, LayerRotation[LayerType.BackSlice], new Point3D(0, 0, -d));
+                    cr = cr.Rotate(RotationDirection.Z, LayerRotation[LayerType.Back], new Point3D(0, 0, -d));
                 }
-                if (cr.Positions.Contains(LayerType.LeftSlice))
+                if (cr.Positions.Contains(LayerType.Left))
                 {
-                    cr = cr.Rotate(RotationType.X, LayerRotation[LayerType.LeftSlice], new Point3D(-d, 0, 0));
+                    cr = cr.Rotate(RotationDirection.X, LayerRotation[LayerType.Left], new Point3D(-d, 0, 0));
                 }
-                if (cr.Positions.Contains(LayerType.MiddleSliceSides))
+                if (cr.Positions.Contains(LayerType.MiddleFromLeft))
                 {
-                    cr = cr.Rotate(RotationType.X, LayerRotation[LayerType.MiddleSliceSides], new Point3D(0, 0, 0));
+                    cr = cr.Rotate(RotationDirection.X, LayerRotation[LayerType.MiddleFromLeft], new Point3D(0, 0, 0));
                 }
-                if (cr.Positions.Contains(LayerType.RightSlice))
+                if (cr.Positions.Contains(LayerType.Right))
                 {
-                    cr = cr.Rotate(RotationType.X, LayerRotation[LayerType.RightSlice], new Point3D(d, 0, 0));
+                    cr = cr.Rotate(RotationDirection.X, LayerRotation[LayerType.Right], new Point3D(d, 0, 0));
                 }
 
-                cr = cr.Rotate(RotationType.Y, Rotation[1], new Point3D(0, 0, 0));
-                cr = cr.Rotate(RotationType.Z, Rotation[2], new Point3D(0, 0, 0));
-                cr = cr.Rotate(RotationType.X, Rotation[0], new Point3D(0, 0, 0));
+                cr = cr.Rotate(RotationDirection.Y, Rotation[1], new Point3D(0, 0, 0));
+                cr = cr.Rotate(RotationDirection.Z, Rotation[2], new Point3D(0, 0, 0));
+                cr = cr.Rotate(RotationDirection.X, Rotation[0], new Point3D(0, 0, 0));
                 cubes3D.Add(cr);
             }
             return cubes3D;
-        }
-
-        private List<RubiksCube.Game.Models.Cube> GetCubes(ScrarchEngine.Libraries.RubiksCube.Models.RubiksCubeModel model)
-        {
-            var cubes = new List<RubiksCube.Game.Models.Cube>();
-
-            foreach (var cubie in model.GetCubies())
-            {
-                var faces = new Face[cubie.Pieces.Count];
-                for (int i = 0; i < cubie.Pieces.Count; i++)
-                {
-                    var piece = cubie.Pieces[i];
-
-                    var color = Color.White;
-                    switch (piece.CurrentType)
-                    {
-                        case ScrarchEngine.Libraries.RubiksCube.Models.FacePieceType.White:
-                            color = Color.White;
-                            break;
-                        case ScrarchEngine.Libraries.RubiksCube.Models.FacePieceType.Blue:
-                            color = Color.Blue;
-                            break;
-                        case ScrarchEngine.Libraries.RubiksCube.Models.FacePieceType.Green:
-                            color = Color.Green;
-                            break;
-                        case ScrarchEngine.Libraries.RubiksCube.Models.FacePieceType.Orange:
-                            color = Color.Orange;
-                            break;
-                        case ScrarchEngine.Libraries.RubiksCube.Models.FacePieceType.Red:
-                            color = Color.Red;
-                            break;
-                        case ScrarchEngine.Libraries.RubiksCube.Models.FacePieceType.Yellow:
-                            color = Color.Yellow;
-                            break;
-                        default:
-                            break;
-                    }
-
-                    var position = FacePosition.None;
-                    switch (piece.Face)
-                    {
-                        case ScrarchEngine.Libraries.RubiksCube.Models.FaceType.Top:
-                            position = FacePosition.Top;
-                            break;
-                        case ScrarchEngine.Libraries.RubiksCube.Models.FaceType.Bottom:
-                            position = FacePosition.Bottom;
-                            break;
-                        case ScrarchEngine.Libraries.RubiksCube.Models.FaceType.Left:
-                            position = FacePosition.Left;
-                            break;
-                        case ScrarchEngine.Libraries.RubiksCube.Models.FaceType.Right:
-                            position = FacePosition.Right;
-                            break;
-                        case ScrarchEngine.Libraries.RubiksCube.Models.FaceType.Back:
-                            position = FacePosition.Back;
-                            break;
-                        case ScrarchEngine.Libraries.RubiksCube.Models.FaceType.Front:
-                            position = FacePosition.Front;
-                            break;
-                        default:
-                            break;
-                    }
-
-                    faces[i] = new Face(color, position);
-                }
-
-                var layers = new List<LayerType>();
-                foreach (var layerType in cubie.Layers)
-                {
-                    var layer = LayerType.None;
-
-                    switch (layerType)
-                    {
-                        case ScrarchEngine.Libraries.RubiksCube.Models.LayerType.None:
-                            layer = LayerType.None;
-                            break;
-                        case ScrarchEngine.Libraries.RubiksCube.Models.LayerType.Top:
-                            layer = LayerType.TopLayer;
-                            break;
-                        case ScrarchEngine.Libraries.RubiksCube.Models.LayerType.MiddleFromTop:
-                            layer = LayerType.MiddleLayer;
-                            break;
-                        case ScrarchEngine.Libraries.RubiksCube.Models.LayerType.Bottom:
-                            layer = LayerType.BottomLayer;
-                            break;
-                        case ScrarchEngine.Libraries.RubiksCube.Models.LayerType.Front:
-                            layer = LayerType.FrontSlice;
-                            break;
-                        case ScrarchEngine.Libraries.RubiksCube.Models.LayerType.MiddleFromFront:
-                            layer = LayerType.MiddleSlice;
-                            break;
-                        case ScrarchEngine.Libraries.RubiksCube.Models.LayerType.Back:
-                            layer = LayerType.BackSlice;
-                            break;
-                        case ScrarchEngine.Libraries.RubiksCube.Models.LayerType.Left:
-                            layer = LayerType.LeftSlice;
-                            break;
-                        case ScrarchEngine.Libraries.RubiksCube.Models.LayerType.MiddleFromLeft:
-                            layer = LayerType.MiddleSliceSides;
-                            break;
-                        case ScrarchEngine.Libraries.RubiksCube.Models.LayerType.Right:
-                            layer = LayerType.RightSlice;
-                            break;
-                        default:
-                            break;
-                    }
-
-                    layers.Add(layer);
-                }
-
-                cubes.Add(new RubiksCube.Game.Models.Cube()
-                {
-                    Faces = faces,
-                    Positions = layers
-                });
-            }
-
-            return cubes;
         }
 
         public IEnumerable<Face3D> GenerateFacesProjected(Rectangle screen, double scale)

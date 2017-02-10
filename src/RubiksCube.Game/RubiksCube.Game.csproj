@@ -62,17 +62,13 @@
     <Compile Include="GraphicsEngine\RenderingControl.Rendering.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GraphicsEngine\RotationType.cs" />
+    <Compile Include="GraphicsEngine\RotationDirection.cs" />
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Main.Designer.cs">
       <DependentUpon>Main.cs</DependentUpon>
     </Compile>
-    <Compile Include="Models\Cube.cs" />
-    <Compile Include="Models\Face.cs" />
-    <Compile Include="Models\FacePosition.cs" />
-    <Compile Include="Models\LayerType.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rendering\Controls\RubicsCubeControl.cs">
@@ -80,6 +76,7 @@
     </Compile>
     <Compile Include="Rendering\Cube3D.cs" />
     <Compile Include="Rendering\Face3D.cs" />
+    <Compile Include="Rendering\FacePosition.cs" />
     <Compile Include="Rendering\PositionSpec.cs" />
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
