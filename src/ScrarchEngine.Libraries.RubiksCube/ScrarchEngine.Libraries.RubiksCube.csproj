@@ -38,10 +38,13 @@
     <Folder Include="Solver\Methods\Beginners\" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\Cubie.cs" />
     <Compile Include="Models\Face.cs" />
+    <Compile Include="Models\FacePiece.cs" />
     <Compile Include="Models\FacePieceType.cs" />
     <Compile Include="Models\FaceType.cs" />
     <Compile Include="Models\LayerType.cs" />
+    <Compile Include="Models\RotationIndex.cs" />
     <Compile Include="Models\RotationType.cs" />
     <Compile Include="Models\RubiksCubeModel.cs" />
     <Compile Include="Models\Utilities.cs" />

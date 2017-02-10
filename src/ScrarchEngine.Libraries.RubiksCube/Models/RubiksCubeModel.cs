@@ -8,35 +8,7 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
 {
     public class RubiksCubeModel
     {
-        public Face[] Faces { get; private set; }
-
-        public RubiksCubeModel()
-            : this(new Face[] {
-                new Face(FaceType.Front),
-                new Face(FaceType.Left),
-                new Face(FaceType.Back),
-                new Face(FaceType.Right),
-                new Face(FaceType.Top),
-                new Face(FaceType.Bottom)
-            })
-        {
-            //              | 0 | 1 | 2 | 
-            //              | 3 | 4 | 5 |
-            //              | 6 | 7 | 8 |
-            //              -------------
-            //| 0 | 1 | 2 |-| 0 | 1 | 2 |-| 0 | 1 | 2 |-| 0 | 1 | 2 |
-            //| 3 | 4 | 5 |-| 3 | 4 | 5 |-| 3 | 4 | 5 |-| 3 | 4 | 5 |
-            //| 6 | 7 | 8 |-| 6 | 7 | 8 |-| 6 | 7 | 8 |-| 6 | 7 | 8 |
-            //              -------------
-            //              | 0 | 1 | 2 |
-            //              | 3 | 4 | 5 |
-            //              | 6 | 7 | 8 |
-        }
-
-        public RubiksCubeModel(Face[] faces)
-        {
-            Faces = faces;
-        }
+        #region Private Static Fields
 
         private static FaceType[] _topBottomClockwiseOrder = new FaceType[] { FaceType.Front, FaceType.Left, FaceType.Back, FaceType.Right };
         private static FaceType[] _frontBackClockwiseOrder = new FaceType[] { FaceType.Top, FaceType.Right, FaceType.Bottom, FaceType.Left };
@@ -59,33 +31,6 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
             { FaceType.Top, LayerType.Top },
             { FaceType.Bottom, LayerType.Bottom }
         };
-
-        public struct FacePiece
-        {
-            public FaceType Face { get; private set; }
-            public int Index { get; private set; }
-
-            public FacePieceType? CurrentType { get; set; }
-
-            public FacePiece(FaceType face, int index)
-            {
-                Face = face;
-                Index = index;
-                CurrentType = null;
-            }
-        }
-
-        public struct Cubie
-        {
-            public List<FacePiece> Pieces { get; private set; }
-            public List<LayerType> Layers { get; private set; }
-
-            public Cubie(List<FacePiece> pieces, List<LayerType> layers)
-            {
-                Pieces = pieces;
-                Layers = layers;
-            }
-        }
 
         private static List<List<FacePiece>> _cubieMappings = new List<List<FacePiece>> {
            new List<FacePiece> { new FacePiece(FaceType.Front, 0), new FacePiece(FaceType.Left, 2), new FacePiece(FaceType.Top, 6) },
@@ -119,20 +64,6 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
            new List<FacePiece> { new FacePiece(FaceType.Bottom, 3), new FacePiece(FaceType.Left, 7) }
         };
 
-        private struct RotationIndex
-        {
-            public FaceType Face { get; private set; }
-            public int Index { get; private set; }
-            public bool IsX { get; private set; }
-
-            public RotationIndex(FaceType face, int index, bool isX)
-            {
-                Face = face;
-                Index = index;
-                IsX = isX;
-            }
-        }
-
         private static Dictionary<LayerType, RotationIndex[]> _facesNearestLayers =
             new Dictionary<LayerType, RotationIndex[]>
             {
@@ -145,6 +76,56 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
                 { LayerType.Top, new RotationIndex[] { new RotationIndex(FaceType.Front, 0, false), new RotationIndex(FaceType.Left, 0, false), new RotationIndex(FaceType.Back, 0, false), new RotationIndex(FaceType.Right, 0, false) } },
                 { LayerType.Bottom, new RotationIndex[] {new RotationIndex(FaceType.Front, 2, false), new RotationIndex(FaceType.Right, 2, false), new RotationIndex(FaceType.Back, 2, false), new RotationIndex(FaceType.Left, 2, false) } }
             };
+
+        #endregion
+
+        #region Fields
+
+        private Random _random;
+
+        #endregion
+
+        #region Properties
+
+        public Face[] Faces { get; private set; }
+
+        #endregion
+
+        #region .ctor
+
+        public RubiksCubeModel()
+            : this(new Face[] {
+                new Face(FaceType.Front),
+                new Face(FaceType.Left),
+                new Face(FaceType.Back),
+                new Face(FaceType.Right),
+                new Face(FaceType.Top),
+                new Face(FaceType.Bottom)
+            })
+        {
+            //              | 0 | 1 | 2 | 
+            //              | 3 | 4 | 5 |
+            //              | 6 | 7 | 8 |
+            //              -------------
+            //| 0 | 1 | 2 |-| 0 | 1 | 2 |-| 0 | 1 | 2 |-| 0 | 1 | 2 |
+            //| 3 | 4 | 5 |-| 3 | 4 | 5 |-| 3 | 4 | 5 |-| 3 | 4 | 5 |
+            //| 6 | 7 | 8 |-| 6 | 7 | 8 |-| 6 | 7 | 8 |-| 6 | 7 | 8 |
+            //              -------------
+            //              | 0 | 1 | 2 |
+            //              | 3 | 4 | 5 |
+            //              | 6 | 7 | 8 |
+        }
+
+        public RubiksCubeModel(Face[] faces)
+        {
+            Faces = faces;
+
+            _random = new Random();
+        }
+
+        #endregion
+
+        #region Public Methods
 
         public Face GetFace(FaceType type)
         {
@@ -167,6 +148,93 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
 
             Rotate90NearestLayers(rotationOrder, layer);
         }
+
+        public Tuple<int, int> GetOpositeCoordinates(int x, int y, FaceType face)
+        {
+            Tuple<int, int> result = null;
+
+            int n = 3;
+            if (face == FaceType.Front || face == FaceType.Back || face == FaceType.Left || face == FaceType.Right)
+                result = Tuple.Create(x, n - y - 1);
+            else
+                result = Tuple.Create(n - x - 1, y);
+
+            return result;
+        }
+
+        public List<Cubie> GetCubies()
+        {
+            var result = new List<Cubie>();
+
+            foreach (var faces in _cubieMappings)
+            {
+                var pieces = new List<FacePiece>();
+                var layers = new List<LayerType>();
+
+                foreach (var piece in faces)
+                {
+                    var face = GetFace(piece.Face);
+
+                    var newPiece = piece;
+                    newPiece.CurrentType = face[piece.Index];
+                    pieces.Add(newPiece);
+
+                    layers.Add(_faceLayerMap[face.Type]);
+
+                    if (face.Type == FaceType.Top || face.Type == FaceType.Bottom)
+                    {
+                        if (piece.Index == 1 || piece.Index == 4 || piece.Index == 7)
+                            layers.Add(LayerType.MiddleFromLeft);
+                        if (piece.Index == 3 || piece.Index == 4 || piece.Index == 5)
+                            layers.Add(LayerType.MiddleFromFront);
+                    }
+
+                    if (face.Type == FaceType.Left || face.Type == FaceType.Right)
+                    {
+                        if (piece.Index == 1 || piece.Index == 4 || piece.Index == 7)
+                            layers.Add(LayerType.MiddleFromFront);
+                        if (piece.Index == 3 || piece.Index == 4 || piece.Index == 5)
+                            layers.Add(LayerType.MiddleFromTop);
+                    }
+
+                    if (face.Type == FaceType.Front || face.Type == FaceType.Back)
+                    {
+                        if (piece.Index == 1 || piece.Index == 4 || piece.Index == 7)
+                            layers.Add(LayerType.MiddleFromLeft);
+                        if (piece.Index == 3 || piece.Index == 4 || piece.Index == 5)
+                            layers.Add(LayerType.MiddleFromTop);
+                    }
+                }
+
+                result.Add(new Cubie(pieces, layers));
+            }
+
+            return result;
+        }
+
+        public void Shuffle(int moves = 100)
+        {
+            for (int i = 0; i < moves; i++)
+            {
+                var type = (LayerType)_random.Next(1, 9);
+
+                //TODO: temp workaround.
+                if (type == LayerType.MiddleFromFront)
+                    type = LayerType.Front;
+                if (type == LayerType.MiddleFromLeft)
+                    type = LayerType.Left;
+                if (type == LayerType.MiddleFromTop)
+                    type = LayerType.Top;
+
+                var rotation = (RotationType)_random.Next((int)RotationType.Clockwise, (int)RotationType.CounterClockwise);
+
+                Rotate90Degrees(type, rotation);
+            }
+        }
+
+        #endregion
+
+        #region Private Methods
 
         private void Rotate90NearestLayers(RotationIndex[] rotationOrder, LayerType layer)
         {
@@ -235,67 +303,6 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
             }
         }
 
-        public Tuple<int, int> GetOpositeCoordinates(int x, int y, FaceType face)
-        {
-            Tuple<int, int> result = null;
-
-            int n = 3;
-            if (face == FaceType.Front || face == FaceType.Back || face == FaceType.Left || face == FaceType.Right)
-                result = Tuple.Create(x, n - y - 1);
-            else
-                result = Tuple.Create(n - x - 1, y);
-
-            return result;
-        }
-
-        public List<Cubie> GetCubies()
-        {
-            var result = new List<Cubie>();
-
-            foreach (var faces in _cubieMappings)
-            {
-                var pieces = new List<FacePiece>();
-                var layers = new List<LayerType>();
-
-                foreach (var piece in faces)
-                {
-                    var face = GetFace(piece.Face);
-
-                    var newPiece = piece;
-                    newPiece.CurrentType = face[piece.Index];
-                    pieces.Add(newPiece);
-
-                    layers.Add(_faceLayerMap[face.Type]);
-
-                    if (face.Type == FaceType.Top || face.Type == FaceType.Bottom)
-                    {
-                        if (piece.Index == 1 || piece.Index == 4 || piece.Index == 7)
-                            layers.Add(LayerType.MiddleFromLeft);
-                        if (piece.Index == 3 || piece.Index == 4 || piece.Index == 5)
-                            layers.Add(LayerType.MiddleFromFront);
-                    }
-
-                    if (face.Type == FaceType.Left || face.Type == FaceType.Right)
-                    {
-                        if (piece.Index == 1 || piece.Index == 4 || piece.Index == 7)
-                            layers.Add(LayerType.MiddleFromFront);
-                        if (piece.Index == 3 || piece.Index == 4 || piece.Index == 5)
-                            layers.Add(LayerType.MiddleFromTop);
-                    }
-
-                    if (face.Type == FaceType.Front || face.Type == FaceType.Back)
-                    {
-                        if (piece.Index == 1 || piece.Index == 4 || piece.Index == 7)
-                            layers.Add(LayerType.MiddleFromLeft);
-                        if (piece.Index == 3 || piece.Index == 4 || piece.Index == 5)
-                            layers.Add(LayerType.MiddleFromTop);
-                    }
-                }
-
-                result.Add(new Cubie(pieces, layers));
-            }
-
-            return result;
-        }
+        #endregion
     }
 }

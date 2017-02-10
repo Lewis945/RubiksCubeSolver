@@ -517,5 +517,15 @@ namespace ScrarchEngine.Libraries.RubiksCube.Tests.Models
         }
 
         #endregion
+
+        #region Shuffle
+
+        [Test]
+        public void Shuffle()
+        {
+            _cube.Shuffle();
+        }
+
+        #endregion
     }
 }

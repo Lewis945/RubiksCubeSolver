@@ -25,35 +25,37 @@ namespace RubiksCube.Game
 
             System.Threading.Tasks.Task.Run(() =>
             {
-                rubicsCubeControl.RubiksCubeModel.Rotate90Degrees(LayerType.Top, RotationType.Clockwise);
-                System.Threading.Thread.Sleep(2000);
-                rubicsCubeControl.RubiksCubeModel.Rotate90Degrees(LayerType.Top, RotationType.CounterClockwise);
-                System.Threading.Thread.Sleep(2000);
+                rubicsCubeControl.RubiksCubeModel.Shuffle();
 
-                rubicsCubeControl.RubiksCubeModel.Rotate90Degrees(LayerType.Left, RotationType.Clockwise);
-                System.Threading.Thread.Sleep(2000);
-                rubicsCubeControl.RubiksCubeModel.Rotate90Degrees(LayerType.Left, RotationType.CounterClockwise);
-                System.Threading.Thread.Sleep(2000);
+                //rubicsCubeControl.RubiksCubeModel.Rotate90Degrees(LayerType.Top, RotationType.Clockwise);
+                //System.Threading.Thread.Sleep(2000);
+                //rubicsCubeControl.RubiksCubeModel.Rotate90Degrees(LayerType.Top, RotationType.CounterClockwise);
+                //System.Threading.Thread.Sleep(2000);
 
-                rubicsCubeControl.RubiksCubeModel.Rotate90Degrees(LayerType.Bottom, RotationType.Clockwise);
-                System.Threading.Thread.Sleep(2000);
-                rubicsCubeControl.RubiksCubeModel.Rotate90Degrees(LayerType.Bottom, RotationType.CounterClockwise);
-                System.Threading.Thread.Sleep(2000);
+                //rubicsCubeControl.RubiksCubeModel.Rotate90Degrees(LayerType.Left, RotationType.Clockwise);
+                //System.Threading.Thread.Sleep(2000);
+                //rubicsCubeControl.RubiksCubeModel.Rotate90Degrees(LayerType.Left, RotationType.CounterClockwise);
+                //System.Threading.Thread.Sleep(2000);
 
-                rubicsCubeControl.RubiksCubeModel.Rotate90Degrees(LayerType.Right, RotationType.Clockwise);
-                System.Threading.Thread.Sleep(2000);
-                rubicsCubeControl.RubiksCubeModel.Rotate90Degrees(LayerType.Right, RotationType.CounterClockwise);
-                System.Threading.Thread.Sleep(2000);
+                //rubicsCubeControl.RubiksCubeModel.Rotate90Degrees(LayerType.Bottom, RotationType.Clockwise);
+                //System.Threading.Thread.Sleep(2000);
+                //rubicsCubeControl.RubiksCubeModel.Rotate90Degrees(LayerType.Bottom, RotationType.CounterClockwise);
+                //System.Threading.Thread.Sleep(2000);
 
-                rubicsCubeControl.RubiksCubeModel.Rotate90Degrees(LayerType.Front, RotationType.Clockwise);
-                System.Threading.Thread.Sleep(2000);
-                rubicsCubeControl.RubiksCubeModel.Rotate90Degrees(LayerType.Front, RotationType.CounterClockwise);
-                System.Threading.Thread.Sleep(2000);
+                //rubicsCubeControl.RubiksCubeModel.Rotate90Degrees(LayerType.Right, RotationType.Clockwise);
+                //System.Threading.Thread.Sleep(2000);
+                //rubicsCubeControl.RubiksCubeModel.Rotate90Degrees(LayerType.Right, RotationType.CounterClockwise);
+                //System.Threading.Thread.Sleep(2000);
 
-                rubicsCubeControl.RubiksCubeModel.Rotate90Degrees(LayerType.Back, RotationType.Clockwise);
-                System.Threading.Thread.Sleep(2000);
-                rubicsCubeControl.RubiksCubeModel.Rotate90Degrees(LayerType.Back, RotationType.CounterClockwise);
-                System.Threading.Thread.Sleep(2000);
+                //rubicsCubeControl.RubiksCubeModel.Rotate90Degrees(LayerType.Front, RotationType.Clockwise);
+                //System.Threading.Thread.Sleep(2000);
+                //rubicsCubeControl.RubiksCubeModel.Rotate90Degrees(LayerType.Front, RotationType.CounterClockwise);
+                //System.Threading.Thread.Sleep(2000);
+
+                //rubicsCubeControl.RubiksCubeModel.Rotate90Degrees(LayerType.Back, RotationType.Clockwise);
+                //System.Threading.Thread.Sleep(2000);
+                //rubicsCubeControl.RubiksCubeModel.Rotate90Degrees(LayerType.Back, RotationType.CounterClockwise);
+                //System.Threading.Thread.Sleep(2000);
             });
         }
     }
