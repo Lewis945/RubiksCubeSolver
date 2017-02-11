@@ -15,13 +15,15 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
 
         public FacePieceType[,] _field;
 
+        public FacePieceType[,] Field { get { return _field; } }
+
         public FacePieceType this[int index]
         {
             get
             {
                 int x = 0;
                 int y = 0;
-                GetIndecies(index,out x, out y);
+                GetIndecies(index, out x, out y);
 
                 return _field[x, y];
             }

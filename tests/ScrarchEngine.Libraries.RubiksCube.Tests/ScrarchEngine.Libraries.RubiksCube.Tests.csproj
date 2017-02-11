@@ -53,10 +53,10 @@
     <Compile Include="Models\RubiksCubeModelTests.cs" />
     <Compile Include="Models\UtilitiesTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Solver\DfsTests.cs" />
+    <Compile Include="Solver\TwoWayBfsSolverTests.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Solver\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\..\src\ScrarchEngine.Libraries.RubiksCube\ScrarchEngine.Libraries.RubiksCube.csproj">
       <Project>{24838B82-43E2-45EF-80AC-1BD7E3D2700B}</Project>
