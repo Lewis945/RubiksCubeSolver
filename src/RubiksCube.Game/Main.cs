@@ -25,6 +25,7 @@ namespace RubiksCube.Game
 
             System.Threading.Tasks.Task.Run(() =>
             {
+                //delay:2000
                 rubicsCubeControl.RubiksCubeModel.Shuffle();
 
                 //rubicsCubeControl.RubiksCubeModel.Rotate90Degrees(LayerType.Top, RotationType.Clockwise);

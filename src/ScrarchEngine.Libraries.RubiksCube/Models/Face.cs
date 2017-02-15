@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ScrarchEngine.Libraries.RubiksCube.Models
 {
@@ -13,9 +14,7 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
             { FaceType.Bottom, FacePieceType.Yellow }
         };
 
-        public FacePieceType[,] _field;
-
-        public FacePieceType[,] Field { get { return _field; } }
+        public FacePieceType[,] Field { get; set; }
 
         public FacePieceType this[int index]
         {
@@ -25,7 +24,7 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
                 int y = 0;
                 GetIndecies(index, out x, out y);
 
-                return _field[x, y];
+                return Field[x, y];
             }
             set
             {
@@ -33,7 +32,7 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
                 int y = 0;
                 GetIndecies(index, out x, out y);
 
-                _field[x, y] = value;
+                Field[x, y] = value;
             }
         }
 
@@ -41,11 +40,11 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
         {
             get
             {
-                return _field[x, y];
+                return Field[x, y];
             }
             set
             {
-                _field[x, y] = value;
+                Field[x, y] = value;
             }
         }
 
@@ -54,11 +53,19 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
         public Face(FaceType type)
         {
             Type = type;
-            _field = new FacePieceType[3, 3];
+            Field = new FacePieceType[3, 3];
 
-            for (int i = 0; i < _field.GetLength(0); i++)
-                for (int j = 0; j < _field.GetLength(1); j++)
-                    _field[i, j] = FacePieceTypeMap[type];
+            for (int i = 0; i < Field.GetLength(0); i++)
+                for (int j = 0; j < Field.GetLength(1); j++)
+                    Field[i, j] = FacePieceTypeMap[type];
+        }
+
+        public Face(FacePieceType[,] faces)
+        {
+            if (faces.GetLength(0) != 3 && faces.GetLength(1) != 3)
+                throw new ArgumentException("Array dimensions are not appropriate", nameof(faces));
+
+            Field = faces;
         }
 
         public LayerType GetLayer(int index)
@@ -132,14 +139,14 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
         public void Rotate90Degrees(RotationType direction)
         {
             if (direction == RotationType.Clockwise)
-                _field = Utilities.RotateMatrixClockwise(_field);
+                Field = Utilities.RotateMatrixClockwise(Field);
             else
-                _field = Utilities.RotateMatrixCounterClockwise(_field);
+                Field = Utilities.RotateMatrixCounterClockwise(Field);
         }
 
         public FacePieceType[,] GetField()
         {
-            return _field;
+            return Field;
         }
 
         private void GetIndecies(int index, out int x, out int y)

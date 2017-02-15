@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Dfs;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -35,48 +36,17 @@ namespace ScrarchEngine.Libraries.RubiksCube.Tests.Solver
         }
 
         [Test]
-        public void Bfs_Testing()
+        public void Dfs_Testing()
         {
-            var rootNode = new Node() { Result1 = 0, Result2 = 0, Result3 = 0 };
-            var endNode = new Node() { Result1 = 3, Result2 = 20, Result3 = 20 };
+            var model = new RubiksCube.Models.RubiksCubeModel();
 
-            var finalNodes = new ConcurrentDictionary<Node, Node>();
+            model.Rotate90Degrees(RubiksCube.Models.LayerType.Top, RubiksCube.Models.RotationType.Clockwise);
+            model.Rotate90Degrees(RubiksCube.Models.LayerType.Bottom, RubiksCube.Models.RotationType.Clockwise);
 
-            int limit = 20 * 6 - 20;
+            var solver = new DfsSolver(model);
+            var solution = solver.FindSolution();
 
-            Action<Node, Node> dfs = (start, end) =>
-            {
-                var stack = new Stack<Node>();
-                stack.Push(start);
-
-                while (stack.Any() && stack.Count < limit)
-                {
-                    var node = stack.Pop();
-
-                    if (node.Result1 == end.Result1 && node.Result2 == end.Result2 && node.Result3 == end.Result3)
-                    {
-                        finalNodes.TryAdd(start, node);
-                        break;
-                    }
-
-                    var ch = GetChildren(node);
-                    foreach (var child in ch)
-                        stack.Push(child);
-                }
-            };
-
-            var tasks = new List<Task>();
-            var nodes = GetChildren(rootNode);
-            foreach (var child in nodes)
-            {
-                var task = Task.Run(() => dfs(child, endNode));
-                tasks.Add(task);
-            }
-
-            Task.WaitAny(tasks.ToArray());
-
-            var result = finalNodes.First();
-            Assert.AreEqual(20, result.Value.Result2);
+            Assert.AreEqual(2, solution.Count);
         }
     }
 }

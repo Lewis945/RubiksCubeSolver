@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -17,6 +18,10 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Dfs
 
         private const int _godNumber = 20;
 
+        private Func<Face[], Dictionary<FaceType, int[,]>> getState;
+        private Func<Dictionary<FaceType, int[,]>, Face[]> getFaces;
+        private Func<Face[], LayerType, RotationType, Node> getChildNode;
+
         #endregion
 
         #region .ctor
@@ -24,6 +29,44 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Dfs
         public DfsSolver(RubiksCubeModel model)
         {
             _model = model;
+
+            getState = (f) =>
+            {
+                var state = new Dictionary<FaceType, int[,]>();
+                foreach (var faceItem in f)
+                {
+                    var face = new int[3, 3];
+                    for (int i = 0; i < 3; i++)
+                        for (int j = 0; j < 3; j++)
+                            face[i, j] = (int)faceItem[i, j];
+                    state.Add(faceItem.Type, face);
+                }
+                return state;
+            };
+
+            getFaces = (s) =>
+            {
+                var state = new Face[6];
+                int k = 0;
+                foreach (var stateItem in s)
+                {
+                    var face = new Face(stateItem.Key);
+                    for (int i = 0; i < 3; i++)
+                        for (int j = 0; j < 3; j++)
+                            face[i, j] = (FacePieceType)stateItem.Value[i, j];
+                    state[k] = face;
+                    k++;
+                }
+                return state;
+            };
+
+            getChildNode = (f, l, r) =>
+            {
+                var childNode = new Node(getState(f));
+                childNode.Layer = l;
+                childNode.Rotation = r;
+                return childNode;
+            };
         }
 
         #endregion
@@ -41,25 +84,72 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Dfs
 
         public struct Node
         {
-            public List<FacePieceType[,]> State { get; set; }
+            public Dictionary<FaceType, int[,]> State { get; set; }
+            public LayerType Layer { get; set; }
+            public RotationType Rotation { get; set; }
 
-            public List<Node> Children { get; set; }
+            public Node(Dictionary<FaceType, int[,]> state)
+            {
+                State = state;
+                Layer = LayerType.None;
+                Rotation = RotationType.Clockwise;
+            }
         }
 
-        private IEnumerable<Node> GetChildren(Node node)
+        private List<Node> GetChildren(Node node)
         {
-            return new List<Node>();
+            var children = new List<Node>();
+
+            _model.Faces = getFaces(node.State);
+            _model.Rotate90Degrees(LayerType.Top, RotationType.Clockwise);
+            children.Add(getChildNode(_model.Faces, LayerType.Top, RotationType.Clockwise));
+            _model.Faces = getFaces(node.State);
+            _model.Rotate90Degrees(LayerType.Top, RotationType.CounterClockwise);
+            children.Add(getChildNode(_model.Faces, LayerType.Top, RotationType.CounterClockwise));
+
+            _model.Faces = getFaces(node.State);
+            _model.Rotate90Degrees(LayerType.Bottom, RotationType.Clockwise);
+            children.Add(getChildNode(_model.Faces, LayerType.Bottom, RotationType.Clockwise));
+            _model.Faces = getFaces(node.State);
+            _model.Rotate90Degrees(LayerType.Bottom, RotationType.CounterClockwise);
+            children.Add(getChildNode(_model.Faces, LayerType.Bottom, RotationType.CounterClockwise));
+
+            _model.Faces = getFaces(node.State);
+            _model.Rotate90Degrees(LayerType.Left, RotationType.Clockwise);
+            children.Add(getChildNode(_model.Faces, LayerType.Left, RotationType.Clockwise));
+            _model.Faces = getFaces(node.State);
+            _model.Rotate90Degrees(LayerType.Left, RotationType.CounterClockwise);
+            children.Add(getChildNode(_model.Faces, LayerType.Left, RotationType.CounterClockwise));
+
+            _model.Faces = getFaces(node.State);
+            _model.Rotate90Degrees(LayerType.Right, RotationType.Clockwise);
+            children.Add(getChildNode(_model.Faces, LayerType.Right, RotationType.Clockwise));
+            _model.Faces = getFaces(node.State);
+            _model.Rotate90Degrees(LayerType.Right, RotationType.CounterClockwise);
+            children.Add(getChildNode(_model.Faces, LayerType.Right, RotationType.CounterClockwise));
+
+            _model.Faces = getFaces(node.State);
+            _model.Rotate90Degrees(LayerType.Front, RotationType.Clockwise);
+            children.Add(getChildNode(_model.Faces, LayerType.Front, RotationType.Clockwise));
+            _model.Faces = getFaces(node.State);
+            _model.Rotate90Degrees(LayerType.Front, RotationType.CounterClockwise);
+            children.Add(getChildNode(_model.Faces, LayerType.Front, RotationType.CounterClockwise));
+
+            _model.Faces = getFaces(node.State);
+            _model.Rotate90Degrees(LayerType.Back, RotationType.Clockwise);
+            children.Add(getChildNode(_model.Faces, LayerType.Back, RotationType.Clockwise));
+            _model.Faces = getFaces(node.State);
+            _model.Rotate90Degrees(LayerType.Back, RotationType.CounterClockwise);
+            children.Add(getChildNode(_model.Faces, LayerType.Back, RotationType.CounterClockwise));
+
+            return children;
         }
 
         private bool IsStateFinal(Node node)
         {
             foreach (var face in node.State)
             {
-                bool equal = true;
-                for (int i = 1; i < 3; i++)
-                    for (int j = 1; j < 3; j++)
-                        equal = face[i - 1, j - 1] == face[i, j];
-
+                bool equal = face.Value.Cast<int>().All(x => x == face.Value[0, 0]);
                 if (!equal)
                     return false;
             }
@@ -69,9 +159,7 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Dfs
 
         public List<Node> FindSolution()
         {
-            var rootNode = new Node() { State = _model.Faces.Select(f => f.Field).ToList() };
-
-            var finalNodes = new ConcurrentDictionary<Node, Node>();
+            var rootNode = new Node(getState(_model.Faces));
 
             int limit = 20 * 6;
 
@@ -88,24 +176,23 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Dfs
                     solution.Add(node);
 
                     if (IsStateFinal(node))
-                    {
-                        finalNodes.TryAdd(start, node);
                         break;
-                    }
 
-                    var children = GetChildren(node);
-                    if (children.Count() == 0)
+                    var kids = GetChildren(node);
+                    if (kids.Count() == 0)
                         solution.Remove(node);
-                    foreach (var child in children)
+                    foreach (var child in kids)
                         stack.Push(child);
                 }
 
-                return solution;
+                if (IsStateFinal(solution.Last()))
+                    return solution;
+                return null;
             };
 
             var tasks = new List<Task<List<Node>>>();
-            var nodes = GetChildren(rootNode);
-            foreach (var child in nodes)
+            var children = GetChildren(rootNode);
+            foreach (var child in children.Where(c => c.Layer == LayerType.Top && c.Rotation == RotationType.CounterClockwise))
             {
                 var task = Task.Run(() => dfs(child));
                 tasks.Add(task);
@@ -114,9 +201,8 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Dfs
             while (true)
             {
                 foreach (var task in tasks)
-                    if (task.IsCompleted)
-                        if (finalNodes.Count > 0)
-                            return task.Result;
+                    if (task.IsCompleted && task.Result != null)
+                        return task.Result;
 
                 Task.Delay(100).Wait();
             }

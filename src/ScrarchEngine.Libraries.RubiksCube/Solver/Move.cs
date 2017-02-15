@@ -1,18 +1,19 @@
 ﻿using ScrarchEngine.Libraries.RubiksCube.Models;
+using System;
 
 namespace ScrarchEngine.Libraries.RubiksCube.Solver
 {
     public class Move
     {
-        public string _name;
+        public LayerType Layer { get; private set; }
+        public RotationType Rotation { get; private set; }
+        public Action Motion { get; private set; }
 
-        public delegate void MoveFunction(RubiksCubeModel s);
-        public MoveFunction _action;
-
-        public Move(string name, MoveFunction action)
+        public Move(LayerType layer, RotationType rotation, Action motion)
         {
-            _name = name;
-            _action = action;
+            Layer = layer;
+            Rotation = rotation;
+            Motion = motion;
         }
     }
 }

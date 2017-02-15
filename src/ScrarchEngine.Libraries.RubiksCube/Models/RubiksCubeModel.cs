@@ -87,7 +87,7 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
 
         #region Properties
 
-        public Face[] Faces { get; private set; }
+        public Face[] Faces { get; set; }
 
         #endregion
 
@@ -212,7 +212,7 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
             return result;
         }
 
-        public void Shuffle(int moves = 100)
+        public void Shuffle(int moves = 100, int? delay = null)
         {
             for (int i = 0; i < moves; i++)
             {
@@ -229,6 +229,9 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
                 var rotation = (RotationType)_random.Next((int)RotationType.Clockwise, (int)RotationType.CounterClockwise);
 
                 Rotate90Degrees(type, rotation);
+
+                if (delay.HasValue)
+                    Task.Delay(delay.Value).Wait();
             }
         }
 
