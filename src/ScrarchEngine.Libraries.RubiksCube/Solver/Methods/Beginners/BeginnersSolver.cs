@@ -1,9 +1,11 @@
-﻿using ScrarchEngine.Libraries.RubiksCube.Models;
+﻿using Newtonsoft.Json;
+using ScrarchEngine.Libraries.RubiksCube.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
 {
@@ -13,159 +15,65 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
 
         private List<MoveAlgorithm> _algorithms;
 
-        public BeginnersSolver(RubiksCube.Models.RubiksCubeModel model)
+        public BeginnersSolver(RubiksCube.Models.RubiksCubeModel model, Func<string, string> getContent)
         {
-            //AddMove("F", s => RotateFront(s, 1));
             _model = model;
+            _algorithms = JsonConvert.DeserializeObject<List<MoveAlgorithm>>(getContent(@"D:\Projects\RubiksCube\src\ScrarchEngine.Libraries.RubiksCube\Solver\Methods\Beginners\patterns.json"));
+        }
 
-            #region Algorithms
+        private bool DoesStateMatch(Dictionary<FaceType, FaceType?[,]> state)
+        {
+            var result = new List<bool>();
 
-            _algorithms = new List<MoveAlgorithm>();
+            var top = _model.GetFace(FaceType.Up);
+            var topColor = top.PieceType;
 
-            var a1 = new MoveAlgorithm(Phase.FirstCross);
-            // Default
-            //a1.SetFaceState(FaceType.Top, new FacePieceType?[3, 3] {
-            //    { FacePieceType.White, FacePieceType.White, FacePieceType.White },
-            //    { FacePieceType.White, FacePieceType.White, FacePieceType.White },
-            //    { FacePieceType.White, FacePieceType.White, FacePieceType.White }
-            //});
-            //a1.SetFaceState(FaceType.Bottom, new FacePieceType?[3, 3] {
-            //    { FacePieceType.Yellow, FacePieceType.Yellow, FacePieceType.Yellow },
-            //    { FacePieceType.Yellow, FacePieceType.Yellow, FacePieceType.Yellow },
-            //    { FacePieceType.Yellow, FacePieceType.Yellow, FacePieceType.Yellow }
-            //});
-            //a1.SetFaceState(FaceType.Front, new FacePieceType?[3, 3] {
-            //    { FacePieceType.Blue, FacePieceType.Blue, FacePieceType.Blue },
-            //    { FacePieceType.Blue, FacePieceType.Blue, FacePieceType.Blue },
-            //    { FacePieceType.Blue, FacePieceType.Blue, FacePieceType.Blue }
-            //});
-            //a1.SetFaceState(FaceType.Back, new FacePieceType?[3, 3] {
-            //    { FacePieceType.Green, FacePieceType.Green, FacePieceType.Green },
-            //    { FacePieceType.Green, FacePieceType.Green, FacePieceType.Green },
-            //    { FacePieceType.Green, FacePieceType.Green, FacePieceType.Green }
-            //});
-            //a1.SetFaceState(FaceType.Left, new FacePieceType?[3, 3] {
-            //    { FacePieceType.Orange, FacePieceType.Orange, FacePieceType.Orange },
-            //    { FacePieceType.Orange, FacePieceType.Orange, FacePieceType.Orange },
-            //    { FacePieceType.Orange, FacePieceType.Orange, FacePieceType.Orange }
-            //});
-            //a1.SetFaceState(FaceType.Right, new FacePieceType?[3, 3] {
-            //    { FacePieceType.Red, FacePieceType.Red, FacePieceType.Red },
-            //    { FacePieceType.Red, FacePieceType.Red, FacePieceType.Red },
-            //    { FacePieceType.Red, FacePieceType.Red, FacePieceType.Red }
-            //});
-            // State
-            a1.SetFaceState(FaceType.Top, new FacePieceType?[3, 3] { 
-                { FacePieceType.White, FacePieceType.White, FacePieceType.White }, 
-                { FacePieceType.White, FacePieceType.White, FacePieceType.White }, 
-                { FacePieceType.White, FacePieceType.White, FacePieceType.White }
-            });
-            a1.SetFaceState(FaceType.Bottom, new FacePieceType?[3, 3] {
-                { FacePieceType.Yellow, FacePieceType.Yellow, FacePieceType.Yellow },
-                { FacePieceType.Yellow, FacePieceType.Yellow, FacePieceType.Yellow },
-                { FacePieceType.Yellow, FacePieceType.Yellow, FacePieceType.Yellow }
-            });
-            a1.SetFaceState(FaceType.Front, new FacePieceType?[3, 3] {
-                { FacePieceType.Blue, FacePieceType.Blue, FacePieceType.Blue },
-                { FacePieceType.Blue, FacePieceType.Blue, FacePieceType.Blue },
-                { FacePieceType.Blue, FacePieceType.Blue, FacePieceType.Blue }
-            });
-            a1.SetFaceState(FaceType.Back, new FacePieceType?[3, 3] {
-                { FacePieceType.Green, FacePieceType.Green, FacePieceType.Green },
-                { FacePieceType.Green, FacePieceType.Green, FacePieceType.Green },
-                { FacePieceType.Green, FacePieceType.Green, FacePieceType.Green }
-            });
-            a1.SetFaceState(FaceType.Left, new FacePieceType?[3, 3] {
-                { FacePieceType.Orange, FacePieceType.Orange, FacePieceType.Orange },
-                { FacePieceType.Orange, FacePieceType.Orange, FacePieceType.Orange },
-                { FacePieceType.Orange, FacePieceType.Orange, FacePieceType.Orange }
-            });
-            a1.SetFaceState(FaceType.Right, new FacePieceType?[3, 3] {
-                { FacePieceType.Red, FacePieceType.Red, FacePieceType.Red },
-                { FacePieceType.Red, FacePieceType.Red, FacePieceType.Red },
-                { FacePieceType.Red, FacePieceType.Red, FacePieceType.Red }
-            });
-            // Moves
-            a1.AddMove(new Move(LayerType.Top, RotationType.Clockwise, () => _model.Rotate90Degrees(LayerType.Top, RotationType.Clockwise)));
-            a1.AddMove(new Move(LayerType.Top, RotationType.Clockwise, () => _model.Rotate90Degrees(LayerType.Top, RotationType.Clockwise)));
-            a1.AddMove(new Move(LayerType.Top, RotationType.Clockwise, () => _model.Rotate90Degrees(LayerType.Top, RotationType.Clockwise)));
-            a1.AddMove(new Move(LayerType.Top, RotationType.Clockwise, () => _model.Rotate90Degrees(LayerType.Top, RotationType.Clockwise)));
-            _algorithms.Add(a1);
+            foreach (var stateItem in state)
+            {
+                var face = _model.GetFace(stateItem.Key);
+                for (int i = 0; i < 3; i++)
+                {
+                    for (int j = 0; j < 3; j++)
+                    {
+                        var type = stateItem.Value[i, j];
+                        if (!type.HasValue)
+                            continue;
+                        var faceToCompare = _model.GetFace(type.Value);
+                        var faceToCompareColor = faceToCompare.PieceType;
+                        result.Add(face[i, j] == faceToCompareColor);
+                    }
+                }
+            }
 
-            #endregion
+            return result.Count(s => s) == state.Count;
+        }
+
+        private bool IsCrossReady()
+        {
+            var face = _model.GetFace(FaceType.Up);
+            return face[0, 1] == FacePieceType.White && face[1, 0] == FacePieceType.White && face[1, 1] == FacePieceType.White && face[1, 2] == FacePieceType.White && face[2, 1] == FacePieceType.White;
         }
 
         private void BuildCross()
         {
             var crossAlgorithms = _algorithms.Where(a => a.Phase == Phase.FirstCross);
 
-            var cubiesInPlace = new List<Cubie>();
-
-            var topCollor = _model.Faces.FirstOrDefault(f => f.Type == FaceType.Top)?.Field[1, 1];
-            if (topCollor == null)
-                throw new Exception("");
-
-            var frontCollor = _model.Faces.FirstOrDefault(f => f.Type == FaceType.Front)?.Field[1, 1];
-            if (frontCollor == null)
-                throw new Exception("");
-
-            var backCollor = _model.Faces.FirstOrDefault(f => f.Type == FaceType.Back)?.Field[1, 1];
-            if (backCollor == null)
-                throw new Exception("");
-
-            var leftCollor = _model.Faces.FirstOrDefault(f => f.Type == FaceType.Left)?.Field[1, 1];
-            if (leftCollor == null)
-                throw new Exception("");
-
-            var rigthCollor = _model.Faces.FirstOrDefault(f => f.Type == FaceType.Right)?.Field[1, 1];
-            if (rigthCollor == null)
-                throw new Exception("");
-
-            while (true)
+            while (!IsCrossReady())
             {
-                var cubies = _model.GetCubies();
-                var cubieWithTopColor = cubies.FirstOrDefault(c => !cubies.Contains(c) && c.Pieces.Any(p => p.CurrentType.HasValue && p.CurrentType.Value == topCollor));
-                if (!cubieWithTopColor.Equals(default(Cubie)))
+                var alg = crossAlgorithms.FirstOrDefault(a => DoesStateMatch(a.StateFrom));
+                if (alg == null)
                 {
-                    if (cubieWithTopColor.Layers.Contains(LayerType.Front) && cubieWithTopColor.Layers.Contains(LayerType.Top))
-                    {
-                        var topPiece = cubieWithTopColor.Pieces.FirstOrDefault(p => p.Face == FaceType.Top);
-                        if (topPiece.CurrentType.Value != topCollor)
-                        {
-                            if (topPiece.CurrentType.Value == frontCollor)
-                            {
-                                _model.Rotate90Degrees(LayerType.Front, RotationType.CounterClockwise);
-                                _model.Rotate90Degrees(LayerType.Left, RotationType.CounterClockwise);
-                                _model.Rotate90Degrees(LayerType.Top, RotationType.CounterClockwise);
-                                _model.Rotate90Degrees(LayerType.Left, RotationType.Clockwise);
-                            }
-                            else if (topPiece.CurrentType.Value == leftCollor)
-                            {
-                                _model.Rotate90Degrees(LayerType.Front, RotationType.CounterClockwise);
-                                _model.Rotate90Degrees(LayerType.Left, RotationType.CounterClockwise);
-                                _model.Rotate90Degrees(LayerType.Top, RotationType.CounterClockwise);
-                                _model.Rotate90Degrees(LayerType.Left, RotationType.Clockwise);
-                            }
-                            else if (topPiece.CurrentType.Value == backCollor)
-                            {
-                                _model.Rotate90Degrees(LayerType.Front, RotationType.CounterClockwise);
-                                _model.Rotate90Degrees(LayerType.Left, RotationType.CounterClockwise);
-                                _model.Rotate90Degrees(LayerType.Top, RotationType.CounterClockwise);
-                                _model.Rotate90Degrees(LayerType.Left, RotationType.Clockwise);
-                            }
-                            else if (topPiece.CurrentType.Value == rigthCollor)
-                            {
-                                _model.Rotate90Degrees(LayerType.Front, RotationType.CounterClockwise);
-                                _model.Rotate90Degrees(LayerType.Left, RotationType.CounterClockwise);
-                                _model.Rotate90Degrees(LayerType.Top, RotationType.CounterClockwise);
-                                _model.Rotate90Degrees(LayerType.Left, RotationType.Clockwise);
-                            }
-                        }
-
-                        cubiesInPlace.Add(cubieWithTopColor);
-                    }
+                    // Rotate cube
+                    continue;
                 }
+                foreach (var move in alg.Moves)
+                    _model.Rotate90Degrees(move.Layer, move.Rotation);
             }
+        }
+
+        public void Solve()
+        {
+            BuildCross();
         }
     }
 }

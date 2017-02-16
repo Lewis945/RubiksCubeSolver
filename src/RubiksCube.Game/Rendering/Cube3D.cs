@@ -14,8 +14,8 @@ namespace RubiksCube.Game.Rendering
         public List<LayerType> Positions { get; set; }
 
         private Dictionary<FacePosition, FaceType> _faceMappings = new Dictionary<FacePosition, FaceType> {
-            { FacePosition.Top, FaceType.Top },
-            { FacePosition.Bottom, FaceType.Bottom },
+            { FacePosition.Top, FaceType.Up },
+            { FacePosition.Bottom, FaceType.Down },
             { FacePosition.Front, FaceType.Front },
             { FacePosition.Back, FaceType.Back },
             { FacePosition.Left, FaceType.Left },

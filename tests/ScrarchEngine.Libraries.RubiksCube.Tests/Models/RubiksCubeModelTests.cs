@@ -45,8 +45,8 @@ namespace ScrarchEngine.Libraries.RubiksCube.Tests.Models
             Assert.AreEqual(FaceType.Left, _cube.Faces[1].Type);
             Assert.AreEqual(FaceType.Back, _cube.Faces[2].Type);
             Assert.AreEqual(FaceType.Right, _cube.Faces[3].Type);
-            Assert.AreEqual(FaceType.Top, _cube.Faces[4].Type);
-            Assert.AreEqual(FaceType.Bottom, _cube.Faces[5].Type);
+            Assert.AreEqual(FaceType.Up, _cube.Faces[4].Type);
+            Assert.AreEqual(FaceType.Down, _cube.Faces[5].Type);
 
             foreach (var face in _cube.Faces)
             {
@@ -262,9 +262,9 @@ namespace ScrarchEngine.Libraries.RubiksCube.Tests.Models
             _cube.Rotate90Degrees(LayerType.Left, RotationType.Clockwise);
 
             var frontFace = _cube.GetFace(FaceType.Front);
-            var topFace = _cube.GetFace(FaceType.Top);
+            var topFace = _cube.GetFace(FaceType.Up);
             var backFace = _cube.GetFace(FaceType.Back);
-            var bottomFace = _cube.GetFace(FaceType.Bottom);
+            var bottomFace = _cube.GetFace(FaceType.Down);
 
             // rotated
             Assert.AreEqual(FacePieceType.White, frontFace[0, 0]);
@@ -293,9 +293,9 @@ namespace ScrarchEngine.Libraries.RubiksCube.Tests.Models
             _cube.Rotate90Degrees(LayerType.Left, RotationType.CounterClockwise);
 
             var frontFace = _cube.GetFace(FaceType.Front);
-            var topFace = _cube.GetFace(FaceType.Top);
+            var topFace = _cube.GetFace(FaceType.Up);
             var backFace = _cube.GetFace(FaceType.Back);
-            var bottomFace = _cube.GetFace(FaceType.Bottom);
+            var bottomFace = _cube.GetFace(FaceType.Down);
 
             // rotated
             Assert.AreEqual(FacePieceType.Yellow, frontFace[0, 0]);
@@ -328,9 +328,9 @@ namespace ScrarchEngine.Libraries.RubiksCube.Tests.Models
             _cube.Rotate90Degrees(LayerType.Right, RotationType.Clockwise);
 
             var frontFace = _cube.GetFace(FaceType.Front);
-            var topFace = _cube.GetFace(FaceType.Top);
+            var topFace = _cube.GetFace(FaceType.Up);
             var backFace = _cube.GetFace(FaceType.Back);
-            var bottomFace = _cube.GetFace(FaceType.Bottom);
+            var bottomFace = _cube.GetFace(FaceType.Down);
 
             // rotated
             Assert.AreEqual(FacePieceType.Yellow, frontFace[2, 0]);
@@ -359,9 +359,9 @@ namespace ScrarchEngine.Libraries.RubiksCube.Tests.Models
             _cube.Rotate90Degrees(LayerType.Right, RotationType.CounterClockwise);
 
             var frontFace = _cube.GetFace(FaceType.Front);
-            var topFace = _cube.GetFace(FaceType.Top);
+            var topFace = _cube.GetFace(FaceType.Up);
             var backFace = _cube.GetFace(FaceType.Back);
-            var bottomFace = _cube.GetFace(FaceType.Bottom);
+            var bottomFace = _cube.GetFace(FaceType.Down);
 
             // rotated
             Assert.AreEqual(FacePieceType.White, frontFace[2, 0]);
@@ -393,9 +393,9 @@ namespace ScrarchEngine.Libraries.RubiksCube.Tests.Models
         {
             _cube.Rotate90Degrees(LayerType.Front, RotationType.Clockwise);
 
-            var topFace = _cube.GetFace(FaceType.Top);
+            var topFace = _cube.GetFace(FaceType.Up);
             var leftFace = _cube.GetFace(FaceType.Left);
-            var bootomFace = _cube.GetFace(FaceType.Bottom);
+            var bootomFace = _cube.GetFace(FaceType.Down);
             var rightFace = _cube.GetFace(FaceType.Right);
 
             // rotated
@@ -424,9 +424,9 @@ namespace ScrarchEngine.Libraries.RubiksCube.Tests.Models
         {
             _cube.Rotate90Degrees(LayerType.Front, RotationType.CounterClockwise);
 
-            var topFace = _cube.GetFace(FaceType.Top);
+            var topFace = _cube.GetFace(FaceType.Up);
             var leftFace = _cube.GetFace(FaceType.Left);
-            var bootomFace = _cube.GetFace(FaceType.Bottom);
+            var bootomFace = _cube.GetFace(FaceType.Down);
             var rightFace = _cube.GetFace(FaceType.Right);
 
             // rotated
@@ -459,9 +459,9 @@ namespace ScrarchEngine.Libraries.RubiksCube.Tests.Models
         {
             _cube.Rotate90Degrees(LayerType.Back, RotationType.Clockwise);
 
-            var topFace = _cube.GetFace(FaceType.Top);
+            var topFace = _cube.GetFace(FaceType.Up);
             var leftFace = _cube.GetFace(FaceType.Left);
-            var bootomFace = _cube.GetFace(FaceType.Bottom);
+            var bootomFace = _cube.GetFace(FaceType.Down);
             var rightFace = _cube.GetFace(FaceType.Right);
 
             // rotated
@@ -490,9 +490,9 @@ namespace ScrarchEngine.Libraries.RubiksCube.Tests.Models
         {
             _cube.Rotate90Degrees(LayerType.Back, RotationType.CounterClockwise);
 
-            var topFace = _cube.GetFace(FaceType.Top);
+            var topFace = _cube.GetFace(FaceType.Up);
             var leftFace = _cube.GetFace(FaceType.Left);
-            var bootomFace = _cube.GetFace(FaceType.Bottom);
+            var bootomFace = _cube.GetFace(FaceType.Down);
             var rightFace = _cube.GetFace(FaceType.Right);
 
             // rotated

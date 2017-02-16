@@ -10,8 +10,8 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
             { FaceType.Left, FacePieceType.Red },
             { FaceType.Back, FacePieceType.Green },
             { FaceType.Right, FacePieceType.Orange },
-            { FaceType.Top, FacePieceType.White },
-            { FaceType.Bottom, FacePieceType.Yellow }
+            { FaceType.Up, FacePieceType.White },
+            { FaceType.Down, FacePieceType.Yellow }
         };
 
         public FacePieceType[,] Field { get; set; }
@@ -50,6 +50,8 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
 
         public FaceType Type { get; private set; }
 
+        public FacePieceType PieceType { get { return Field[1, 1]; } }
+
         public Face(FaceType type)
         {
             Type = type;
@@ -81,7 +83,7 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
         {
             var layerType = LayerType.None;
 
-            if (Type == FaceType.Top || Type == FaceType.Bottom)
+            if (Type == FaceType.Up || Type == FaceType.Down)
             {
                 if (x == 0)
                     layerType |= LayerType.Back;
@@ -102,9 +104,9 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
 
             if (y == 0)
             {
-                if (Type == FaceType.Front || Type == FaceType.Top)
+                if (Type == FaceType.Front || Type == FaceType.Up)
                     layerType |= LayerType.Left;
-                else if (Type == FaceType.Back || Type == FaceType.Bottom)
+                else if (Type == FaceType.Back || Type == FaceType.Down)
                     layerType |= LayerType.Right;
 
                 else if (Type == FaceType.Left)
@@ -114,7 +116,7 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
             }
             else if (y == 1)
             {
-                if (Type == FaceType.Front || Type == FaceType.Back || Type == FaceType.Top || Type == FaceType.Bottom)
+                if (Type == FaceType.Front || Type == FaceType.Back || Type == FaceType.Up || Type == FaceType.Down)
                     layerType |= LayerType.MiddleFromLeft;
 
                 else if (Type == FaceType.Left || Type == FaceType.Right)
@@ -122,9 +124,9 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
             }
             else if (y == 2)
             {
-                if (Type == FaceType.Front || Type == FaceType.Top)
+                if (Type == FaceType.Front || Type == FaceType.Up)
                     layerType |= LayerType.Right;
-                else if (Type == FaceType.Back || Type == FaceType.Bottom)
+                else if (Type == FaceType.Back || Type == FaceType.Down)
                     layerType |= LayerType.Left;
 
                 else if (Type == FaceType.Left)

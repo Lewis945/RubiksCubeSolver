@@ -1,59 +1,416 @@
-﻿{
-  [
-    // Demo algorithm
-    {
-      "Phase": "FirstCross",
-      "StateFrom": {
-        "Top": [
-          [ null, null, null ],
-          [ null, null, null ],
-          [ null, null, null ]
-        ],
-        "Bottom": [
-          [ null, null, null ],
-          [ null, null, null ],
-          [ null, null, null ]
-        ],
-        "Front": [
-          [ null, null, null ],
-          [ null, null, null ],
-          [ null, null, null ]
-        ],
-        "Back": [
-          [ null, null, null ],
-          [ null, null, null ],
-          [ null, null, null ]
-        ],
-        "Left": [
-          [ null, null, null ],
-          [ null, null, null ],
-          [ null, null, null ]
-        ],
-        "Right": [
-          [ null, null, null ],
-          [ null, null, null ],
-          [ null, null, null ]
-        ]
-      },
-      "Moves": "FF'TT'"
+﻿[
+  {
+    "Phase": "FirstCross",
+    "StateFrom": {
+      "Up": [
+        [ null, null, null ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ],
+      "Down": [
+        [ null, null, null ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ],
+      "Front": [
+        [ null, null, null ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ],
+      "Back": [
+        [ null, null, null ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ],
+      "Left": [
+        [ null, null, null ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ],
+      "Right": [
+        [ null, null, null ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ]
     },
-    {
-      "Phase": "FirstCross",
-      "StateFrom": {
-        "Left": [
-          [ null, null, null ],
-          [ null, null, "Front" ],
-          [ null, null, null ]
-        ],
-        // указывать вместо нуллов не цвета, а FaceType по которому можно вытащить цвет фейса в данный момент времениб ведь если флипать кубик, то расположение цветов будет менятся.
-        // имлементнуть флип кубика чтобы крутить одни и те же формулы для всех видов кубика. Формула написанная ниже работает для любых цветов ведь зависит только от ориентации.
-        "Front": [
-          [ null, null, null ],
-          [ "Top", null, null ],
-          [ null, null, null ]
-        ]
-      },
-      "Moves": "L'T'L"
-    }
-  ]
-}
+    "Moves": "FF'TT'"
+  },
+  {
+    "Name": "Up Front cubie on left|front",
+    "Phase": "FirstCross",
+    "IsFinal": true,
+    "StateFrom": {
+      "Left": [
+        [ null, null, null ],
+        [ null, null, "Up" ],
+        [ null, null, null ]
+      ],
+      "Front": [
+        [ null, null, null ],
+        [ "Front", null, null ],
+        [ null, null, null ]
+      ]
+    },
+    "Moves": "F"
+  },
+  {
+    "Name": "Up Front cubie on left|front",
+    "Phase": "FirstCross",
+    "IsFinal": true,
+    "StateFrom": {
+      "Left": [
+        [ null, null, null ],
+        [ null, null, "Front" ],
+        [ null, null, null ]
+      ],
+      "Front": [
+        [ null, null, null ],
+        [ "Up", null, null ],
+        [ null, null, null ]
+      ]
+    },
+    "Moves": "L'T'L"
+  },
+  {
+    "Name": "Up Front cubie on Up|front",
+    "Phase": "FirstCross",
+    "IsFinal": true,
+    "StateFrom": {
+      "Up": [
+        [ null, null, null ],
+        [ null, null, null ],
+        [ null, "Front", null ]
+      ],
+      "Front": [
+        [ null, "Up", null ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ]
+    },
+    "Moves": "F'L'T'LF"
+  },
+  {
+    "Name": "Up Front cubie on front|Down",
+    "Phase": "FirstCross",
+    "IsFinal": true,
+    "StateFrom": {
+      "Front": [
+        [ null, null, null ],
+        [ null, null, null ],
+        [ null, "Front", null ]
+      ],
+      "Down": [
+        [ null, "Up", null ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ]
+    },
+    "Moves": "2F"
+  },
+  {
+    "Name": "Up Front cubie on front|Down",
+    "Phase": "FirstCross",
+    "IsFinal": true,
+    "StateFrom": {
+      "Front": [
+        [ null, null, null ],
+        [ null, null, null ],
+        [ null, "Up", null ]
+      ],
+      "Down": [
+        [ null, "Front", null ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ]
+    },
+    "Moves": "LD'L'F"
+  },
+  {
+    "Name": "Up Front cubie on left|Down",
+    "Phase": "FirstCross",
+    "IsFinal": false,
+    "StateFrom": {
+      "Left": [
+        [ null, null, null ],
+        [ null, null, null ],
+        [ null, "Up", null ]
+      ],
+      "Down": [
+        [ null, null, null ],
+        [ "Front", null, null ],
+        [ null, null, null ]
+      ]
+    },
+    "Moves": "D"
+  },
+  {
+    "Name": "Up Front cubie on left|Down",
+    "Phase": "FirstCross",
+    "IsFinal": false,
+    "StateFrom": {
+      "Left": [
+        [ null, null, null ],
+        [ null, null, null ],
+        [ null, "Front", null ]
+      ],
+      "Down": [
+        [ null, null, null ],
+        [ "Up", null, null ],
+        [ null, null, null ]
+      ]
+    },
+    "Moves": "D"
+  },
+  {
+    "Name": "Up Front cubie on left|Up",
+    "Phase": "FirstCross",
+    "IsFinal": false,
+    "StateFrom": {
+      "Left": [
+        [ null, "Up", null ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ],
+      "Up": [
+        [ null, null, null ],
+        [ "Front", null, null ],
+        [ null, null, null ]
+      ]
+    },
+    "Moves": "LF"
+  },
+  {
+    "Name": "Up Front cubie on left|Up",
+    "Phase": "FirstCross",
+    "IsFinal": false,
+    "StateFrom": {
+      "Left": [
+        [ null, "Front", null ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ],
+      "Up": [
+        [ null, null, null ],
+        [ "Up", null, null ],
+        [ null, null, null ]
+      ]
+    },
+    "Moves": "LF"
+  },
+  {
+    "Name": "Up Front cubie on left|back",
+    "Phase": "FirstCross",
+    "IsFinal": false,
+    "StateFrom": {
+      "Left": [
+        [ null, null, null ],
+        [ "Up", null, null ],
+        [ null, null, null ]
+      ],
+      "Back": [
+        [ null, null, null ],
+        [ null, null, "Front" ],
+        [ null, null, null ]
+      ]
+    },
+    "Moves": "B2DB'"
+  },
+  {
+    "Name": "Up Front cubie on left|back",
+    "Phase": "FirstCross",
+    "IsFinal": false,
+    "StateFrom": {
+      "Left": [
+        [ null, null, null ],
+        [ "Front", null, null ],
+        [ null, null, null ]
+      ],
+      "Back": [
+        [ null, null, null ],
+        [ null, null, "Up" ],
+        [ null, null, null ]
+      ]
+    },
+    "Moves": "B2DB'"
+  },
+  {
+    "Name": "Up Front cubie on right|back",
+    "Phase": "FirstCross",
+    "IsFinal": false,
+    "StateFrom": {
+      "Right": [
+        [ null, null, null ],
+        [ null, null, "Up" ],
+        [ null, null, null ]
+      ],
+      "Back": [
+        [ null, null, null ],
+        [ "Front", null, null ],
+        [ null, null, null ]
+      ]
+    },
+    "Moves": "B'2DB"
+  },
+  {
+    "Name": "Up Front cubie on right|back",
+    "Phase": "FirstCross",
+    "IsFinal": false,
+    "StateFrom": {
+      "Right": [
+        [ null, null, null ],
+        [ null, null, "Front" ],
+        [ null, null, null ]
+      ],
+      "Back": [
+        [ null, null, null ],
+        [ "Up", null, null ],
+        [ null, null, null ]
+      ]
+    },
+    "Moves": "B'2DB"
+  },
+  {
+    "Name": "Up Front cubie on right|Down",
+    "Phase": "FirstCross",
+    "IsFinal": false,
+    "StateFrom": {
+      "Right": [
+        [ null, null, null ],
+        [ null, null, null ],
+        [ null, "Up", null ]
+      ],
+      "Down": [
+        [ null, null, null ],
+        [ null, null, "Front" ],
+        [ null, null, null ]
+      ]
+    },
+    "Moves": "B'"
+  },
+  {
+    "Name": "Up Front cubie on right|Down",
+    "Phase": "FirstCross",
+    "IsFinal": false,
+    "StateFrom": {
+      "Right": [
+        [ null, null, null ],
+        [ null, null, null ],
+        [ null, "Front", null ]
+      ],
+      "Down": [
+        [ null, null, null ],
+        [ null, null, "Up" ],
+        [ null, null, null ]
+      ]
+    },
+    "Moves": "B'"
+  },
+  {
+    "Name": "Up Front cubie on right|Up",
+    "Phase": "FirstCross",
+    "IsFinal": false,
+    "StateFrom": {
+      "Right": [
+        [ null, "Up", null ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ],
+      "Up": [
+        [ null, null, null ],
+        [ null, null, "Front" ],
+        [ null, null, null ]
+      ]
+    },
+    "Moves": "R'F'"
+  },
+  {
+    "Name": "Up Front cubie on right|Up",
+    "Phase": "FirstCross",
+    "IsFinal": false,
+    "StateFrom": {
+      "Right": [
+        [ null, "Front", null ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ],
+      "Up": [
+        [ null, null, null ],
+        [ null, null, "Up" ],
+        [ null, null, null ]
+      ]
+    },
+    "Moves": "R'F'"
+  },
+  {
+    "Name": "Up Front cubie on Up|back",
+    "Phase": "FirstCross",
+    "IsFinal": false,
+    "StateFrom": {
+      "Up": [
+        [ null, "Up", null ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ],
+      "Back": [
+        [ null, "Front", null ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ]
+    },
+    "Moves": "2B2D2B"
+  },
+  {
+    "Name": "Up Front cubie on Up|back",
+    "Phase": "FirstCross",
+    "IsFinal": false,
+    "StateFrom": {
+      "Up": [
+        [ null, "Front", null ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ],
+      "Back": [
+        [ null, "Up", null ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ]
+    },
+    "Moves": "2B2D2B"
+  },
+  {
+    "Name": "Up Front cubie on back|Down",
+    "Phase": "FirstCross",
+    "IsFinal": false,
+    "StateFrom": {
+      "Back": [
+        [ null, null, null ],
+        [ null, null, null ],
+        [ null, "Up", null ]
+      ],
+      "Down": [
+        [ null, null, null ],
+        [ null, null, null ],
+        [ null, "Front", null ]
+      ]
+    },
+    "Moves": "2D"
+  },
+  {
+    "Name": "Up Front cubie on back|Down",
+    "Phase": "FirstCross",
+    "IsFinal": false,
+    "StateFrom": {
+      "Back": [
+        [ null, null, null ],
+        [ null, null, null ],
+        [ null, "Front", null ]
+      ],
+      "Down": [
+        [ null, null, null ],
+        [ null, null, null ],
+        [ null, "Up", null ]
+      ]
+    },
+    "Moves": "2D"
+  }
+]

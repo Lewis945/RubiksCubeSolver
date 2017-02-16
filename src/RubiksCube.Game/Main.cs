@@ -1,5 +1,7 @@
 ﻿using ScrarchEngine.Libraries.RubiksCube.Models;
+using ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners;
 using System;
+using System.IO;
 using System.Windows.Forms;
 
 namespace RubiksCube.Game
@@ -23,10 +25,16 @@ namespace RubiksCube.Game
         {
             //rubicsCubeControl.DrawingMode = DrawingMode.Mode2D;
 
+            rubicsCubeControl.RubiksCubeModel.Shuffle();
+
+            var solver = new BeginnersSolver(rubicsCubeControl.RubiksCubeModel, (f) => File.ReadAllText(f));
+
+            //solver.Solve();
+
             System.Threading.Tasks.Task.Run(() =>
             {
                 //delay:2000
-                rubicsCubeControl.RubiksCubeModel.Shuffle();
+                //rubicsCubeControl.RubiksCubeModel.Shuffle();
 
                 //rubicsCubeControl.RubiksCubeModel.Rotate90Degrees(LayerType.Top, RotationType.Clockwise);
                 //System.Threading.Thread.Sleep(2000);

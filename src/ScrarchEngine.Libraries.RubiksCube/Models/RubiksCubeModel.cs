@@ -11,16 +11,16 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
         #region Private Static Fields
 
         private static FaceType[] _topBottomClockwiseOrder = new FaceType[] { FaceType.Front, FaceType.Left, FaceType.Back, FaceType.Right };
-        private static FaceType[] _frontBackClockwiseOrder = new FaceType[] { FaceType.Top, FaceType.Right, FaceType.Bottom, FaceType.Left };
-        private static FaceType[] _leftRightClockwiseOrder = new FaceType[] { FaceType.Front, FaceType.Top, FaceType.Back, FaceType.Bottom };
+        private static FaceType[] _frontBackClockwiseOrder = new FaceType[] { FaceType.Up, FaceType.Right, FaceType.Down, FaceType.Left };
+        private static FaceType[] _leftRightClockwiseOrder = new FaceType[] { FaceType.Front, FaceType.Up, FaceType.Back, FaceType.Down };
 
         private static Dictionary<LayerType, FaceType> _layerFaceMap = new Dictionary<LayerType, FaceType> {
             { LayerType.Front, FaceType.Front },
             { LayerType.Left, FaceType.Left },
             { LayerType.Back, FaceType.Back },
             { LayerType.Right, FaceType.Right },
-            { LayerType.Top, FaceType.Top },
-            { LayerType.Bottom, FaceType.Bottom }
+            { LayerType.Top, FaceType.Up },
+            { LayerType.Bottom, FaceType.Down }
         };
 
         private static Dictionary<FaceType, LayerType> _faceLayerMap = new Dictionary<FaceType, LayerType> {
@@ -28,50 +28,50 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
             { FaceType.Left, LayerType.Left },
             { FaceType.Back, LayerType.Back },
             { FaceType.Right, LayerType.Right },
-            { FaceType.Top, LayerType.Top },
-            { FaceType.Bottom, LayerType.Bottom }
+            { FaceType.Up, LayerType.Top },
+            { FaceType.Down, LayerType.Bottom }
         };
 
         private static List<List<FacePiece>> _cubieMappings = new List<List<FacePiece>> {
-           new List<FacePiece> { new FacePiece(FaceType.Front, 0), new FacePiece(FaceType.Left, 2), new FacePiece(FaceType.Top, 6) },
-           new List<FacePiece> { new FacePiece(FaceType.Front, 1), new FacePiece(FaceType.Top, 7) },
-           new List<FacePiece> { new FacePiece(FaceType.Front, 2), new FacePiece(FaceType.Right, 0), new FacePiece(FaceType.Top, 8) },
+           new List<FacePiece> { new FacePiece(FaceType.Front, 0), new FacePiece(FaceType.Left, 2), new FacePiece(FaceType.Up, 6) },
+           new List<FacePiece> { new FacePiece(FaceType.Front, 1), new FacePiece(FaceType.Up, 7) },
+           new List<FacePiece> { new FacePiece(FaceType.Front, 2), new FacePiece(FaceType.Right, 0), new FacePiece(FaceType.Up, 8) },
            new List<FacePiece> { new FacePiece(FaceType.Front, 3), new FacePiece(FaceType.Left, 5) },
            new List<FacePiece> { new FacePiece(FaceType.Front, 4) },
            new List<FacePiece> { new FacePiece(FaceType.Front, 5), new FacePiece(FaceType.Right, 3) },
-           new List<FacePiece> { new FacePiece(FaceType.Front, 6), new FacePiece(FaceType.Left, 8), new FacePiece(FaceType.Bottom, 0) },
-           new List<FacePiece> { new FacePiece(FaceType.Front, 7), new FacePiece(FaceType.Bottom, 1) },
-           new List<FacePiece> { new FacePiece(FaceType.Front, 8), new FacePiece(FaceType.Right, 6), new FacePiece(FaceType.Bottom, 2) },
+           new List<FacePiece> { new FacePiece(FaceType.Front, 6), new FacePiece(FaceType.Left, 8), new FacePiece(FaceType.Down, 0) },
+           new List<FacePiece> { new FacePiece(FaceType.Front, 7), new FacePiece(FaceType.Down, 1) },
+           new List<FacePiece> { new FacePiece(FaceType.Front, 8), new FacePiece(FaceType.Right, 6), new FacePiece(FaceType.Down, 2) },
 
-           new List<FacePiece> { new FacePiece(FaceType.Back, 0), new FacePiece(FaceType.Right, 2), new FacePiece(FaceType.Top, 2) },
-           new List<FacePiece> { new FacePiece(FaceType.Back, 1), new FacePiece(FaceType.Top, 1) },
-           new List<FacePiece> { new FacePiece(FaceType.Back, 2), new FacePiece(FaceType.Left, 0), new FacePiece(FaceType.Top, 0) },
+           new List<FacePiece> { new FacePiece(FaceType.Back, 0), new FacePiece(FaceType.Right, 2), new FacePiece(FaceType.Up, 2) },
+           new List<FacePiece> { new FacePiece(FaceType.Back, 1), new FacePiece(FaceType.Up, 1) },
+           new List<FacePiece> { new FacePiece(FaceType.Back, 2), new FacePiece(FaceType.Left, 0), new FacePiece(FaceType.Up, 0) },
            new List<FacePiece> { new FacePiece(FaceType.Back, 3), new FacePiece(FaceType.Right, 5) },
            new List<FacePiece> { new FacePiece(FaceType.Back, 4) },
            new List<FacePiece> { new FacePiece(FaceType.Back, 5), new FacePiece(FaceType.Left, 3) },
-           new List<FacePiece> { new FacePiece(FaceType.Back, 6), new FacePiece(FaceType.Right, 8), new FacePiece(FaceType.Bottom, 8) },
-           new List<FacePiece> { new FacePiece(FaceType.Back, 7), new FacePiece(FaceType.Bottom, 7) },
-           new List<FacePiece> { new FacePiece(FaceType.Back, 8), new FacePiece(FaceType.Left, 6), new FacePiece(FaceType.Bottom, 6) },
+           new List<FacePiece> { new FacePiece(FaceType.Back, 6), new FacePiece(FaceType.Right, 8), new FacePiece(FaceType.Down, 8) },
+           new List<FacePiece> { new FacePiece(FaceType.Back, 7), new FacePiece(FaceType.Down, 7) },
+           new List<FacePiece> { new FacePiece(FaceType.Back, 8), new FacePiece(FaceType.Left, 6), new FacePiece(FaceType.Down, 6) },
 
-           new List<FacePiece> { new FacePiece(FaceType.Top, 4) },
-           new List<FacePiece> { new FacePiece(FaceType.Bottom, 4) },
+           new List<FacePiece> { new FacePiece(FaceType.Up, 4) },
+           new List<FacePiece> { new FacePiece(FaceType.Down, 4) },
            new List<FacePiece> { new FacePiece(FaceType.Left, 4) },
            new List<FacePiece> { new FacePiece(FaceType.Right, 4) },
 
-           new List<FacePiece> { new FacePiece(FaceType.Top, 5), new FacePiece(FaceType.Right, 1) },
-           new List<FacePiece> { new FacePiece(FaceType.Top, 3), new FacePiece(FaceType.Left, 1) },
-           new List<FacePiece> { new FacePiece(FaceType.Bottom, 5), new FacePiece(FaceType.Right, 7) },
-           new List<FacePiece> { new FacePiece(FaceType.Bottom, 3), new FacePiece(FaceType.Left, 7) }
+           new List<FacePiece> { new FacePiece(FaceType.Up, 5), new FacePiece(FaceType.Right, 1) },
+           new List<FacePiece> { new FacePiece(FaceType.Up, 3), new FacePiece(FaceType.Left, 1) },
+           new List<FacePiece> { new FacePiece(FaceType.Down, 5), new FacePiece(FaceType.Right, 7) },
+           new List<FacePiece> { new FacePiece(FaceType.Down, 3), new FacePiece(FaceType.Left, 7) }
         };
 
         private static Dictionary<LayerType, RotationIndex[]> _facesNearestLayers =
             new Dictionary<LayerType, RotationIndex[]>
             {
-                { LayerType.Front,  new RotationIndex[] { new RotationIndex(FaceType.Top, 2, false), new RotationIndex(FaceType.Right, 0, true), new RotationIndex(FaceType.Bottom, 0, false), new RotationIndex(FaceType.Left, 2, true) } },
-                { LayerType.Back,  new RotationIndex[] { new RotationIndex(FaceType.Top, 0, false), new RotationIndex(FaceType.Left, 0, true), new RotationIndex(FaceType.Bottom, 2, false), new RotationIndex(FaceType.Right, 2, true) } },
+                { LayerType.Front,  new RotationIndex[] { new RotationIndex(FaceType.Up, 2, false), new RotationIndex(FaceType.Right, 0, true), new RotationIndex(FaceType.Down, 0, false), new RotationIndex(FaceType.Left, 2, true) } },
+                { LayerType.Back,  new RotationIndex[] { new RotationIndex(FaceType.Up, 0, false), new RotationIndex(FaceType.Left, 0, true), new RotationIndex(FaceType.Down, 2, false), new RotationIndex(FaceType.Right, 2, true) } },
 
-                { LayerType.Left, new RotationIndex[] { new RotationIndex(FaceType.Front, 0, true), new RotationIndex(FaceType.Bottom, 0, true), new RotationIndex(FaceType.Back, 2, true), new RotationIndex(FaceType.Top, 0, true) } },
-                { LayerType.Right, new RotationIndex[] { new RotationIndex(FaceType.Front, 2, true), new RotationIndex(FaceType.Top, 2, true), new RotationIndex(FaceType.Back, 0, true), new RotationIndex(FaceType.Bottom, 2, true) } },
+                { LayerType.Left, new RotationIndex[] { new RotationIndex(FaceType.Front, 0, true), new RotationIndex(FaceType.Down, 0, true), new RotationIndex(FaceType.Back, 2, true), new RotationIndex(FaceType.Up, 0, true) } },
+                { LayerType.Right, new RotationIndex[] { new RotationIndex(FaceType.Front, 2, true), new RotationIndex(FaceType.Up, 2, true), new RotationIndex(FaceType.Back, 0, true), new RotationIndex(FaceType.Down, 2, true) } },
 
                 { LayerType.Top, new RotationIndex[] { new RotationIndex(FaceType.Front, 0, false), new RotationIndex(FaceType.Left, 0, false), new RotationIndex(FaceType.Back, 0, false), new RotationIndex(FaceType.Right, 0, false) } },
                 { LayerType.Bottom, new RotationIndex[] {new RotationIndex(FaceType.Front, 2, false), new RotationIndex(FaceType.Right, 2, false), new RotationIndex(FaceType.Back, 2, false), new RotationIndex(FaceType.Left, 2, false) } }
@@ -99,8 +99,8 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
                 new Face(FaceType.Left),
                 new Face(FaceType.Back),
                 new Face(FaceType.Right),
-                new Face(FaceType.Top),
-                new Face(FaceType.Bottom)
+                new Face(FaceType.Up),
+                new Face(FaceType.Down)
             })
         {
             //              | 0 | 1 | 2 | 
@@ -181,7 +181,7 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
 
                     layers.Add(_faceLayerMap[face.Type]);
 
-                    if (face.Type == FaceType.Top || face.Type == FaceType.Bottom)
+                    if (face.Type == FaceType.Up || face.Type == FaceType.Down)
                     {
                         if (piece.Index == 1 || piece.Index == 4 || piece.Index == 7)
                             layers.Add(LayerType.MiddleFromLeft);
