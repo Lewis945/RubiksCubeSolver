@@ -11,9 +11,6 @@ namespace RubiksCube.Game
         public Main()
         {
             InitializeComponent();
-
-            // Написать маппинг всех индексов кусочков для каждого фейса
-            // по-сути, перечислить все 27 кубиков и указать какие индексы каких фейсов в них входят!
         }
 
         private void radioButton3dCube_CheckedChanged(object sender, EventArgs e)
@@ -25,10 +22,8 @@ namespace RubiksCube.Game
         {
             //rubicsCubeControl.DrawingMode = DrawingMode.Mode2D;
 
-            rubicsCubeControl.RubiksCubeModel.Shuffle();
-
-            var solver = new BeginnersSolver(rubicsCubeControl.RubiksCubeModel, (f) => File.ReadAllText(f));
-
+            //rubicsCubeControl.RubiksCubeModel.Shuffle();
+            //var solver = new BeginnersSolver(rubicsCubeControl.RubiksCubeModel, (f) => File.ReadAllText(f));
             //solver.Solve();
 
             System.Threading.Tasks.Task.Run(() =>

@@ -20,31 +20,31 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
         {
             get
             {
-                int x = 0;
-                int y = 0;
-                GetIndecies(index, out x, out y);
+                int i = 0;
+                int j = 0;
+                GetIndecies(index, out i, out j);
 
-                return Field[x, y];
+                return Field[i, j];
             }
             set
             {
-                int x = 0;
-                int y = 0;
-                GetIndecies(index, out x, out y);
+                int i = 0;
+                int j = 0;
+                GetIndecies(index, out i, out j);
 
-                Field[x, y] = value;
+                Field[i, j] = value;
             }
         }
 
-        public FacePieceType this[int x, int y]
+        public FacePieceType this[int i, int j]
         {
             get
             {
-                return Field[x, y];
+                return Field[i, j];
             }
             set
             {
-                Field[x, y] = value;
+                Field[i, j] = value;
             }
         }
 
@@ -72,11 +72,11 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
 
         public LayerType GetLayer(int index)
         {
-            int x = 0;
-            int y = 0;
-            GetIndecies(index, out x, out y);
+            int i = 0;
+            int j = 0;
+            GetIndecies(index, out i, out j);
 
-            return GetLayer(x, y);
+            return GetLayer(i, j);
         }
 
         public LayerType GetLayer(int x, int y)
@@ -151,24 +151,24 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
             return Field;
         }
 
-        private void GetIndecies(int index, out int x, out int y)
+        private void GetIndecies(int index, out int i, out int j)
         {
-            x = 0;
-            y = 0;
+            i = 0;
+            j = 0;
 
             if (index > 0 && index < 3)
             {
-                x = index;
+                j = index;
             }
             else if (index > 2 && index < 6)
             {
-                y = 1;
-                x = index - 3;
+                i = 1;
+                j = index - 3;
             }
             else if (index > 5 && index < 9)
             {
-                y = 2;
-                x = index - 6;
+                i = 2;
+                j = index - 6;
             }
         }
     }

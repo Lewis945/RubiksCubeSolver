@@ -67,14 +67,14 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
         private static Dictionary<LayerType, RotationIndex[]> _facesNearestLayers =
             new Dictionary<LayerType, RotationIndex[]>
             {
-                { LayerType.Front,  new RotationIndex[] { new RotationIndex(FaceType.Up, 2, false), new RotationIndex(FaceType.Right, 0, true), new RotationIndex(FaceType.Down, 0, false), new RotationIndex(FaceType.Left, 2, true) } },
-                { LayerType.Back,  new RotationIndex[] { new RotationIndex(FaceType.Up, 0, false), new RotationIndex(FaceType.Left, 0, true), new RotationIndex(FaceType.Down, 2, false), new RotationIndex(FaceType.Right, 2, true) } },
+                { LayerType.Front,  new RotationIndex[] { new RotationIndex(FaceType.Up, 6,7,8), new RotationIndex(FaceType.Right, 0,3,6), new RotationIndex(FaceType.Down, 0,1,2), new RotationIndex(FaceType.Left, 2,5,8) } },
+                { LayerType.Back,  new RotationIndex[] { new RotationIndex(FaceType.Up, 0,1,2), new RotationIndex(FaceType.Left, 0,3,6), new RotationIndex(FaceType.Down, 6,7,8), new RotationIndex(FaceType.Right, 2,5,8) } },
 
-                { LayerType.Left, new RotationIndex[] { new RotationIndex(FaceType.Front, 0, true), new RotationIndex(FaceType.Down, 0, true), new RotationIndex(FaceType.Back, 2, true), new RotationIndex(FaceType.Up, 0, true) } },
-                { LayerType.Right, new RotationIndex[] { new RotationIndex(FaceType.Front, 2, true), new RotationIndex(FaceType.Up, 2, true), new RotationIndex(FaceType.Back, 0, true), new RotationIndex(FaceType.Down, 2, true) } },
+                { LayerType.Left, new RotationIndex[] { new RotationIndex(FaceType.Front, 0,3,6), new RotationIndex(FaceType.Down, 0,3,6), new RotationIndex(FaceType.Back, 2,5,8), new RotationIndex(FaceType.Up, 0,3,6) } },
+                { LayerType.Right, new RotationIndex[] { new RotationIndex(FaceType.Front, 2,5,8), new RotationIndex(FaceType.Up, 2,5,8), new RotationIndex(FaceType.Back, 0,3,6), new RotationIndex(FaceType.Down, 2,5,8) } },
 
-                { LayerType.Top, new RotationIndex[] { new RotationIndex(FaceType.Front, 0, false), new RotationIndex(FaceType.Left, 0, false), new RotationIndex(FaceType.Back, 0, false), new RotationIndex(FaceType.Right, 0, false) } },
-                { LayerType.Bottom, new RotationIndex[] {new RotationIndex(FaceType.Front, 2, false), new RotationIndex(FaceType.Right, 2, false), new RotationIndex(FaceType.Back, 2, false), new RotationIndex(FaceType.Left, 2, false) } }
+                { LayerType.Top, new RotationIndex[] { new RotationIndex(FaceType.Front, 0,1,2), new RotationIndex(FaceType.Left, 0,1,2), new RotationIndex(FaceType.Back, 0,1,2), new RotationIndex(FaceType.Right, 0,1,2) } },
+                { LayerType.Bottom, new RotationIndex[] {new RotationIndex(FaceType.Front, 6,7,8), new RotationIndex(FaceType.Right, 6, 7, 8), new RotationIndex(FaceType.Back, 6, 7, 8), new RotationIndex(FaceType.Left, 6, 7, 8) } }
             };
 
         #endregion
@@ -257,55 +257,29 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
                 var face = faces[i % faces.Length];
                 var rotationItem = rotationOrder[i % faces.Length];
 
-                if (rotationItem.IsX)
+                var y1 = face[rotationItem.Indecies[0]];
+                var y2 = face[rotationItem.Indecies[1]];
+                var y3 = face[rotationItem.Indecies[2]];
+
+                if (i == 0)
                 {
-                    var y1 = face[rotationItem.Index, 0];
-                    var y2 = face[rotationItem.Index, 1];
-                    var y3 = face[rotationItem.Index, 2];
-
-                    if (i == 0)
-                    {
-                        prev1 = y1;
-                        prev2 = y2;
-                        prev3 = y3;
-                    }
-                    else
-                    {
-                        face[rotationItem.Index, 0] = prev1.Value;
-                        face[rotationItem.Index, 1] = prev2.Value;
-                        face[rotationItem.Index, 2] = prev3.Value;
-
-                        prev1 = y1;
-                        prev2 = y2;
-                        prev3 = y3;
-                    }
+                    prev1 = y1;
+                    prev2 = y2;
+                    prev3 = y3;
                 }
                 else
                 {
-                    var x1 = face[0, rotationItem.Index];
-                    var x2 = face[1, rotationItem.Index];
-                    var x3 = face[2, rotationItem.Index];
+                    face[rotationItem.Indecies[0]] = prev1.Value;
+                    face[rotationItem.Indecies[1]] = prev2.Value;
+                    face[rotationItem.Indecies[2]] = prev3.Value;
 
-                    if (i == 0)
-                    {
-                        prev1 = x1;
-                        prev2 = x2;
-                        prev3 = x3;
-                    }
-                    else
-                    {
-                        face[0, rotationItem.Index] = prev1.Value;
-                        face[1, rotationItem.Index] = prev2.Value;
-                        face[2, rotationItem.Index] = prev3.Value;
-
-                        prev1 = x1;
-                        prev2 = x2;
-                        prev3 = x3;
-                    }
+                    prev1 = y1;
+                    prev2 = y2;
+                    prev3 = y3;
                 }
             }
         }
-
-        #endregion
     }
+
+    #endregion
 }

@@ -16,10 +16,16 @@ namespace ScrarchEngine.Libraries.RubiksCube.Tests.Models
                 { 6, 7, 8 }
             };
 
+           var rotatedArr = new int[,]
+           {
+                { 6, 3, 0 },
+                { 7, 4, 1 },
+                { 8, 5, 2 }
+           };
+
             var rotated = Utilities.RotateMatrixClockwise(arr);
 
-            Assert.AreEqual(arr[0, 0], rotated[0, 2]);
-            Assert.AreEqual(arr[2, 0], rotated[0, 0]);
+            CollectionAssert.AreEqual(rotatedArr, rotated);
         }
 
         [Test]
@@ -32,10 +38,16 @@ namespace ScrarchEngine.Libraries.RubiksCube.Tests.Models
                 { 6, 7, 8 }
             };
 
+           var rotatedArr = new int[,]
+           {
+                { 2, 5, 8 },
+                { 1, 4, 7 },
+                { 0, 3, 6 }
+           };
+
             var rotated = Utilities.RotateMatrixCounterClockwise(arr);
 
-            Assert.AreEqual(arr[0, 0], rotated[2, 0]);
-            Assert.AreEqual(arr[2, 0], rotated[2, 2]);
+            CollectionAssert.AreEqual(rotatedArr, rotated);
         }
     }
 }
