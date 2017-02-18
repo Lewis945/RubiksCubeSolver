@@ -54,26 +54,41 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
             return face[0, 1] == FacePieceType.White && face[1, 0] == FacePieceType.White && face[1, 1] == FacePieceType.White && face[1, 2] == FacePieceType.White && face[2, 1] == FacePieceType.White;
         }
 
-        private void BuildCross()
+        public List<MoveAlgorithm> BuildCross()
         {
-            var crossAlgorithms = _algorithms.Where(a => a.Phase == Phase.FirstCross);
+            var solution = new List<MoveAlgorithm>();
+
+            var crossAlgorithms = _algorithms.Where(a => a.Phase == Phase.FirstCross).ToList();
 
             while (!IsCrossReady())
             {
                 var alg = crossAlgorithms.FirstOrDefault(a => DoesStateMatch(a.StateFrom));
                 if (alg == null)
                 {
-                    // Rotate cube
+                    // flip cube
                     continue;
                 }
+
+                solution.Add(alg);
                 foreach (var move in alg.Moves)
                     _model.Rotate90Degrees(move.Layer, move.Rotation);
+
+                if (alg.IsFinal)
+                {
+                    // flip cube
+                }
             }
+
+            return solution;
         }
 
-        public void Solve()
+        public List<MoveAlgorithm> Solve()
         {
-            BuildCross();
+            var solution = new List<MoveAlgorithm>();
+
+            solution.AddRange(BuildCross());
+
+            return solution;
         }
     }
 }

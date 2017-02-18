@@ -24,10 +24,16 @@ namespace RubiksCube.Game
 
             //rubicsCubeControl.RubiksCubeModel.Shuffle();
             //var solver = new BeginnersSolver(rubicsCubeControl.RubiksCubeModel, (f) => File.ReadAllText(f));
-            //solver.Solve();
+
+            //rubicsCubeControl.RubiksCubeModel.Rotate90Degrees(LayerType.Top, RotationType.Clockwise);
+            //rubicsCubeControl.RubiksCubeModel.Rotate90Degrees(LayerType.Bottom, RotationType.Clockwise);
+
+            //rubicsCubeControl.RubiksCubeModel.FlipCube(FlipAxis.Horizontal, RotationType.Clockwise);
 
             System.Threading.Tasks.Task.Run(() =>
             {
+                //solver.Solve();
+
                 //delay:2000
                 //rubicsCubeControl.RubiksCubeModel.Shuffle();
 

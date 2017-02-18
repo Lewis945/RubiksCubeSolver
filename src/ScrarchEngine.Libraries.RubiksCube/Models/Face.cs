@@ -151,7 +151,7 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
             return Field;
         }
 
-        private void GetIndecies(int index, out int i, out int j)
+        public static void GetIndecies(int index, out int i, out int j)
         {
             i = 0;
             j = 0;

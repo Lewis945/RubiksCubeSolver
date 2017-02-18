@@ -137,6 +137,15 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
             return face;
         }
 
+        public void SetFaceColors(FaceType type, FacePieceType[,] colors)
+        {
+            var face = GetFace(type);
+            int n = face.Field.GetLength(0);
+            for (int i = 0; i < n; i++)
+                for (int j = 0; j < n; j++)
+                    face[i, j] = colors[i, j];
+        }
+
         public void Rotate90Degrees(LayerType layer, RotationType direction)
         {
             // rotate face component of a layer
@@ -147,6 +156,71 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
             var rotationOrder = direction == RotationType.Clockwise ? _facesNearestLayers[layer] : _facesNearestLayers[layer].Reverse().ToArray();
 
             Rotate90NearestLayers(rotationOrder, layer);
+        }
+
+        public void FlipCube(FlipAxis axis, RotationType direction)
+        {
+            RotationIndex[] rotationOrder;
+
+            if (axis == FlipAxis.Horizontal)
+            {
+                rotationOrder = direction == RotationType.Clockwise ? _facesNearestLayers[LayerType.Right] : _facesNearestLayers[LayerType.Right].Reverse().ToArray();
+                GetFace(FaceType.Right).Rotate90Degrees(direction);
+                GetFace(FaceType.Left).Rotate90Degrees(direction == RotationType.Clockwise ? RotationType.CounterClockwise : RotationType.Clockwise);
+            }
+            else
+            {
+                rotationOrder = direction == RotationType.Clockwise ? _facesNearestLayers[LayerType.Top] : _facesNearestLayers[LayerType.Top].Reverse().ToArray();
+                GetFace(FaceType.Up).Rotate90Degrees(direction);
+                GetFace(FaceType.Down).Rotate90Degrees(direction == RotationType.Clockwise ? RotationType.CounterClockwise : RotationType.Clockwise);
+            }
+
+            var faceTypes = rotationOrder.Select(o => o.Face);
+
+            var faces = (from ft in faceTypes
+                         join f in Faces
+                         on ft equals f.Type
+                         select f).ToArray();
+
+            Face prevFace = null;
+            FacePieceType[,] prevField = null;
+
+            for (int i = 0; i <= faces.Length; i++)
+            {
+                var face = faces[i % faces.Length];
+                var rotationItem = rotationOrder[i % faces.Length];
+
+                var field = face.Field;
+
+                if (i == 0)
+                {
+                    prevFace = face;
+                    prevField = face.Field;
+                }
+                else
+                {
+                    if ((face.Type == FaceType.Back || prevFace.Type == FaceType.Back) && axis == FlipAxis.Horizontal)
+                    {
+                        var thisField = (FacePieceType[,])face.Field.Clone();
+                        for (int k = 0; k < 9; k++)
+                        {
+                            int x = 0;
+                            int y = 0;
+                            Face.GetIndecies(8 - k, out x, out y);
+
+                            face[k] = prevField[x, y];
+                        }
+                        prevField = thisField;
+                    }
+                    else
+                    {
+                        var thisField = (FacePieceType[,])face.Field.Clone();
+                        face.Field = (FacePieceType[,])prevField.Clone();
+                        prevField = thisField;
+                    }
+                    prevFace = face;
+                }
+            }
         }
 
         public Tuple<int, int> GetOpositeCoordinates(int x, int y, FaceType face)
