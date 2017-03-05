@@ -2,6 +2,7 @@
 {
     public enum Phase
     {
+        None,
         FirstCross,
         FirstLayer,
         SecondLayer,

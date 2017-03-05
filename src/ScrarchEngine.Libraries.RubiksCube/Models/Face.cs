@@ -48,9 +48,11 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
             }
         }
 
-        public FaceType Type { get; private set; }
+        public FaceType Type { get; set; }
 
         public FacePieceType PieceType { get { return Field[1, 1]; } }
+
+        internal Face() { }
 
         public Face(FaceType type)
         {

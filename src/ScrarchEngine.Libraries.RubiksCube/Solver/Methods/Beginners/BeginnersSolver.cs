@@ -17,7 +17,7 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
 
         public BeginnersSolver(RubiksCube.Models.RubiksCubeModel model, Func<string, string> getContent)
         {
-            _model = model;
+            _model = model.CloneJson<RubiksCube.Models.RubiksCubeModel>(model);
             _algorithms = JsonConvert.DeserializeObject<List<MoveAlgorithm>>(getContent(@"D:\Projects\RubiksCube\src\ScrarchEngine.Libraries.RubiksCube\Solver\Methods\Beginners\patterns.json"));
         }
 
@@ -65,7 +65,8 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
                 var alg = crossAlgorithms.FirstOrDefault(a => DoesStateMatch(a.StateFrom));
                 if (alg == null)
                 {
-                    // flip cube
+                    solution.Add(new MoveAlgorithm(FlipAxis.Vertical, RotationType.Clockwise));
+                    _model.FlipCube(FlipAxis.Vertical, RotationType.Clockwise);
                     continue;
                 }
 
@@ -75,7 +76,8 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
 
                 if (alg.IsFinal)
                 {
-                    // flip cube
+                    solution.Add(new MoveAlgorithm(FlipAxis.Vertical, RotationType.Clockwise));
+                    _model.FlipCube(FlipAxis.Vertical, RotationType.Clockwise);
                 }
             }
 

@@ -1,6 +1,6 @@
 ﻿[
   {
-    "Phase": "FirstCross",
+    "Phase": "None",
     "StateFrom": {
       "Up": [
         [ null, null, null ],
@@ -33,7 +33,7 @@
         [ null, null, null ]
       ]
     },
-    "Moves": "FF'TT'"
+    "Moves": "FF'UU'"
   },
   {
     "Name": "Up Front cubie on left|front",
@@ -69,7 +69,7 @@
         [ null, null, null ]
       ]
     },
-    "Moves": "L'T'L"
+    "Moves": "L'U'L"
   },
   {
     "Name": "Up Front cubie on Up|front",
@@ -87,7 +87,7 @@
         [ null, null, null ]
       ]
     },
-    "Moves": "F'L'T'LF"
+    "Moves": "F'L'U'LF"
   },
   {
     "Name": "Up Front cubie on front|Down",
@@ -105,7 +105,7 @@
         [ null, null, null ]
       ]
     },
-    "Moves": "2F"
+    "Moves": "F2"
   },
   {
     "Name": "Up Front cubie on front|Down",
@@ -213,7 +213,7 @@
         [ null, null, null ]
       ]
     },
-    "Moves": "B2DB'"
+    "Moves": "BD2B'"
   },
   {
     "Name": "Up Front cubie on left|back",
@@ -231,7 +231,7 @@
         [ null, null, null ]
       ]
     },
-    "Moves": "B2DB'"
+    "Moves": "BD2B'"
   },
   {
     "Name": "Up Front cubie on right|back",
@@ -249,7 +249,7 @@
         [ null, null, null ]
       ]
     },
-    "Moves": "B'2DB"
+    "Moves": "B'D2B"
   },
   {
     "Name": "Up Front cubie on right|back",
@@ -267,7 +267,7 @@
         [ null, null, null ]
       ]
     },
-    "Moves": "B'2DB"
+    "Moves": "B'D2B"
   },
   {
     "Name": "Up Front cubie on right|Down",
@@ -285,7 +285,7 @@
         [ null, null, null ]
       ]
     },
-    "Moves": "B'"
+    "Moves": "D'"
   },
   {
     "Name": "Up Front cubie on right|Down",
@@ -303,7 +303,7 @@
         [ null, null, null ]
       ]
     },
-    "Moves": "B'"
+    "Moves": "D'"
   },
   {
     "Name": "Up Front cubie on right|Up",
@@ -357,7 +357,7 @@
         [ null, null, null ]
       ]
     },
-    "Moves": "2B2D2B"
+    "Moves": "B2D2B2"
   },
   {
     "Name": "Up Front cubie on Up|back",
@@ -375,7 +375,7 @@
         [ null, null, null ]
       ]
     },
-    "Moves": "2B2D2B"
+    "Moves": "B2D2B2"
   },
   {
     "Name": "Up Front cubie on back|Down",
@@ -393,7 +393,7 @@
         [ null, "Front", null ]
       ]
     },
-    "Moves": "2D"
+    "Moves": "D2"
   },
   {
     "Name": "Up Front cubie on back|Down",
@@ -411,6 +411,6 @@
         [ null, "Up", null ]
       ]
     },
-    "Moves": "2D"
+    "Moves": "D2"
   }
 ]

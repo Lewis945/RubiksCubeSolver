@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -67,11 +68,11 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
         private static Dictionary<LayerType, RotationIndex[]> _facesNearestLayers =
             new Dictionary<LayerType, RotationIndex[]>
             {
-                { LayerType.Front,  new RotationIndex[] { new RotationIndex(FaceType.Up, 6,7,8), new RotationIndex(FaceType.Right, 0,3,6), new RotationIndex(FaceType.Down, 0,1,2), new RotationIndex(FaceType.Left, 2,5,8) } },
-                { LayerType.Back,  new RotationIndex[] { new RotationIndex(FaceType.Up, 0,1,2), new RotationIndex(FaceType.Left, 0,3,6), new RotationIndex(FaceType.Down, 6,7,8), new RotationIndex(FaceType.Right, 2,5,8) } },
+                { LayerType.Front,  new RotationIndex[] { new RotationIndex(FaceType.Up, 6,7,8), new RotationIndex(FaceType.Right, 0,3,6), new RotationIndex(FaceType.Down, 2,1,0), new RotationIndex(FaceType.Left, 8,5,2) } },
+                { LayerType.Back,  new RotationIndex[] { new RotationIndex(FaceType.Up, 0,1,2), new RotationIndex(FaceType.Left, 6,3,0), new RotationIndex(FaceType.Down, 8,7,6), new RotationIndex(FaceType.Right, 2,5,8) } },
 
-                { LayerType.Left, new RotationIndex[] { new RotationIndex(FaceType.Front, 0,3,6), new RotationIndex(FaceType.Down, 0,3,6), new RotationIndex(FaceType.Back, 2,5,8), new RotationIndex(FaceType.Up, 0,3,6) } },
-                { LayerType.Right, new RotationIndex[] { new RotationIndex(FaceType.Front, 2,5,8), new RotationIndex(FaceType.Up, 2,5,8), new RotationIndex(FaceType.Back, 0,3,6), new RotationIndex(FaceType.Down, 2,5,8) } },
+                { LayerType.Left, new RotationIndex[] { new RotationIndex(FaceType.Front, 0,3,6), new RotationIndex(FaceType.Down, 0,3,6), new RotationIndex(FaceType.Back, 8,5,2), new RotationIndex(FaceType.Up, 0,3,6) } },
+                { LayerType.Right, new RotationIndex[] { new RotationIndex(FaceType.Front, 2,5,8), new RotationIndex(FaceType.Up, 2,5,8), new RotationIndex(FaceType.Back, 6,3,0), new RotationIndex(FaceType.Down, 2,5,8) } },
 
                 { LayerType.Top, new RotationIndex[] { new RotationIndex(FaceType.Front, 0,1,2), new RotationIndex(FaceType.Left, 0,1,2), new RotationIndex(FaceType.Back, 0,1,2), new RotationIndex(FaceType.Right, 0,1,2) } },
                 { LayerType.Bottom, new RotationIndex[] {new RotationIndex(FaceType.Front, 6,7,8), new RotationIndex(FaceType.Right, 6, 7, 8), new RotationIndex(FaceType.Back, 6, 7, 8), new RotationIndex(FaceType.Left, 6, 7, 8) } }
@@ -353,7 +354,33 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
                 }
             }
         }
-    }
 
-    #endregion
+        #endregion
+
+        /// <summary>
+        /// Perform a deep Copy of the object, using Json as a serialisation method. NOTE: Private members are not cloned using this method.
+        /// </summary>
+        /// <typeparam name="T">The type of object being copied.</typeparam>
+        /// <param name="source">The object instance to copy.</param>
+        /// <returns>The copied object.</returns>
+        public T CloneJson<T>(T source)
+        {
+            // Don't serialize a null object, simply return the default for that object
+            if (ReferenceEquals(source, null))
+            {
+                return default(T);
+            }
+
+            // initialize inner objects individually
+            // for example in default constructor some list property initialized with some values,
+            // but in 'source' these items are cleaned -
+            // without ObjectCreationHandling.Replace default constructor values will be added to result
+            var deserializeSettings = new JsonSerializerSettings { ObjectCreationHandling = ObjectCreationHandling.Replace };
+
+            var str = JsonConvert.SerializeObject(source);
+            var obj = JsonConvert.DeserializeObject<T>(str, deserializeSettings);
+
+            return obj;
+        }
+    }
 }

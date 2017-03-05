@@ -34,13 +34,13 @@ namespace RubiksCube.Game
             this.radioButton3dCube = new System.Windows.Forms.RadioButton();
             this.radioButton2dCube = new System.Windows.Forms.RadioButton();
             this.groupBoxDimensions = new System.Windows.Forms.GroupBox();
+            this.nextButton = new System.Windows.Forms.Button();
             this.groupBoxDimensions.SuspendLayout();
             this.SuspendLayout();
-
             // 
             // rubicsCubeControl
             // 
-            this.rubicsCubeControl.DrawingMode = GraphicsEngine.DrawingMode.Mode3D;
+            this.rubicsCubeControl.DrawingMode = RubiksCube.Game.GraphicsEngine.DrawingMode.Mode3D;
             this.rubicsCubeControl.Location = new System.Drawing.Point(12, 12);
             this.rubicsCubeControl.MaxFps = 30D;
             this.rubicsCubeControl.Name = "rubicsCubeControl";
@@ -48,7 +48,6 @@ namespace RubiksCube.Game
             this.rubicsCubeControl.Size = new System.Drawing.Size(381, 348);
             this.rubicsCubeControl.TabIndex = 0;
             this.rubicsCubeControl.Zoom = 1D;
-
             // 
             // radioButton3dCube
             // 
@@ -86,11 +85,22 @@ namespace RubiksCube.Game
             this.groupBoxDimensions.TabStop = false;
             this.groupBoxDimensions.Text = "Dimensions";
             // 
+            // nextButton
+            // 
+            this.nextButton.Location = new System.Drawing.Point(400, 85);
+            this.nextButton.Name = "nextButton";
+            this.nextButton.Size = new System.Drawing.Size(75, 23);
+            this.nextButton.TabIndex = 4;
+            this.nextButton.Text = "Next";
+            this.nextButton.UseVisualStyleBackColor = true;
+            this.nextButton.Click += new System.EventHandler(this.nextButton_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(587, 372);
+            this.Controls.Add(this.nextButton);
             this.Controls.Add(this.groupBoxDimensions);
             this.Controls.Add(this.rubicsCubeControl);
             this.Name = "Main";
@@ -107,6 +117,7 @@ namespace RubiksCube.Game
         private System.Windows.Forms.RadioButton radioButton3dCube;
         private System.Windows.Forms.RadioButton radioButton2dCube;
         private System.Windows.Forms.GroupBox groupBoxDimensions;
+        private System.Windows.Forms.Button nextButton;
     }
 }
 

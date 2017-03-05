@@ -8,8 +8,14 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
 {
     public class MoveAlgorithm
     {
+        public string Name { get; set; }
+
         public Phase Phase { get; set; }
         public bool IsFinal { get; set; }
+
+        public bool IsFlip { get; set; }
+        public FlipAxis Axis { get; set; }
+        public RotationType RotationType { get; set; }
 
         [JsonConverter(typeof(CustomStateConverter))]
         public Dictionary<FaceType, FaceType?[,]> StateFrom { get; set; }
@@ -21,6 +27,13 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
         {
             StateFrom = new Dictionary<FaceType, FaceType?[,]>();
             Moves = new List<Move>();
+        }
+
+        public MoveAlgorithm(FlipAxis axis, RotationType type)
+        {
+            IsFlip = true;
+            Axis = axis;
+            RotationType = type;
         }
     }
 
@@ -41,80 +54,110 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
 
                 for (int i = 0; i < value.Length; i++)
                 {
-                    var moveLetter = value[i];
-                    var nextLetter = i < value.Length - 1 ? value[i + 1] : (char?)null;
+                    var moveLetter = value[i].ToString();
+                    var nextLetter = i < value.Length - 1 ? value[i + 1].ToString() : null;
 
-                    if (moveLetter == 'F')
+                    if (moveLetter == "F")
                     {
-                        if (!nextLetter.HasValue)
-                            moves.Add(new Move(LayerType.Front, RotationType.Clockwise));
-                        else if (nextLetter.Value == '\'')
+                        if (nextLetter == "\'")
+                        {
                             moves.Add(new Move(LayerType.Front, RotationType.CounterClockwise));
-                        else if (nextLetter.Value == '2')
+                            i++;
+                        }
+                        else if (nextLetter == "2")
                         {
                             moves.Add(new Move(LayerType.Front, RotationType.Clockwise));
                             moves.Add(new Move(LayerType.Front, RotationType.Clockwise));
+                            i++;
+                        }
+                        else
+                        {
+                            moves.Add(new Move(LayerType.Front, RotationType.Clockwise));
                         }
                     }
-                    else if (moveLetter == 'B')
+                    else if (moveLetter == "B")
                     {
-                        if (!nextLetter.HasValue)
-                            moves.Add(new Move(LayerType.Back, RotationType.Clockwise));
-                        else if (nextLetter.Value == '\'')
+                        if (nextLetter == "\'")
+                        {
                             moves.Add(new Move(LayerType.Back, RotationType.CounterClockwise));
-                        else if (nextLetter.Value == '2')
+                            i++;
+                        }
+                        else if (nextLetter == "2")
                         {
                             moves.Add(new Move(LayerType.Back, RotationType.Clockwise));
                             moves.Add(new Move(LayerType.Back, RotationType.Clockwise));
+                            i++;
+                        }
+                        else
+                        {
+                            moves.Add(new Move(LayerType.Back, RotationType.Clockwise));
                         }
                     }
-                    else if (moveLetter == 'U')
+                    else if (moveLetter == "U")
                     {
-                        if (!nextLetter.HasValue)
-                            moves.Add(new Move(LayerType.Top, RotationType.Clockwise));
-                        else if (nextLetter.Value == '\'')
+                        if (nextLetter == "\'")
+                        {
                             moves.Add(new Move(LayerType.Top, RotationType.CounterClockwise));
-                        else if (nextLetter.Value == '2')
+                            i++;
+                        }
+                        else if (nextLetter == "2")
                         {
                             moves.Add(new Move(LayerType.Top, RotationType.Clockwise));
                             moves.Add(new Move(LayerType.Top, RotationType.Clockwise));
+                            i++;
+                        }
+                        else
+                        {
+                            moves.Add(new Move(LayerType.Top, RotationType.Clockwise));
                         }
                     }
-                    else if (moveLetter == 'D')
+                    else if (moveLetter == "D")
                     {
-                        if (!nextLetter.HasValue)
-                            moves.Add(new Move(LayerType.Bottom, RotationType.Clockwise));
-                        else if (nextLetter.Value == '\'')
+                        if (nextLetter == "\'")
+                        {
                             moves.Add(new Move(LayerType.Bottom, RotationType.CounterClockwise));
-                        else if (nextLetter.Value == '2')
+                            i++;
+                        }
+                        else if (nextLetter == "2")
                         {
                             moves.Add(new Move(LayerType.Bottom, RotationType.Clockwise));
                             moves.Add(new Move(LayerType.Bottom, RotationType.Clockwise));
+                            i++;
+                        }
+                        else
+                        {
+                            moves.Add(new Move(LayerType.Bottom, RotationType.Clockwise));
                         }
                     }
-                    else if (moveLetter == 'L')
+                    else if (moveLetter == "L")
                     {
-                        if (!nextLetter.HasValue)
-                            moves.Add(new Move(LayerType.Left, RotationType.Clockwise));
-                        else if (nextLetter.Value == '\'')
+                        if (nextLetter == "\'")
+                        {
                             moves.Add(new Move(LayerType.Left, RotationType.CounterClockwise));
-                        else if (nextLetter.Value == '2')
+                            i++;
+                        }
+                        else if (nextLetter == "2")
                         {
                             moves.Add(new Move(LayerType.Left, RotationType.Clockwise));
                             moves.Add(new Move(LayerType.Left, RotationType.Clockwise));
+                            i++;
                         }
+                        else { moves.Add(new Move(LayerType.Left, RotationType.Clockwise)); }
                     }
-                    else if (moveLetter == 'R')
+                    else if (moveLetter == "R")
                     {
-                        if (!nextLetter.HasValue)
-                            moves.Add(new Move(LayerType.Right, RotationType.Clockwise));
-                        else if (nextLetter.Value == '\'')
+                        if (nextLetter == "\'")
+                        {
                             moves.Add(new Move(LayerType.Right, RotationType.CounterClockwise));
-                        else if (nextLetter.Value == '2')
+                            i++;
+                        }
+                        else if (nextLetter == "2")
                         {
                             moves.Add(new Move(LayerType.Right, RotationType.Clockwise));
                             moves.Add(new Move(LayerType.Right, RotationType.Clockwise));
+                            i++;
                         }
+                        else { moves.Add(new Move(LayerType.Right, RotationType.Clockwise)); }
                     }
                 }
 
@@ -140,15 +183,10 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
         {
             var state = new Dictionary<FaceType, FaceType?[,]>();
 
-            //FaceType face;
-            //Enum.TryParse(key, out face);
-
             var token = JToken.ReadFrom(reader);
 
             foreach (var child in token)
             {
-                var t = child;
-                
                 FaceType face;
                 Enum.TryParse(child.Path, out face);
 
@@ -156,14 +194,14 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
                 var items = vals.Children();
 
                 var faceState = new FaceType?[3, 3];
-                for (int i = 0; i < 3; i++)
-                {
-                    var row = items.Values(i);
 
+                int i = 0;
+                foreach (var item in items)
+                {
                     int j = 0;
-                    foreach (var tkn in row)
+                    foreach (var val in item.Children())
                     {
-                        var value = tkn.Value<string>();
+                        var value = val.Value<string>();
                         if (!string.IsNullOrWhiteSpace(value))
                         {
                             FaceType type;
@@ -172,13 +210,16 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
                         }
                         else
                             faceState[i, j] = null;
+
                         j++;
                     }
+
+                    i++;
                 }
 
                 state.Add(face, faceState);
             }
-            
+
             return state;
         }
 
