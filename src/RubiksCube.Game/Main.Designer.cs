@@ -30,24 +30,16 @@ namespace RubiksCube.Game
         /// </summary>
         private void InitializeComponent()
         {
-            this.rubicsCubeControl = new RubiksCubeSolver.Cube.Rendering.Controls.RubicsCubeControl();
             this.radioButton3dCube = new System.Windows.Forms.RadioButton();
             this.radioButton2dCube = new System.Windows.Forms.RadioButton();
             this.groupBoxDimensions = new System.Windows.Forms.GroupBox();
             this.nextButton = new System.Windows.Forms.Button();
+            this.solveButton = new System.Windows.Forms.Button();
+            this.rubicsCubeControl = new RubiksCubeSolver.Cube.Rendering.Controls.RubicsCubeControl();
+            this.shuffleButton = new System.Windows.Forms.Button();
+            this.resetButton = new System.Windows.Forms.Button();
             this.groupBoxDimensions.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // rubicsCubeControl
-            // 
-            this.rubicsCubeControl.DrawingMode = RubiksCube.Game.GraphicsEngine.DrawingMode.Mode3D;
-            this.rubicsCubeControl.Location = new System.Drawing.Point(12, 12);
-            this.rubicsCubeControl.MaxFps = 30D;
-            this.rubicsCubeControl.Name = "rubicsCubeControl";
-            this.rubicsCubeControl.RotationSpeed = 250;
-            this.rubicsCubeControl.Size = new System.Drawing.Size(381, 348);
-            this.rubicsCubeControl.TabIndex = 0;
-            this.rubicsCubeControl.Zoom = 1D;
             // 
             // radioButton3dCube
             // 
@@ -87,7 +79,7 @@ namespace RubiksCube.Game
             // 
             // nextButton
             // 
-            this.nextButton.Location = new System.Drawing.Point(400, 85);
+            this.nextButton.Location = new System.Drawing.Point(481, 113);
             this.nextButton.Name = "nextButton";
             this.nextButton.Size = new System.Drawing.Size(75, 23);
             this.nextButton.TabIndex = 4;
@@ -95,11 +87,55 @@ namespace RubiksCube.Game
             this.nextButton.UseVisualStyleBackColor = true;
             this.nextButton.Click += new System.EventHandler(this.nextButton_Click);
             // 
+            // solveButton
+            // 
+            this.solveButton.Location = new System.Drawing.Point(399, 113);
+            this.solveButton.Name = "solveButton";
+            this.solveButton.Size = new System.Drawing.Size(75, 23);
+            this.solveButton.TabIndex = 5;
+            this.solveButton.Text = "Solve";
+            this.solveButton.UseVisualStyleBackColor = true;
+            this.solveButton.Click += new System.EventHandler(this.solveButton_Click);
+            // 
+            // rubicsCubeControl
+            // 
+            this.rubicsCubeControl.DrawingMode = RubiksCube.Game.GraphicsEngine.DrawingMode.Mode3D;
+            this.rubicsCubeControl.Location = new System.Drawing.Point(12, 12);
+            this.rubicsCubeControl.MaxFps = 30D;
+            this.rubicsCubeControl.Name = "rubicsCubeControl";
+            this.rubicsCubeControl.RotationSpeed = 250;
+            this.rubicsCubeControl.Size = new System.Drawing.Size(381, 348);
+            this.rubicsCubeControl.TabIndex = 0;
+            this.rubicsCubeControl.Zoom = 1D;
+            // 
+            // shuffleButton
+            // 
+            this.shuffleButton.Location = new System.Drawing.Point(481, 84);
+            this.shuffleButton.Name = "shuffleButton";
+            this.shuffleButton.Size = new System.Drawing.Size(75, 23);
+            this.shuffleButton.TabIndex = 6;
+            this.shuffleButton.Text = "Shuffle";
+            this.shuffleButton.UseVisualStyleBackColor = true;
+            this.shuffleButton.Click += new System.EventHandler(this.shuffleButton_Click);
+            // 
+            // resetButton
+            // 
+            this.resetButton.Location = new System.Drawing.Point(399, 84);
+            this.resetButton.Name = "resetButton";
+            this.resetButton.Size = new System.Drawing.Size(75, 23);
+            this.resetButton.TabIndex = 7;
+            this.resetButton.Text = "Reset";
+            this.resetButton.UseVisualStyleBackColor = true;
+            this.resetButton.Click += new System.EventHandler(this.resetButton_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(587, 372);
+            this.Controls.Add(this.resetButton);
+            this.Controls.Add(this.shuffleButton);
+            this.Controls.Add(this.solveButton);
             this.Controls.Add(this.nextButton);
             this.Controls.Add(this.groupBoxDimensions);
             this.Controls.Add(this.rubicsCubeControl);
@@ -118,6 +154,9 @@ namespace RubiksCube.Game
         private System.Windows.Forms.RadioButton radioButton2dCube;
         private System.Windows.Forms.GroupBox groupBoxDimensions;
         private System.Windows.Forms.Button nextButton;
+        private System.Windows.Forms.Button solveButton;
+        private System.Windows.Forms.Button shuffleButton;
+        private System.Windows.Forms.Button resetButton;
     }
 }
 

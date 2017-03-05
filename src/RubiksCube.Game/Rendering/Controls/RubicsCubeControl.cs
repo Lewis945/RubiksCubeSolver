@@ -40,6 +40,11 @@ namespace RubiksCubeSolver.Cube.Rendering.Controls
             SetStyle(ControlStyles.UserPaint, true);
         }
 
+        public void ResetCube()
+        {
+            RubiksCubeModel = new RubiksCubeModel();
+        }
+
         public override void Render(Graphics g, IEnumerable<Face3D> frame)
         {
             bool threeD = DrawingMode == DrawingMode.Mode3D;
