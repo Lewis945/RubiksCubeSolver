@@ -412,5 +412,262 @@
       ]
     },
     "Moves": "D2"
+  },
+
+  {
+    "Name": "Up Front Right cubie on Up|Front|Right",
+    "Phase": "FirstLayer",
+    "IsFinal": false,
+    "StateFrom": {
+      "Up": [
+        [ null, null, null ],
+        [ null, null, null ],
+        [ null, null, "Front" ]
+      ],
+      "Front": [
+        [ null, null, "Right" ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ],
+      "Right": [
+        [ "Up", null, null ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ]
+    },
+    "Moves": "R'D'R"
+  },
+  {
+    "Name": "Up Front Right cubie on Up|Front|Right",
+    "Phase": "FirstLayer",
+    "IsFinal": false,
+    "StateFrom": {
+      "Up": [
+        [ null, null, null ],
+        [ null, null, null ],
+        [ null, null, "Right" ]
+      ],
+      "Front": [
+        [ null, null, "Up" ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ],
+      "Right": [
+        [ "Front", null, null ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ]
+    },
+    "Moves": "FDF'"
+  },
+
+  {
+    "Name": "Up Front Right cubie on Up|Back|Right",
+    "Phase": "FirstLayer",
+    "IsFinal": false,
+    "StateFrom": {
+      "Up": [
+        [ null, null, "Front" ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ],
+      "Back": [
+        [ "Up", null, null ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ],
+      "Right": [
+        [ null, null, "Right" ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ]
+    },
+    "Moves": "B'D'B"
+  },
+  {
+    "Name": "Up Front Right cubie on Up|Back|Right",
+    "Phase": "FirstLayer",
+    "IsFinal": false,
+    "StateFrom": {
+      "Up": [
+        [ null, null, "Up" ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ],
+      "Back": [
+        [ "Right", null, null ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ],
+      "Right": [
+        [ null, null, "Front" ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ]
+    },
+    "Moves": "B'D'B"
+  },
+  {
+    "Name": "Up Front Right cubie on Up|Back|Right",
+    "Phase": "FirstLayer",
+    "IsFinal": false,
+    "StateFrom": {
+      "Up": [
+        [ null, null, "Right" ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ],
+      "Back": [
+        [ "Front", null, null ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ],
+      "Right": [
+        [ null, null, "Up" ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ]
+    },
+    "Moves": "B'D'B"
+  },
+
+  {
+    "Name": "Up Front Right cubie on Up|Back|Left",
+    "Phase": "FirstLayer",
+    "IsFinal": false,
+    "StateFrom": {
+      "Up": [
+        [ "Up", null, null ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ],
+      "Back": [
+        [ null, null, "Front" ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ],
+      "Left": [
+        [ "Right", null, null ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ]
+    },
+    "Moves": "L'D'L"
+  },
+  {
+    "Name": "Up Front Right cubie on Up|Back|Left",
+    "Phase": "FirstLayer",
+    "IsFinal": false,
+    "StateFrom": {
+      "Up": [
+        [ "Front", null, null ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ],
+      "Back": [
+        [ null, null, "Right" ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ],
+      "Left": [
+        [ "Top", null, null ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ]
+    },
+    "Moves": "L'D'L"
+  },
+  {
+    "Name": "Up Front Right cubie on Up|Back|Left",
+    "Phase": "FirstLayer",
+    "IsFinal": false,
+    "StateFrom": {
+      "Up": [
+        [ "Right", null, null ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ],
+      "Back": [
+        [ null, null, "Up" ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ],
+      "Left": [
+        [ "Front", null, null ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ]
+    },
+    "Moves": "L'D'L"
+  },
+
+  {
+    "Name": "Up Front Right cubie on Up|Front|Left",
+    "Phase": "FirstLayer",
+    "IsFinal": false,
+    "StateFrom": {
+      "Up": [
+        [ null, null, null ],
+        [ null, null, null ],
+        [ "Up", null, null ]
+      ],
+      "Front": [
+        [ "Right", null, null ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ],
+      "Left": [
+        [ null, null, "Front" ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ]
+    },
+    "Moves": "LDL'"
+  },
+  {
+    "Name": "Up Front Right cubie on Up|Front|Left",
+    "Phase": "FirstLayer",
+    "IsFinal": false,
+    "StateFrom": {
+      "Up": [
+        [ null, null, null ],
+        [ null, null, null ],
+        [ "Front", null, null ]
+      ],
+      "Front": [
+        [ "Up", null, null ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ],
+      "Left": [
+        [ null, null, "Right" ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ]
+    },
+    "Moves": "LDL'"
+  },
+  {
+    "Name": "Up Front Right cubie on Up|Front|Left",
+    "Phase": "FirstLayer",
+    "IsFinal": false,
+    "StateFrom": {
+      "Up": [
+        [ null, null, null ],
+        [ null, null, null ],
+        [ "Right", null, null ]
+      ],
+      "Front": [
+        [ "Front", null, null ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ],
+      "Left": [
+        [ null, null, "Up" ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ]
+    },
+    "Moves": "LDL'"
   }
 ]
