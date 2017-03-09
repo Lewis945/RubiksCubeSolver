@@ -35,9 +35,10 @@ namespace RubiksCube.Game
             this.groupBoxDimensions = new System.Windows.Forms.GroupBox();
             this.nextButton = new System.Windows.Forms.Button();
             this.solveButton = new System.Windows.Forms.Button();
-            this.rubicsCubeControl = new RubiksCubeSolver.Cube.Rendering.Controls.RubicsCubeControl();
             this.shuffleButton = new System.Windows.Forms.Button();
             this.resetButton = new System.Windows.Forms.Button();
+            this.solutionListBox = new System.Windows.Forms.ListBox();
+            this.rubicsCubeControl = new RubiksCubeSolver.Cube.Rendering.Controls.RubicsCubeControl();
             this.groupBoxDimensions.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -97,17 +98,6 @@ namespace RubiksCube.Game
             this.solveButton.UseVisualStyleBackColor = true;
             this.solveButton.Click += new System.EventHandler(this.solveButton_Click);
             // 
-            // rubicsCubeControl
-            // 
-            this.rubicsCubeControl.DrawingMode = RubiksCube.Game.GraphicsEngine.DrawingMode.Mode3D;
-            this.rubicsCubeControl.Location = new System.Drawing.Point(12, 12);
-            this.rubicsCubeControl.MaxFps = 30D;
-            this.rubicsCubeControl.Name = "rubicsCubeControl";
-            this.rubicsCubeControl.RotationSpeed = 250;
-            this.rubicsCubeControl.Size = new System.Drawing.Size(381, 348);
-            this.rubicsCubeControl.TabIndex = 0;
-            this.rubicsCubeControl.Zoom = 1D;
-            // 
             // shuffleButton
             // 
             this.shuffleButton.Location = new System.Drawing.Point(481, 84);
@@ -128,11 +118,31 @@ namespace RubiksCube.Game
             this.resetButton.UseVisualStyleBackColor = true;
             this.resetButton.Click += new System.EventHandler(this.resetButton_Click);
             // 
+            // solutionListBox
+            // 
+            this.solutionListBox.FormattingEnabled = true;
+            this.solutionListBox.Location = new System.Drawing.Point(400, 143);
+            this.solutionListBox.Name = "solutionListBox";
+            this.solutionListBox.Size = new System.Drawing.Size(175, 212);
+            this.solutionListBox.TabIndex = 8;
+            // 
+            // rubicsCubeControl
+            // 
+            this.rubicsCubeControl.DrawingMode = RubiksCube.Game.GraphicsEngine.DrawingMode.Mode3D;
+            this.rubicsCubeControl.Location = new System.Drawing.Point(12, 12);
+            this.rubicsCubeControl.MaxFps = 30D;
+            this.rubicsCubeControl.Name = "rubicsCubeControl";
+            this.rubicsCubeControl.RotationSpeed = 250;
+            this.rubicsCubeControl.Size = new System.Drawing.Size(381, 348);
+            this.rubicsCubeControl.TabIndex = 0;
+            this.rubicsCubeControl.Zoom = 1D;
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(587, 372);
+            this.Controls.Add(this.solutionListBox);
             this.Controls.Add(this.resetButton);
             this.Controls.Add(this.shuffleButton);
             this.Controls.Add(this.solveButton);
@@ -157,6 +167,7 @@ namespace RubiksCube.Game
         private System.Windows.Forms.Button solveButton;
         private System.Windows.Forms.Button shuffleButton;
         private System.Windows.Forms.Button resetButton;
+        private System.Windows.Forms.ListBox solutionListBox;
     }
 }
 

@@ -3,6 +3,8 @@ using ScrarchEngine.Libraries.RubiksCube.Models;
 using System.Collections.Generic;
 using System;
 using Newtonsoft.Json.Linq;
+using System.Text;
+using System.Linq;
 
 namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
 {
@@ -35,6 +37,46 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
             Axis = axis;
             RotationType = type;
         }
+
+        private int Process(Move move, Move nextMove, int i, LayerType layer, string layerLetter, StringBuilder builder)
+        {
+            if (move.Layer == layer)
+            {
+                if (move.Rotation == RotationType.CounterClockwise)
+                    builder.Append($"{layerLetter}'");
+                else if (nextMove != null && nextMove.Layer == layer)
+                {
+                    builder.Append($"{layerLetter}2");
+                    i++;
+                }
+                else
+                    builder.Append(layerLetter);
+            }
+
+            return i;
+        }
+
+        public override string ToString()
+        {
+            var algorithm = new StringBuilder();
+            if (Moves != null)
+                for (int i = 0; i < Moves.Count; i++)
+                {
+                    var move = Moves[i];
+                    var nextMove = i < Moves.Count - 1 ? Moves[i + 1] : null;
+
+                    i = Process(move, nextMove, i, LayerType.Front, "F", algorithm);
+                    i = Process(move, nextMove, i, LayerType.Back, "B", algorithm);
+                    i = Process(move, nextMove, i, LayerType.Top, "U", algorithm);
+                    i = Process(move, nextMove, i, LayerType.Bottom, "D", algorithm);
+                    i = Process(move, nextMove, i, LayerType.Left, "L", algorithm);
+                    i = Process(move, nextMove, i, LayerType.Right, "R", algorithm);
+                }
+            else if(IsFlip)
+                algorithm.Append($"Flip {Axis.ToString()} in {RotationType.ToString()}");
+
+            return algorithm.ToString();
+        }
     }
 
     public class CustomMoveConverter : JsonConverter
@@ -42,6 +84,28 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
         public override bool CanConvert(Type objectType)
         {
             return true;
+        }
+
+        private int Process(string moveLetter, string nextMoveLetter, string layerLetter, int i, LayerType layer, List<Move> moves)
+        {
+            if (moveLetter == layerLetter)
+            {
+                if (nextMoveLetter == "\'")
+                {
+                    moves.Add(new Move(layer, RotationType.CounterClockwise));
+                    i++;
+                }
+                else if (nextMoveLetter == "2")
+                {
+                    moves.Add(new Move(layer, RotationType.Clockwise));
+                    moves.Add(new Move(layer, RotationType.Clockwise));
+                    i++;
+                }
+                else
+                    moves.Add(new Move(layer, RotationType.Clockwise));
+            }
+
+            return i;
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
@@ -57,108 +121,12 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
                     var moveLetter = value[i].ToString();
                     var nextLetter = i < value.Length - 1 ? value[i + 1].ToString() : null;
 
-                    if (moveLetter == "F")
-                    {
-                        if (nextLetter == "\'")
-                        {
-                            moves.Add(new Move(LayerType.Front, RotationType.CounterClockwise));
-                            i++;
-                        }
-                        else if (nextLetter == "2")
-                        {
-                            moves.Add(new Move(LayerType.Front, RotationType.Clockwise));
-                            moves.Add(new Move(LayerType.Front, RotationType.Clockwise));
-                            i++;
-                        }
-                        else
-                        {
-                            moves.Add(new Move(LayerType.Front, RotationType.Clockwise));
-                        }
-                    }
-                    else if (moveLetter == "B")
-                    {
-                        if (nextLetter == "\'")
-                        {
-                            moves.Add(new Move(LayerType.Back, RotationType.CounterClockwise));
-                            i++;
-                        }
-                        else if (nextLetter == "2")
-                        {
-                            moves.Add(new Move(LayerType.Back, RotationType.Clockwise));
-                            moves.Add(new Move(LayerType.Back, RotationType.Clockwise));
-                            i++;
-                        }
-                        else
-                        {
-                            moves.Add(new Move(LayerType.Back, RotationType.Clockwise));
-                        }
-                    }
-                    else if (moveLetter == "U")
-                    {
-                        if (nextLetter == "\'")
-                        {
-                            moves.Add(new Move(LayerType.Top, RotationType.CounterClockwise));
-                            i++;
-                        }
-                        else if (nextLetter == "2")
-                        {
-                            moves.Add(new Move(LayerType.Top, RotationType.Clockwise));
-                            moves.Add(new Move(LayerType.Top, RotationType.Clockwise));
-                            i++;
-                        }
-                        else
-                        {
-                            moves.Add(new Move(LayerType.Top, RotationType.Clockwise));
-                        }
-                    }
-                    else if (moveLetter == "D")
-                    {
-                        if (nextLetter == "\'")
-                        {
-                            moves.Add(new Move(LayerType.Bottom, RotationType.CounterClockwise));
-                            i++;
-                        }
-                        else if (nextLetter == "2")
-                        {
-                            moves.Add(new Move(LayerType.Bottom, RotationType.Clockwise));
-                            moves.Add(new Move(LayerType.Bottom, RotationType.Clockwise));
-                            i++;
-                        }
-                        else
-                        {
-                            moves.Add(new Move(LayerType.Bottom, RotationType.Clockwise));
-                        }
-                    }
-                    else if (moveLetter == "L")
-                    {
-                        if (nextLetter == "\'")
-                        {
-                            moves.Add(new Move(LayerType.Left, RotationType.CounterClockwise));
-                            i++;
-                        }
-                        else if (nextLetter == "2")
-                        {
-                            moves.Add(new Move(LayerType.Left, RotationType.Clockwise));
-                            moves.Add(new Move(LayerType.Left, RotationType.Clockwise));
-                            i++;
-                        }
-                        else { moves.Add(new Move(LayerType.Left, RotationType.Clockwise)); }
-                    }
-                    else if (moveLetter == "R")
-                    {
-                        if (nextLetter == "\'")
-                        {
-                            moves.Add(new Move(LayerType.Right, RotationType.CounterClockwise));
-                            i++;
-                        }
-                        else if (nextLetter == "2")
-                        {
-                            moves.Add(new Move(LayerType.Right, RotationType.Clockwise));
-                            moves.Add(new Move(LayerType.Right, RotationType.Clockwise));
-                            i++;
-                        }
-                        else { moves.Add(new Move(LayerType.Right, RotationType.Clockwise)); }
-                    }
+                    i = Process(moveLetter, nextLetter, "F", i, LayerType.Front, moves);
+                    i = Process(moveLetter, nextLetter, "B", i, LayerType.Back, moves);
+                    i = Process(moveLetter, nextLetter, "U", i, LayerType.Top, moves);
+                    i = Process(moveLetter, nextLetter, "D", i, LayerType.Bottom, moves);
+                    i = Process(moveLetter, nextLetter, "L", i, LayerType.Left, moves);
+                    i = Process(moveLetter, nextLetter, "R", i, LayerType.Right, moves);
                 }
 
                 return moves;

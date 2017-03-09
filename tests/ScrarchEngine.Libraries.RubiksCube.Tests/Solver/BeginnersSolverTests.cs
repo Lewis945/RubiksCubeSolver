@@ -60,7 +60,7 @@ namespace ScrarchEngine.Libraries.RubiksCube.Tests.Solver
         public void Solve_Cross()
         {
             var solver = new BeginnersSolver(_cube, (f) => File.ReadAllText(f));
-            var solution = solver.BuildCross();
+            var solution = solver.SolveCross();
         }
     }
 }

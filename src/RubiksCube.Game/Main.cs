@@ -63,6 +63,7 @@ namespace RubiksCube.Game
             if (alg == null)
                 return false;
 
+            solutionListBox.Items.Add(alg);
             _solution.Remove(alg);
 
             if (alg.IsFlip)

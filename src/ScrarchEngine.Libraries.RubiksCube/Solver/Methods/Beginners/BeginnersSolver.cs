@@ -11,15 +11,140 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
 {
     public class BeginnersSolver : BaseSolver
     {
-        private RubiksCube.Models.RubiksCubeModel _model;
+        #region Fields
+
+        private RubiksCubeModel _model;
 
         private List<MoveAlgorithm> _algorithms;
 
-        public BeginnersSolver(RubiksCube.Models.RubiksCubeModel model, Func<string, string> getContent)
+        #endregion
+
+        #region .ctor
+
+        public BeginnersSolver(RubiksCubeModel model, Func<string, string> getContent)
         {
-            _model = model.CloneJson<RubiksCube.Models.RubiksCubeModel>(model);
+            _model = model.CloneJson(model);
             _algorithms = JsonConvert.DeserializeObject<List<MoveAlgorithm>>(getContent(@"D:\Projects\RubiksCube\src\ScrarchEngine.Libraries.RubiksCube\Solver\Methods\Beginners\patterns.json"));
         }
+
+        #endregion
+
+        #region Public Methods
+
+        public List<MoveAlgorithm> SolveCross()
+        {
+            var solution = new List<MoveAlgorithm>();
+
+            var crossAlgorithms = _algorithms.Where(a => a.Phase == Phase.FirstCross).ToList();
+
+            while (!IsCrossReady())
+            {
+                var alg = crossAlgorithms.FirstOrDefault(a => DoesStateMatch(a.StateFrom));
+                if (alg == null)
+                {
+                    solution.Add(new MoveAlgorithm(FlipAxis.Vertical, RotationType.Clockwise));
+                    _model.FlipCube(FlipAxis.Vertical, RotationType.Clockwise);
+                    continue;
+                }
+
+                solution.Add(alg);
+                foreach (var move in alg.Moves)
+                    _model.Rotate90Degrees(move.Layer, move.Rotation);
+
+                if (alg.IsFinal)
+                {
+                    solution.Add(new MoveAlgorithm(FlipAxis.Vertical, RotationType.Clockwise));
+                    _model.FlipCube(FlipAxis.Vertical, RotationType.Clockwise);
+                }
+            }
+
+            return solution;
+        }
+
+        public List<MoveAlgorithm> SolveFirstLayer()
+        {
+            var solution = new List<MoveAlgorithm>();
+
+            var firstLayerAlgorithms = _algorithms.Where(a => a.Phase == Phase.FirstLayer).ToList();
+
+            while (!IsFirstLayerReady())
+            {
+                var alg = firstLayerAlgorithms.FirstOrDefault(a => DoesStateMatch(a.StateFrom));
+                if (alg == null)
+                {
+                    solution.Add(new MoveAlgorithm(FlipAxis.Vertical, RotationType.Clockwise));
+                    _model.FlipCube(FlipAxis.Vertical, RotationType.Clockwise);
+                    continue;
+                }
+
+                solution.Add(alg);
+                foreach (var move in alg.Moves)
+                    _model.Rotate90Degrees(move.Layer, move.Rotation);
+
+                if (alg.IsFinal)
+                {
+                    solution.Add(new MoveAlgorithm(FlipAxis.Vertical, RotationType.Clockwise));
+                    _model.FlipCube(FlipAxis.Vertical, RotationType.Clockwise);
+                }
+            }
+
+            return solution;
+        }
+
+        public List<MoveAlgorithm> SolveSecondLayer()
+        {
+            var solution = new List<MoveAlgorithm>();
+
+            solution.Add(new MoveAlgorithm(FlipAxis.Vertical, RotationType.Clockwise));
+            solution.Add(new MoveAlgorithm(FlipAxis.Vertical, RotationType.Clockwise));
+            solution.Add(new MoveAlgorithm(FlipAxis.Horizontal, RotationType.Clockwise));
+            solution.Add(new MoveAlgorithm(FlipAxis.Horizontal, RotationType.Clockwise));
+
+            _model.FlipCube(FlipAxis.Vertical, RotationType.Clockwise);
+            _model.FlipCube(FlipAxis.Vertical, RotationType.Clockwise);
+            _model.FlipCube(FlipAxis.Horizontal, RotationType.Clockwise);
+            _model.FlipCube(FlipAxis.Horizontal, RotationType.Clockwise);
+
+            var secondLayerAlgorithms = _algorithms.Where(a => a.Phase == Phase.SecondLayer).ToList();
+
+            while (!IsSecondLayerReady())
+            {
+                var alg = secondLayerAlgorithms.FirstOrDefault(a => DoesStateMatch(a.StateFrom));
+                if (alg == null)
+                {
+                    solution.Add(new MoveAlgorithm(FlipAxis.Vertical, RotationType.Clockwise));
+                    _model.FlipCube(FlipAxis.Vertical, RotationType.Clockwise);
+                    continue;
+                }
+
+                solution.Add(alg);
+                foreach (var move in alg.Moves)
+                    _model.Rotate90Degrees(move.Layer, move.Rotation);
+
+                if (alg.IsFinal)
+                {
+                    solution.Add(new MoveAlgorithm(FlipAxis.Vertical, RotationType.Clockwise));
+                    _model.FlipCube(FlipAxis.Vertical, RotationType.Clockwise);
+                }
+            }
+
+            return solution;
+        }
+
+        public List<MoveAlgorithm> Solve()
+        {
+            var solution = new List<MoveAlgorithm>();
+
+            solution.AddRange(SolveCross());
+            solution.AddRange(SolveFirstLayer());
+            solution.AddRange(SolveSecondLayer());
+
+            return solution;
+        }
+
+        #endregion
+
+        #region Private Methods
 
         private bool DoesStateMatch(Dictionary<FaceType, FaceType?[,]> state)
         {
@@ -54,43 +179,51 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
             return face[0, 1] == FacePieceType.White && face[1, 0] == FacePieceType.White && face[1, 1] == FacePieceType.White && face[1, 2] == FacePieceType.White && face[2, 1] == FacePieceType.White;
         }
 
-        public List<MoveAlgorithm> BuildCross()
+        private bool IsFirstLayerReady()
         {
-            var solution = new List<MoveAlgorithm>();
+            var upFace = _model.GetFace(FaceType.Up);
 
-            var crossAlgorithms = _algorithms.Where(a => a.Phase == Phase.FirstCross).ToList();
+            bool result = true;
+            for (int i = 0; i < 3; i++)
+                for (int j = 0; j < 3; j++)
+                    result &= upFace[i, j] == upFace.PieceType;
 
-            while (!IsCrossReady())
+            var frontFace = _model.GetFace(FaceType.Front);
+            var rightFace = _model.GetFace(FaceType.Right);
+            var backFace = _model.GetFace(FaceType.Back);
+            var leftFace = _model.GetFace(FaceType.Left);
+
+            for (int k = 0; k < 3; k++)
             {
-                var alg = crossAlgorithms.FirstOrDefault(a => DoesStateMatch(a.StateFrom));
-                if (alg == null)
-                {
-                    solution.Add(new MoveAlgorithm(FlipAxis.Vertical, RotationType.Clockwise));
-                    _model.FlipCube(FlipAxis.Vertical, RotationType.Clockwise);
-                    continue;
-                }
-
-                solution.Add(alg);
-                foreach (var move in alg.Moves)
-                    _model.Rotate90Degrees(move.Layer, move.Rotation);
-
-                if (alg.IsFinal)
-                {
-                    solution.Add(new MoveAlgorithm(FlipAxis.Vertical, RotationType.Clockwise));
-                    _model.FlipCube(FlipAxis.Vertical, RotationType.Clockwise);
-                }
+                result &= frontFace[k] == frontFace.PieceType;
+                result &= rightFace[k] == rightFace.PieceType;
+                result &= backFace[k] == backFace.PieceType;
+                result &= leftFace[k] == leftFace.PieceType;
             }
 
-            return solution;
+            return result;
         }
 
-        public List<MoveAlgorithm> Solve()
+        private bool IsSecondLayerReady()
         {
-            var solution = new List<MoveAlgorithm>();
+            bool result = true;
 
-            solution.AddRange(BuildCross());
+            var frontFace = _model.GetFace(FaceType.Front);
+            var rightFace = _model.GetFace(FaceType.Right);
+            var backFace = _model.GetFace(FaceType.Back);
+            var leftFace = _model.GetFace(FaceType.Left);
 
-            return solution;
+            for (int k = 3; k < 6; k++)
+            {
+                result &= frontFace[k] == frontFace.PieceType;
+                result &= rightFace[k] == rightFace.PieceType;
+                result &= backFace[k] == backFace.PieceType;
+                result &= leftFace[k] == leftFace.PieceType;
+            }
+
+            return result;
         }
+
+        #endregion
     }
 }
