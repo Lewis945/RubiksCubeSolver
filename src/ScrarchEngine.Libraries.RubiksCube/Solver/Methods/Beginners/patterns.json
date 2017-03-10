@@ -1211,5 +1211,79 @@
       ]
     },
     "Moves": "URUR'U'F'U'F"
+  },
+
+  {
+    "Name": "Quarter cross on Up",
+    "Phase": "SecondCross",
+    "IsFinal": false,
+    "StateFrom": {
+      "Up": [
+        [ null, null, null ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ]
+    },
+    "Moves": ""
+  },
+
+  {
+    "Name": "Init cross on Up",
+    "Phase": "SecondFlatCross",
+    "IsFinal": false,
+    "Moves": "FURU'R'F'"
+  },
+
+  {
+    "Name": "Quarter cross on Up",
+    "Phase": "SecondFlatCross",
+    "IsFinal": false,
+    "StateFrom": {
+      "Up": [
+        [ null, "Up", null ],
+        [ "Up", null, null ],
+        [ null, null, null ]
+      ]
+    },
+    "Moves": "FURU'R'F'"
+  },
+
+  {
+    "Name": "Half cross on Up",
+    "Phase": "SecondFlatCross",
+    "IsFinal": true,
+    "StateFrom": {
+      "Up": [
+        [ null, null, null ],
+        [ "Up", "Up", "Up" ],
+        [ null, null, null ]
+      ]
+    },
+    "Moves": "FRUR'U'F'"
+  },
+
+  {
+    "Name": "Fornt Up on Front|Up and Back Up on Back|Up",
+    "Phase": "SecondCross",
+    "IsFinal": false,
+    "StateFrom": {
+      "Up": [
+        [ null, "Up", null ],
+        [ null, null, null ],
+        [ null, "Up", null ]
+      ],
+      "Front": [
+        [ null, "Front", null ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ],
+      "Back": [
+        [ null, "Back", null ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ]
+    },
+    "Moves": "URUR'URU2R'"
   }
+
 ]

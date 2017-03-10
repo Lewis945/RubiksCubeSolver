@@ -131,6 +131,49 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
             return solution;
         }
 
+        public List<MoveAlgorithm> SolveSecondFlatCross()
+        {
+            var solution = new List<MoveAlgorithm>();
+
+            var secondCrossAlgorithms = _algorithms.Where(a => a.Phase == Phase.SecondFlatCross).ToList();
+
+            int flips = 0;
+            while (!IsCrossReady())
+            {
+                if (flips > 4)
+                {
+                    flips = 0;
+                    var initAlg = secondCrossAlgorithms.FirstOrDefault(a => a.Name == "Init cross on Up");
+                    solution.Add(initAlg);
+                    foreach (var move in initAlg.Moves)
+                        _model.Rotate90Degrees(move.Layer, move.Rotation);
+                }
+
+                var alg = secondCrossAlgorithms.FirstOrDefault(a => DoesStateMatch(a.StateFrom));
+                if (alg == null)
+                {
+                    solution.Add(new MoveAlgorithm(FlipAxis.Vertical, RotationType.Clockwise));
+                    _model.FlipCube(FlipAxis.Vertical, RotationType.Clockwise);
+                    flips++;
+                    continue;
+                }
+
+                flips = 0;
+
+                solution.Add(alg);
+                foreach (var move in alg.Moves)
+                    _model.Rotate90Degrees(move.Layer, move.Rotation);
+
+                if (alg.IsFinal)
+                {
+                    solution.Add(new MoveAlgorithm(FlipAxis.Vertical, RotationType.Clockwise));
+                    _model.FlipCube(FlipAxis.Vertical, RotationType.Clockwise);
+                }
+            }
+
+            return solution;
+        }
+
         public List<MoveAlgorithm> Solve()
         {
             var solution = new List<MoveAlgorithm>();
@@ -138,6 +181,7 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
             solution.AddRange(SolveCross());
             solution.AddRange(SolveFirstLayer());
             solution.AddRange(SolveSecondLayer());
+            solution.AddRange(SolveSecondFlatCross());
 
             return solution;
         }
@@ -149,9 +193,6 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
         private bool DoesStateMatch(Dictionary<FaceType, FaceType?[,]> state)
         {
             var result = new List<bool>();
-
-            var top = _model.GetFace(FaceType.Up);
-            var topColor = top.PieceType;
 
             foreach (var stateItem in state)
             {
@@ -170,13 +211,13 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
                 }
             }
 
-            return result.Count(s => s) == state.Count;
+            return result.All(s => s) && state.Count > 0;
         }
 
         private bool IsCrossReady()
         {
             var face = _model.GetFace(FaceType.Up);
-            return face[0, 1] == FacePieceType.White && face[1, 0] == FacePieceType.White && face[1, 1] == FacePieceType.White && face[1, 2] == FacePieceType.White && face[2, 1] == FacePieceType.White;
+            return face[0, 1] == face.PieceType && face[1, 0] == face.PieceType && face[1, 1] == face.PieceType && face[1, 2] == face.PieceType && face[2, 1] == face.PieceType;
         }
 
         private bool IsFirstLayerReady()

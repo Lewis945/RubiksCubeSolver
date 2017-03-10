@@ -6,7 +6,8 @@
         FirstCross,
         FirstLayer,
         SecondLayer,
-        LastCross,
+        SecondFlatCross,
+        SecondCross,
         ThirdLayer
     }
 }
