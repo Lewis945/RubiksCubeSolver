@@ -1212,28 +1212,12 @@
     },
     "Moves": "URUR'U'F'U'F"
   },
-
-  {
-    "Name": "Quarter cross on Up",
-    "Phase": "SecondCross",
-    "IsFinal": false,
-    "StateFrom": {
-      "Up": [
-        [ null, null, null ],
-        [ null, null, null ],
-        [ null, null, null ]
-      ]
-    },
-    "Moves": ""
-  },
-
   {
     "Name": "Init cross on Up",
     "Phase": "SecondFlatCross",
     "IsFinal": false,
     "Moves": "FURU'R'F'"
   },
-
   {
     "Name": "Quarter cross on Up",
     "Phase": "SecondFlatCross",
@@ -1247,7 +1231,6 @@
     },
     "Moves": "FURU'R'F'"
   },
-
   {
     "Name": "Half cross on Up",
     "Phase": "SecondFlatCross",
@@ -1263,27 +1246,57 @@
   },
 
   {
-    "Name": "Fornt Up on Front|Up and Back Up on Back|Up",
+    "Name": "Second cross right corner",
     "Phase": "SecondCross",
-    "IsFinal": false,
+    "IsFinal": true,
     "StateFrom": {
       "Up": [
         [ null, "Up", null ],
-        [ null, null, null ],
-        [ null, "Up", null ]
-      ],
-      "Front": [
-        [ null, "Front", null ],
-        [ null, null, null ],
+        [ null, null, "Up" ],
         [ null, null, null ]
       ],
       "Back": [
         [ null, "Back", null ],
         [ null, null, null ],
         [ null, null, null ]
+      ],
+      "Right": [
+        [ null, "Right", null ],
+        [ null, null, null ],
+        [ null, null, null ]
       ]
     },
-    "Moves": "URUR'URU2R'"
+    "Moves": "RUR'URU2R'U"
+  },
+  {
+    "Name": "Second cross perpenicular line",
+    "Phase": "SecondCross",
+    "IsFinal": true,
+    "StateFrom": {
+      "Up": [
+        [ null, null, null ],
+        [ "Up", "Up", "Up" ],
+        [ null, null, null ]
+      ],
+      "Left": [
+        [ null, "Left", null ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ],
+      "Right": [
+        [ null, "Right", null ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ]
+    },
+    "Moves": "RUR'URU2R'"
+  },
+
+  {
+    "Name": "Init",
+    "Phase": "ThirdLayer",
+    "IsFinal": false,
+    "Moves": "URU'L'UR'U'L"
   }
 
 ]

@@ -174,6 +174,77 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
             return solution;
         }
 
+        public List<MoveAlgorithm> SolveSecondCross()
+        {
+            var solution = new List<MoveAlgorithm>();
+
+            var crossAlgorithms = _algorithms.Where(a => a.Phase == Phase.SecondCross).ToList();
+
+            int rotations = 0;
+            while (!IsSecondCrossReady())
+            {
+                var alg = crossAlgorithms.FirstOrDefault(a => DoesStateMatch(a.StateFrom));
+                if (alg == null)
+                {
+                    if (rotations < 4)
+                    {
+                        solution.Add(new MoveAlgorithm() { Moves = new List<Move> { new Move(LayerType.Top, RotationType.Clockwise) } });
+                        _model.Rotate90Degrees(LayerType.Top, RotationType.Clockwise);
+                        rotations++;
+                    }
+                    else
+                    {
+                        solution.Add(new MoveAlgorithm(FlipAxis.Vertical, RotationType.Clockwise));
+                        _model.FlipCube(FlipAxis.Vertical, RotationType.Clockwise);
+                        rotations = 0;
+                    }
+                    continue;
+                }
+
+                solution.Add(alg);
+                foreach (var move in alg.Moves)
+                    _model.Rotate90Degrees(move.Layer, move.Rotation);
+
+                if (alg.IsFinal)
+                {
+                    solution.Add(new MoveAlgorithm(FlipAxis.Vertical, RotationType.Clockwise));
+                    _model.FlipCube(FlipAxis.Vertical, RotationType.Clockwise);
+                }
+            }
+
+            return solution;
+        }
+
+        public List<MoveAlgorithm> SolveThirdLayerCubiesLocations()
+        {
+            var solution = new List<MoveAlgorithm>();
+
+            var thirdLayerAlgorithms = _algorithms.Where(a => a.Phase == Phase.ThirdLayer).ToList();
+            var initAlg = thirdLayerAlgorithms.FirstOrDefault(a => a.Name == "Init");
+
+            while (!IsAnyThirdLayerCubieInPlace())
+            {
+                solution.Add(initAlg);
+                foreach (var move in initAlg.Moves)
+                    _model.Rotate90Degrees(move.Layer, move.Rotation);
+            }
+
+            while (!IsCubieInPlaceInTheTopRightCorner())
+            {
+                solution.Add(new MoveAlgorithm(FlipAxis.Vertical, RotationType.Clockwise));
+                _model.FlipCube(FlipAxis.Vertical, RotationType.Clockwise);
+            }
+
+            while (!AreThirdLayerCubiesInPlace())
+            {
+                solution.Add(initAlg);
+                foreach (var move in initAlg.Moves)
+                    _model.Rotate90Degrees(move.Layer, move.Rotation);
+            }
+
+            return solution;
+        }
+
         public List<MoveAlgorithm> Solve()
         {
             var solution = new List<MoveAlgorithm>();
@@ -182,6 +253,8 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
             solution.AddRange(SolveFirstLayer());
             solution.AddRange(SolveSecondLayer());
             solution.AddRange(SolveSecondFlatCross());
+            solution.AddRange(SolveSecondCross());
+            solution.AddRange(SolveThirdLayerCubiesLocations());
 
             return solution;
         }
@@ -255,6 +328,129 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
             var leftFace = _model.GetFace(FaceType.Left);
 
             for (int k = 3; k < 6; k++)
+            {
+                result &= frontFace[k] == frontFace.PieceType;
+                result &= rightFace[k] == rightFace.PieceType;
+                result &= backFace[k] == backFace.PieceType;
+                result &= leftFace[k] == leftFace.PieceType;
+            }
+
+            return result;
+        }
+
+        private bool IsSecondCrossReady()
+        {
+            bool result = true;
+
+            var frontFace = _model.GetFace(FaceType.Front);
+            var rightFace = _model.GetFace(FaceType.Right);
+            var backFace = _model.GetFace(FaceType.Back);
+            var leftFace = _model.GetFace(FaceType.Left);
+
+            result &= frontFace[1] == frontFace.PieceType;
+            result &= rightFace[1] == rightFace.PieceType;
+            result &= backFace[1] == backFace.PieceType;
+            result &= leftFace[1] == leftFace.PieceType;
+
+            return result;
+        }
+
+        private bool IsAnyThirdLayerCubieInPlace()
+        {
+            var upFace = _model.GetFace(FaceType.Up);
+            var frontFace = _model.GetFace(FaceType.Front);
+            var rightFace = _model.GetFace(FaceType.Right);
+            var backFace = _model.GetFace(FaceType.Back);
+            var leftFace = _model.GetFace(FaceType.Left);
+
+            var result1 = true;
+            var result2 = true;
+            var result3 = true;
+            var result4 = true;
+
+            result1 &= upFace[8] == frontFace.PieceType || upFace[8] == rightFace.PieceType || upFace[8] == upFace.PieceType;
+            result1 &= frontFace[2] == upFace.PieceType || frontFace[2] == rightFace.PieceType || frontFace[2] == frontFace.PieceType;
+            result1 &= rightFace[0] == upFace.PieceType || rightFace[0] == frontFace.PieceType || rightFace[0] == rightFace.PieceType;
+
+            result2 &= upFace[6] == frontFace.PieceType || upFace[6] == leftFace.PieceType || upFace[6] == upFace.PieceType;
+            result2 &= frontFace[0] == upFace.PieceType || frontFace[0] == leftFace.PieceType || frontFace[0] == frontFace.PieceType;
+            result2 &= leftFace[2] == upFace.PieceType || leftFace[2] == frontFace.PieceType || leftFace[2] == leftFace.PieceType;
+
+            result3 &= upFace[0] == backFace.PieceType || upFace[0] == leftFace.PieceType || upFace[0] == leftFace.PieceType;
+            result3 &= backFace[2] == upFace.PieceType || backFace[2] == leftFace.PieceType || backFace[2] == leftFace.PieceType;
+            result3 &= leftFace[0] == upFace.PieceType || leftFace[0] == backFace.PieceType || leftFace[0] == backFace.PieceType;
+
+            result4 &= upFace[2] == backFace.PieceType || upFace[2] == rightFace.PieceType || upFace[2] == upFace.PieceType;
+            result4 &= backFace[0] == upFace.PieceType || backFace[0] == rightFace.PieceType || backFace[0] == backFace.PieceType;
+            result4 &= rightFace[2] == upFace.PieceType || rightFace[2] == backFace.PieceType || rightFace[2] == rightFace.PieceType;
+
+            return result1 || result2 || result3 || result4;
+        }
+
+        private bool IsCubieInPlaceInTheTopRightCorner()
+        {
+            var upFace = _model.GetFace(FaceType.Up);
+            var frontFace = _model.GetFace(FaceType.Front);
+            var rightFace = _model.GetFace(FaceType.Right);
+            var backFace = _model.GetFace(FaceType.Back);
+            var leftFace = _model.GetFace(FaceType.Left);
+
+            var result = true;
+
+            result &= upFace[8] == frontFace.PieceType || upFace[8] == rightFace.PieceType || upFace[8] == upFace.PieceType;
+            result &= frontFace[2] == upFace.PieceType || frontFace[2] == rightFace.PieceType || frontFace[2] == frontFace.PieceType;
+            result &= rightFace[0] == upFace.PieceType || rightFace[0] == frontFace.PieceType || rightFace[0] == rightFace.PieceType;
+
+            return result;
+        }
+
+        private bool AreThirdLayerCubiesInPlace()
+        {
+            var upFace = _model.GetFace(FaceType.Up);
+            var frontFace = _model.GetFace(FaceType.Front);
+            var rightFace = _model.GetFace(FaceType.Right);
+            var backFace = _model.GetFace(FaceType.Back);
+            var leftFace = _model.GetFace(FaceType.Left);
+
+            var result1 = true;
+            var result2 = true;
+            var result3 = true;
+            var result4 = true;
+
+            result1 &= upFace[8] == frontFace.PieceType || upFace[8] == rightFace.PieceType || upFace[8] == upFace.PieceType;
+            result1 &= frontFace[2] == upFace.PieceType || frontFace[2] == rightFace.PieceType || frontFace[2] == frontFace.PieceType;
+            result1 &= rightFace[0] == upFace.PieceType || rightFace[0] == frontFace.PieceType || rightFace[0] == rightFace.PieceType;
+
+            result2 &= upFace[6] == frontFace.PieceType || upFace[6] == leftFace.PieceType || upFace[6] == upFace.PieceType;
+            result2 &= frontFace[0] == upFace.PieceType || frontFace[0] == leftFace.PieceType || frontFace[0] == frontFace.PieceType;
+            result2 &= leftFace[2] == upFace.PieceType || leftFace[2] == frontFace.PieceType || leftFace[2] == leftFace.PieceType;
+
+            result3 &= upFace[0] == backFace.PieceType || upFace[0] == leftFace.PieceType || upFace[0] == leftFace.PieceType;
+            result3 &= backFace[2] == upFace.PieceType || backFace[2] == leftFace.PieceType || backFace[2] == leftFace.PieceType;
+            result3 &= leftFace[0] == upFace.PieceType || leftFace[0] == backFace.PieceType || leftFace[0] == backFace.PieceType;
+
+            result4 &= upFace[2] == backFace.PieceType || upFace[2] == rightFace.PieceType || upFace[2] == upFace.PieceType;
+            result4 &= backFace[0] == upFace.PieceType || backFace[0] == rightFace.PieceType || backFace[0] == backFace.PieceType;
+            result4 &= rightFace[2] == upFace.PieceType || rightFace[2] == backFace.PieceType || rightFace[2] == rightFace.PieceType;
+
+            return result1 && result2 && result3 && result4;
+        }
+
+        private bool IsThirdLayerReady()
+        {
+            var upFace = _model.GetFace(FaceType.Up);
+
+            bool result = true;
+            for (int i = 0; i < 3; i++)
+                for (int j = 0; j < 3; j++)
+                    result &= upFace[i, j] == upFace.PieceType;
+
+            var frontFace = _model.GetFace(FaceType.Front);
+            var rightFace = _model.GetFace(FaceType.Right);
+            var backFace = _model.GetFace(FaceType.Back);
+            var leftFace = _model.GetFace(FaceType.Left);
+
+            for (int k = 0; k < 3; k++)
             {
                 result &= frontFace[k] == frontFace.PieceType;
                 result &= rightFace[k] == rightFace.PieceType;
