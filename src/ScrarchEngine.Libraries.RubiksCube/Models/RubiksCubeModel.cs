@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ScrarchEngine.Libraries.RubiksCube.Extensions;
 
 namespace ScrarchEngine.Libraries.RubiksCube.Models
 {
@@ -88,6 +89,15 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
 
         #region Properties
 
+        public static Face[] DefaultFaces { get; } = new Face[] {
+                new Face(FaceType.Front),
+                new Face(FaceType.Left),
+                new Face(FaceType.Back),
+                new Face(FaceType.Right),
+                new Face(FaceType.Up),
+                new Face(FaceType.Down)
+            };
+
         public Face[] Faces { get; set; }
 
         #endregion
@@ -95,14 +105,7 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
         #region .ctor
 
         public RubiksCubeModel()
-            : this(new Face[] {
-                new Face(FaceType.Front),
-                new Face(FaceType.Left),
-                new Face(FaceType.Back),
-                new Face(FaceType.Right),
-                new Face(FaceType.Up),
-                new Face(FaceType.Down)
-            })
+            : this(DefaultFaces.Select(f => f.CloneJson()).ToArray())
         {
             //              | 0 | 1 | 2 | 
             //              | 3 | 4 | 5 |
@@ -127,6 +130,11 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
         #endregion
 
         #region Public Methods
+
+        public void Reset()
+        {
+            Faces = DefaultFaces.Select(f => f.CloneJson()).ToArray();
+        }
 
         public Face GetFace(FaceType type)
         {
@@ -356,31 +364,5 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
         }
 
         #endregion
-
-        /// <summary>
-        /// Perform a deep Copy of the object, using Json as a serialisation method. NOTE: Private members are not cloned using this method.
-        /// </summary>
-        /// <typeparam name="T">The type of object being copied.</typeparam>
-        /// <param name="source">The object instance to copy.</param>
-        /// <returns>The copied object.</returns>
-        public T CloneJson<T>(T source)
-        {
-            // Don't serialize a null object, simply return the default for that object
-            if (ReferenceEquals(source, null))
-            {
-                return default(T);
-            }
-
-            // initialize inner objects individually
-            // for example in default constructor some list property initialized with some values,
-            // but in 'source' these items are cleaned -
-            // without ObjectCreationHandling.Replace default constructor values will be added to result
-            var deserializeSettings = new JsonSerializerSettings { ObjectCreationHandling = ObjectCreationHandling.Replace };
-
-            var str = JsonConvert.SerializeObject(source);
-            var obj = JsonConvert.DeserializeObject<T>(str, deserializeSettings);
-
-            return obj;
-        }
     }
 }

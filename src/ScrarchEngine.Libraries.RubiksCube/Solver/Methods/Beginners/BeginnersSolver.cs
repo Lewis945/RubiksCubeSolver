@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using ScrarchEngine.Libraries.RubiksCube.Extensions;
+using System.IO;
 
 namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
 {
@@ -17,28 +19,35 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
 
         private List<MoveAlgorithm> _algorithms;
 
+        private const int MovesLimitation = 500;
+
         #endregion
 
         #region .ctor
 
         public BeginnersSolver(RubiksCubeModel model, Func<string, string> getContent)
         {
-            _model = model.CloneJson(model);
-            _algorithms = JsonConvert.DeserializeObject<List<MoveAlgorithm>>(getContent(@"D:\Projects\RubiksCube\src\ScrarchEngine.Libraries.RubiksCube\Solver\Methods\Beginners\patterns.json"));
+            _model = model.CloneJson();
+            var cont = getContent(@"D:\Projects\RubiksCube\src\ScrarchEngine.Libraries.RubiksCube\Solver\Methods\Beginners\Patterns");
+            _algorithms = JsonConvert.DeserializeObject<List<MoveAlgorithm>>(cont);
         }
 
         #endregion
 
         #region Public Methods
 
-        public List<MoveAlgorithm> SolveCross()
+        public List<MoveAlgorithm> SolveCross(out bool succeded)
         {
             var solution = new List<MoveAlgorithm>();
 
             var crossAlgorithms = _algorithms.Where(a => a.Phase == Phase.FirstCross).ToList();
 
-            while (!IsCrossReady())
+            int i = -1;
+
+            while (!IsCrossReady() && i < MovesLimitation)
             {
+                i++;
+
                 var alg = crossAlgorithms.FirstOrDefault(a => DoesStateMatch(a.StateFrom));
                 if (alg == null)
                 {
@@ -57,6 +66,8 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
                     _model.FlipCube(FlipAxis.Vertical, RotationType.Clockwise);
                 }
             }
+
+            succeded = !(i == MovesLimitation);
 
             return solution;
         }
@@ -290,13 +301,18 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
         {
             var solution = new List<MoveAlgorithm>();
 
-            solution.AddRange(SolveCross());
+            bool success;
+
+            solution.AddRange(SolveCross(out success));
             solution.AddRange(SolveFirstLayer());
             solution.AddRange(SolveSecondLayer());
             solution.AddRange(SolveSecondFlatCross());
-            solution.AddRange(SolveSecondCross());
-            solution.AddRange(SolveThirdLayerCubiesLocations());
-            solution.AddRange(SolveThirdLayer());
+            //solution.AddRange(SolveSecondCross());
+            //solution.AddRange(SolveThirdLayerCubiesLocations());
+            //solution.AddRange(SolveThirdLayer());
+
+            if (!success)
+                throw new Exception("Solution was not found!");
 
             return solution;
         }

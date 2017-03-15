@@ -39,6 +39,7 @@ namespace RubiksCube.Game
         private void resetButton_Click(object sender, EventArgs e)
         {
             rubicsCubeControl.ResetCube();
+            solutionListBox.Items.Clear();
         }
 
         private void shuffleButton_Click(object sender, EventArgs e)

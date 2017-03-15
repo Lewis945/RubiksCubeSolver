@@ -153,6 +153,13 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
             return Field;
         }
 
+        public override string ToString()
+        {
+            return $@"{this[0]} {this[1]} {this[2]} {Environment.NewLine}
+                      {this[3]} {this[4]} {this[5]} {Environment.NewLine}
+                      {this[6]} {this[7]} {this[8]} {Environment.NewLine}";
+        }
+
         public static void GetIndecies(int index, out int i, out int j)
         {
             i = 0;

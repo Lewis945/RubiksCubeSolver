@@ -36,9 +36,12 @@
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
     <None Include="packages.config" />
-    <None Include="Solver\Methods\Beginners\patterns.json" />
+    <None Include="Solver\Methods\Beginners\Patterns\patterns.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\CloneExtensions.cs" />
+    <Compile Include="Json\CustomMoveConverter.cs" />
+    <Compile Include="Json\CustomStateConverter.cs" />
     <Compile Include="Models\Cubie.cs" />
     <Compile Include="Models\Face.cs" />
     <Compile Include="Models\FacePiece.cs" />
@@ -64,6 +67,9 @@
       <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Solver\Methods\Beginners\Patterns\FirstCross.json" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

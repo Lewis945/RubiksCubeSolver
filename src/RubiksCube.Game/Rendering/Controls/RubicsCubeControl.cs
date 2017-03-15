@@ -42,7 +42,7 @@ namespace RubiksCubeSolver.Cube.Rendering.Controls
 
         public void ResetCube()
         {
-            RubiksCubeModel = new RubiksCubeModel();
+            RubiksCubeModel.Reset();
         }
 
         public override void Render(Graphics g, IEnumerable<Face3D> frame)

@@ -1,10 +1,8 @@
 ﻿using Newtonsoft.Json;
 using ScrarchEngine.Libraries.RubiksCube.Models;
 using System.Collections.Generic;
-using System;
-using Newtonsoft.Json.Linq;
 using System.Text;
-using System.Linq;
+using ScrarchEngine.Libraries.RubiksCube.Json;
 
 namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
 {
@@ -76,124 +74,6 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
                 algorithm.Append($"Flip {Axis.ToString()} in {RotationType.ToString()}");
 
             return algorithm.ToString();
-        }
-    }
-
-    public class CustomMoveConverter : JsonConverter
-    {
-        public override bool CanConvert(Type objectType)
-        {
-            return true;
-        }
-
-        private int Process(string moveLetter, string nextMoveLetter, string layerLetter, int i, LayerType layer, List<Move> moves)
-        {
-            if (moveLetter == layerLetter)
-            {
-                if (nextMoveLetter == "\'")
-                {
-                    moves.Add(new Move(layer, RotationType.CounterClockwise));
-                    i++;
-                }
-                else if (nextMoveLetter == "2")
-                {
-                    moves.Add(new Move(layer, RotationType.Clockwise));
-                    moves.Add(new Move(layer, RotationType.Clockwise));
-                    i++;
-                }
-                else
-                    moves.Add(new Move(layer, RotationType.Clockwise));
-            }
-
-            return i;
-        }
-
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-        {
-            if (reader.ValueType == typeof(string))
-            {
-                var moves = new List<Move>();
-
-                var value = (string)reader.Value;
-
-                for (int i = 0; i < value.Length; i++)
-                {
-                    var moveLetter = value[i].ToString();
-                    var nextLetter = i < value.Length - 1 ? value[i + 1].ToString() : null;
-
-                    i = Process(moveLetter, nextLetter, "F", i, LayerType.Front, moves);
-                    i = Process(moveLetter, nextLetter, "B", i, LayerType.Back, moves);
-                    i = Process(moveLetter, nextLetter, "U", i, LayerType.Top, moves);
-                    i = Process(moveLetter, nextLetter, "D", i, LayerType.Bottom, moves);
-                    i = Process(moveLetter, nextLetter, "L", i, LayerType.Left, moves);
-                    i = Process(moveLetter, nextLetter, "R", i, LayerType.Right, moves);
-                }
-
-                return moves;
-            }
-            throw new NotSupportedException();
-        }
-
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class CustomStateConverter : JsonConverter
-    {
-        public override bool CanConvert(Type objectType)
-        {
-            return true;
-        }
-
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-        {
-            var state = new Dictionary<FaceType, FaceType?[,]>();
-
-            var token = JToken.ReadFrom(reader);
-
-            foreach (var child in token)
-            {
-                FaceType face;
-                Enum.TryParse(child.Path, out face);
-
-                var vals = child.Children();
-                var items = vals.Children();
-
-                var faceState = new FaceType?[3, 3];
-
-                int i = 0;
-                foreach (var item in items)
-                {
-                    int j = 0;
-                    foreach (var val in item.Children())
-                    {
-                        var value = val.Value<string>();
-                        if (!string.IsNullOrWhiteSpace(value))
-                        {
-                            FaceType type;
-                            Enum.TryParse(value, out type);
-                            faceState[i, j] = type;
-                        }
-                        else
-                            faceState[i, j] = null;
-
-                        j++;
-                    }
-
-                    i++;
-                }
-
-                state.Add(face, faceState);
-            }
-
-            return state;
-        }
-
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            throw new NotImplementedException();
         }
     }
 }
