@@ -36,7 +36,11 @@
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
     <None Include="packages.config" />
-    <None Include="Solver\Methods\Beginners\Patterns\patterns.json" />
+    <None Include="Solver\Methods\Beginners\Patterns\FirstLayer.json" />
+    <None Include="Solver\Methods\Beginners\Patterns\SecondCross.json" />
+    <None Include="Solver\Methods\Beginners\Patterns\SecondFlatCross.json" />
+    <None Include="Solver\Methods\Beginners\Patterns\SecondLayer.json" />
+    <None Include="Solver\Methods\Beginners\Patterns\ThirdLayer.json" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\CloneExtensions.cs" />

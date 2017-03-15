@@ -36,6 +36,42 @@
     "Moves": "L'U'L"
   },
   {
+    "Name": "Up Front cubie on right|front",
+    "Phase": "FirstCross",
+    "IsFinal": true,
+    "StateFrom": {
+      "Right": [
+        [ null, null, null ],
+        [ "Up", null, null ],
+        [ null, null, null ]
+      ],
+      "Front": [
+        [ null, null, null ],
+        [ null, null, "Front" ],
+        [ null, null, null ]
+      ]
+    },
+    "Moves": "F"
+  },
+  {
+    "Name": "Up Front cubie on right|front",
+    "Phase": "FirstCross",
+    "IsFinal": true,
+    "StateFrom": {
+      "Right": [
+        [ null, null, null ],
+        [ "Front", null, null ],
+        [ null, null, null ]
+      ],
+      "Front": [
+        [ null, null, null ],
+        [ null, null, "Up" ],
+        [ null, null, null ]
+      ]
+    },
+    "Moves": "L'U'L"
+  },
+  {
     "Name": "Up Front cubie on Up|front",
     "Phase": "FirstCross",
     "IsFinal": true,
@@ -141,7 +177,7 @@
         [ null, null, null ]
       ]
     },
-    "Moves": "LF"
+    "Moves": "LFL'"
   },
   {
     "Name": "Up Front cubie on left|Up",
@@ -159,7 +195,7 @@
         [ null, null, null ]
       ]
     },
-    "Moves": "LF"
+    "Moves": "LFL'"
   },
   {
     "Name": "Up Front cubie on left|back",
@@ -285,7 +321,7 @@
         [ null, null, null ]
       ]
     },
-    "Moves": "R'F'"
+    "Moves": "R'F'R"
   },
   {
     "Name": "Up Front cubie on right|Up",
@@ -303,7 +339,7 @@
         [ null, null, null ]
       ]
     },
-    "Moves": "R'F'"
+    "Moves": "R'F'R"
   },
   {
     "Name": "Up Front cubie on Up|back",

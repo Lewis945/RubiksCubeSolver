@@ -68,7 +68,7 @@ namespace ScrarchEngine.Libraries.RubiksCube.Tests.Solver
         [Test]
         public void Solve_Cross()
         {
-            int count = 50;
+            int count = 250;
 
             int i = 0;
             while (i < count)
