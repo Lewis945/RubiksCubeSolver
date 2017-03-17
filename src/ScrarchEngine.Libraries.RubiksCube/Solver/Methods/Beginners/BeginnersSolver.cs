@@ -163,7 +163,7 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
             int i = -1;
 
             int flips = 0;
-            while (!IsCrossReady() && i < MovesLimitation)
+            while (!IsFlatCrossReady() && i < MovesLimitation)
             {
                 i++;
 
@@ -212,7 +212,7 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
             int i = -1;
 
             int rotations = 0;
-            while (!IsSecondCrossReady() && i < MovesLimitation)
+            while (!IsCrossReady() && i < MovesLimitation)
             {
                 i++;
 
@@ -349,9 +349,9 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
             solution.AddRange(SolveFirstLayer(out success));
             solution.AddRange(SolveSecondLayer(out success));
             solution.AddRange(SolveSecondFlatCross(out success));
-            //solution.AddRange(SolveSecondCross());
-            //solution.AddRange(SolveThirdLayerCubiesLocations());
-            //solution.AddRange(SolveThirdLayer());
+            solution.AddRange(SolveSecondCross(out success));
+            solution.AddRange(SolveThirdLayerCubiesLocations(out success));
+            solution.AddRange(SolveThirdLayer(out success));
 
             if (!success)
                 throw new Exception("Solution was not found!");
@@ -390,6 +390,26 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
         private bool IsCrossReady()
         {
             var face = _model.GetFace(FaceType.Up);
+
+            bool result = face[0, 1] == face.PieceType && face[1, 0] == face.PieceType && face[1, 1] == face.PieceType && face[1, 2] == face.PieceType && face[2, 1] == face.PieceType; ;
+
+            var frontFace = _model.GetFace(FaceType.Front);
+            var rightFace = _model.GetFace(FaceType.Right);
+            var backFace = _model.GetFace(FaceType.Back);
+            var leftFace = _model.GetFace(FaceType.Left);
+
+            result &= frontFace[1] == frontFace.PieceType;
+            result &= rightFace[1] == rightFace.PieceType;
+            result &= backFace[1] == backFace.PieceType;
+            result &= leftFace[1] == leftFace.PieceType;
+
+            return result;
+        }
+
+        private bool IsFlatCrossReady()
+        {
+            var face = _model.GetFace(FaceType.Up);
+
             return face[0, 1] == face.PieceType && face[1, 0] == face.PieceType && face[1, 1] == face.PieceType && face[1, 2] == face.PieceType && face[2, 1] == face.PieceType;
         }
 
@@ -438,22 +458,22 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
             return result;
         }
 
-        private bool IsSecondCrossReady()
-        {
-            bool result = true;
+        //private bool IsSecondCrossReady()
+        //{
+        //    bool result = true;
 
-            var frontFace = _model.GetFace(FaceType.Front);
-            var rightFace = _model.GetFace(FaceType.Right);
-            var backFace = _model.GetFace(FaceType.Back);
-            var leftFace = _model.GetFace(FaceType.Left);
+        //    var frontFace = _model.GetFace(FaceType.Front);
+        //    var rightFace = _model.GetFace(FaceType.Right);
+        //    var backFace = _model.GetFace(FaceType.Back);
+        //    var leftFace = _model.GetFace(FaceType.Left);
 
-            result &= frontFace[1] == frontFace.PieceType;
-            result &= rightFace[1] == rightFace.PieceType;
-            result &= backFace[1] == backFace.PieceType;
-            result &= leftFace[1] == leftFace.PieceType;
+        //    result &= frontFace[1] == frontFace.PieceType;
+        //    result &= rightFace[1] == rightFace.PieceType;
+        //    result &= backFace[1] == backFace.PieceType;
+        //    result &= leftFace[1] == leftFace.PieceType;
 
-            return result;
-        }
+        //    return result;
+        //}
 
         private bool IsAnyThirdLayerCubieInPlace()
         {
@@ -469,20 +489,20 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
             var result4 = true;
 
             result1 &= upFace[8] == frontFace.PieceType || upFace[8] == rightFace.PieceType || upFace[8] == upFace.PieceType;
-            result1 &= frontFace[2] == upFace.PieceType || frontFace[2] == rightFace.PieceType || frontFace[2] == frontFace.PieceType;
-            result1 &= rightFace[0] == upFace.PieceType || rightFace[0] == frontFace.PieceType || rightFace[0] == rightFace.PieceType;
+            result1 &= frontFace[2] == frontFace.PieceType || frontFace[2] == rightFace.PieceType || frontFace[2] == upFace.PieceType;
+            result1 &= rightFace[0] == frontFace.PieceType || rightFace[0] == rightFace.PieceType || rightFace[0] == upFace.PieceType;
 
             result2 &= upFace[6] == frontFace.PieceType || upFace[6] == leftFace.PieceType || upFace[6] == upFace.PieceType;
-            result2 &= frontFace[0] == upFace.PieceType || frontFace[0] == leftFace.PieceType || frontFace[0] == frontFace.PieceType;
-            result2 &= leftFace[2] == upFace.PieceType || leftFace[2] == frontFace.PieceType || leftFace[2] == leftFace.PieceType;
+            result2 &= frontFace[0] == frontFace.PieceType || frontFace[0] == leftFace.PieceType || frontFace[0] == upFace.PieceType;
+            result2 &= leftFace[2] == frontFace.PieceType || leftFace[2] == leftFace.PieceType || leftFace[2] == upFace.PieceType;
 
-            result3 &= upFace[0] == backFace.PieceType || upFace[0] == leftFace.PieceType || upFace[0] == leftFace.PieceType;
-            result3 &= backFace[2] == upFace.PieceType || backFace[2] == leftFace.PieceType || backFace[2] == leftFace.PieceType;
-            result3 &= leftFace[0] == upFace.PieceType || leftFace[0] == backFace.PieceType || leftFace[0] == backFace.PieceType;
+            result3 &= upFace[0] == backFace.PieceType || upFace[0] == leftFace.PieceType || upFace[0] == upFace.PieceType;
+            result3 &= backFace[2] == backFace.PieceType || backFace[2] == leftFace.PieceType || backFace[2] == upFace.PieceType;
+            result3 &= leftFace[0] == backFace.PieceType || leftFace[0] == leftFace.PieceType || leftFace[0] == upFace.PieceType;
 
             result4 &= upFace[2] == backFace.PieceType || upFace[2] == rightFace.PieceType || upFace[2] == upFace.PieceType;
-            result4 &= backFace[0] == upFace.PieceType || backFace[0] == rightFace.PieceType || backFace[0] == backFace.PieceType;
-            result4 &= rightFace[2] == upFace.PieceType || rightFace[2] == backFace.PieceType || rightFace[2] == rightFace.PieceType;
+            result4 &= backFace[0] == backFace.PieceType || backFace[0] == rightFace.PieceType || backFace[0] == upFace.PieceType;
+            result4 &= rightFace[2] == backFace.PieceType || rightFace[2] == rightFace.PieceType || rightFace[2] == upFace.PieceType;
 
             return result1 || result2 || result3 || result4;
         }
@@ -492,14 +512,12 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
             var upFace = _model.GetFace(FaceType.Up);
             var frontFace = _model.GetFace(FaceType.Front);
             var rightFace = _model.GetFace(FaceType.Right);
-            var backFace = _model.GetFace(FaceType.Back);
-            var leftFace = _model.GetFace(FaceType.Left);
 
             var result = true;
 
             result &= upFace[8] == frontFace.PieceType || upFace[8] == rightFace.PieceType || upFace[8] == upFace.PieceType;
-            result &= frontFace[2] == upFace.PieceType || frontFace[2] == rightFace.PieceType || frontFace[2] == frontFace.PieceType;
-            result &= rightFace[0] == upFace.PieceType || rightFace[0] == frontFace.PieceType || rightFace[0] == rightFace.PieceType;
+            result &= frontFace[2] == frontFace.PieceType || frontFace[2] == rightFace.PieceType || frontFace[2] == upFace.PieceType;
+            result &= rightFace[0] == frontFace.PieceType || rightFace[0] == rightFace.PieceType || rightFace[0] == upFace.PieceType;
 
             return result;
         }
@@ -518,20 +536,20 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
             var result4 = true;
 
             result1 &= upFace[8] == frontFace.PieceType || upFace[8] == rightFace.PieceType || upFace[8] == upFace.PieceType;
-            result1 &= frontFace[2] == upFace.PieceType || frontFace[2] == rightFace.PieceType || frontFace[2] == frontFace.PieceType;
-            result1 &= rightFace[0] == upFace.PieceType || rightFace[0] == frontFace.PieceType || rightFace[0] == rightFace.PieceType;
+            result1 &= frontFace[2] == frontFace.PieceType || frontFace[2] == rightFace.PieceType || frontFace[2] == upFace.PieceType;
+            result1 &= rightFace[0] == frontFace.PieceType || rightFace[0] == rightFace.PieceType || rightFace[0] == upFace.PieceType;
 
             result2 &= upFace[6] == frontFace.PieceType || upFace[6] == leftFace.PieceType || upFace[6] == upFace.PieceType;
-            result2 &= frontFace[0] == upFace.PieceType || frontFace[0] == leftFace.PieceType || frontFace[0] == frontFace.PieceType;
-            result2 &= leftFace[2] == upFace.PieceType || leftFace[2] == frontFace.PieceType || leftFace[2] == leftFace.PieceType;
+            result2 &= frontFace[0] == frontFace.PieceType || frontFace[0] == leftFace.PieceType || frontFace[0] == upFace.PieceType;
+            result2 &= leftFace[2] == frontFace.PieceType || leftFace[2] == leftFace.PieceType || leftFace[2] == upFace.PieceType;
 
-            result3 &= upFace[0] == backFace.PieceType || upFace[0] == leftFace.PieceType || upFace[0] == leftFace.PieceType;
-            result3 &= backFace[2] == upFace.PieceType || backFace[2] == leftFace.PieceType || backFace[2] == leftFace.PieceType;
-            result3 &= leftFace[0] == upFace.PieceType || leftFace[0] == backFace.PieceType || leftFace[0] == backFace.PieceType;
+            result3 &= upFace[0] == backFace.PieceType || upFace[0] == leftFace.PieceType || upFace[0] == upFace.PieceType;
+            result3 &= backFace[2] == backFace.PieceType || backFace[2] == leftFace.PieceType || backFace[2] == upFace.PieceType;
+            result3 &= leftFace[0] == backFace.PieceType || leftFace[0] == leftFace.PieceType || leftFace[0] == upFace.PieceType;
 
-            result4 &= upFace[2] == backFace.PieceType || upFace[2] == rightFace.PieceType || upFace[2] == upFace.PieceType;
+            result4 &= upFace[2] == upFace.PieceType || upFace[2] == rightFace.PieceType || upFace[2] == backFace.PieceType;
             result4 &= backFace[0] == upFace.PieceType || backFace[0] == rightFace.PieceType || backFace[0] == backFace.PieceType;
-            result4 &= rightFace[2] == upFace.PieceType || rightFace[2] == backFace.PieceType || rightFace[2] == rightFace.PieceType;
+            result4 &= rightFace[2] == upFace.PieceType || rightFace[2] == rightFace.PieceType || rightFace[2] == backFace.PieceType;
 
             return result1 && result2 && result3 && result4;
         }
@@ -544,8 +562,8 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
 
             var result = true;
 
-            result &= upFace[6] == frontFace.PieceType || upFace[6] == leftFace.PieceType || upFace[6] == upFace.PieceType;
-            result &= frontFace[0] == upFace.PieceType || frontFace[0] == leftFace.PieceType || frontFace[0] == frontFace.PieceType;
+            result &= upFace[6] == upFace.PieceType || upFace[6] == frontFace.PieceType || upFace[6] == leftFace.PieceType;
+            result &= frontFace[0] == upFace.PieceType || frontFace[0] == frontFace.PieceType || frontFace[0] == leftFace.PieceType;
             result &= leftFace[2] == upFace.PieceType || leftFace[2] == frontFace.PieceType || leftFace[2] == leftFace.PieceType;
 
             return result;

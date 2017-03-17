@@ -6,6 +6,8 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Linq;
+using System.Text;
+using ScrarchEngine.Libraries.RubiksCube.Extensions;
 
 namespace RubiksCube.Game
 {
@@ -83,7 +85,8 @@ namespace RubiksCube.Game
         {
             if (_solution == null)
             {
-                var solver = new BeginnersSolver(rubicsCubeControl.RubiksCubeModel, (f) => File.ReadAllText(f));
+                var cube = rubicsCubeControl.RubiksCubeModel.CloneJson();
+                var solver = new BeginnersSolver(cube, (f) => GetFiles(f));
                 _solution = solver.Solve();
             }
 
@@ -94,11 +97,27 @@ namespace RubiksCube.Game
             }
         }
 
+        private string GetFiles(string path)
+        {
+            var builder = new StringBuilder();
+            var dir = new DirectoryInfo(path);
+            foreach (var file in dir.GetFiles())
+            {
+                string content = File.ReadAllText(file.FullName);
+                content = content.Remove(content.IndexOf("["), 1);
+                content = content.Remove(content.LastIndexOf("]"), 1);
+                builder.Append(content);
+                builder.Append(",");
+            }
+            return $"[{builder.ToString()}]";
+        }
+
         private void solveButton_Click(object sender, EventArgs e)
         {
             if (_solution == null)
             {
-                var solver = new BeginnersSolver(rubicsCubeControl.RubiksCubeModel, (f) => File.ReadAllText(f));
+                var cube = rubicsCubeControl.RubiksCubeModel.CloneJson();
+                var solver = new BeginnersSolver(cube, (f) => GetFiles(f));
                 _solution = solver.Solve();
             }
 

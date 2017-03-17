@@ -19,7 +19,7 @@ namespace ScrarchEngine.Libraries.RubiksCube.Tests.Solver
 
         private RubiksCubeModel _cube;
 
-        private const int RetriesCount = 10;
+        private const int RetriesCount = 10000;
 
         #endregion
 
