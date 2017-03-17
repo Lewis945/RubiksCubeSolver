@@ -27,7 +27,7 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
 
         public BeginnersSolver(RubiksCubeModel model, Func<string, string> getContent)
         {
-            _model = model.CloneJson();
+            _model = model;
             var cont = getContent(@"D:\Projects\RubiksCube\src\ScrarchEngine.Libraries.RubiksCube\Solver\Methods\Beginners\Patterns");
             _algorithms = JsonConvert.DeserializeObject<List<MoveAlgorithm>>(cont);
         }
@@ -72,14 +72,18 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
             return solution;
         }
 
-        public List<MoveAlgorithm> SolveFirstLayer()
+        public List<MoveAlgorithm> SolveFirstLayer(out bool succeded)
         {
             var solution = new List<MoveAlgorithm>();
 
             var firstLayerAlgorithms = _algorithms.Where(a => a.Phase == Phase.FirstLayer).ToList();
 
-            while (!IsFirstLayerReady())
+            int i = -1;
+
+            while (!IsFirstLayerReady() && i < MovesLimitation)
             {
+                i++;
+
                 var alg = firstLayerAlgorithms.FirstOrDefault(a => DoesStateMatch(a.StateFrom));
                 if (alg == null)
                 {
@@ -99,10 +103,12 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
                 }
             }
 
+            succeded = !(i == MovesLimitation);
+
             return solution;
         }
 
-        public List<MoveAlgorithm> SolveSecondLayer()
+        public List<MoveAlgorithm> SolveSecondLayer(out bool succeded)
         {
             var solution = new List<MoveAlgorithm>();
 
@@ -118,8 +124,12 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
 
             var secondLayerAlgorithms = _algorithms.Where(a => a.Phase == Phase.SecondLayer).ToList();
 
-            while (!IsSecondLayerReady())
+            int i = -1;
+
+            while (!IsSecondLayerReady() && i < MovesLimitation)
             {
+                i++;
+
                 var alg = secondLayerAlgorithms.FirstOrDefault(a => DoesStateMatch(a.StateFrom));
                 if (alg == null)
                 {
@@ -139,18 +149,24 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
                 }
             }
 
+            succeded = !(i == MovesLimitation);
+
             return solution;
         }
 
-        public List<MoveAlgorithm> SolveSecondFlatCross()
+        public List<MoveAlgorithm> SolveSecondFlatCross(out bool succeded)
         {
             var solution = new List<MoveAlgorithm>();
 
             var secondCrossAlgorithms = _algorithms.Where(a => a.Phase == Phase.SecondFlatCross).ToList();
 
+            int i = -1;
+
             int flips = 0;
-            while (!IsCrossReady())
+            while (!IsCrossReady() && i < MovesLimitation)
             {
+                i++;
+
                 if (flips > 4)
                 {
                     flips = 0;
@@ -182,18 +198,24 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
                 }
             }
 
+            succeded = !(i == MovesLimitation);
+
             return solution;
         }
 
-        public List<MoveAlgorithm> SolveSecondCross()
+        public List<MoveAlgorithm> SolveSecondCross(out bool succeded)
         {
             var solution = new List<MoveAlgorithm>();
 
             var crossAlgorithms = _algorithms.Where(a => a.Phase == Phase.SecondCross).ToList();
 
+            int i = -1;
+
             int rotations = 0;
-            while (!IsSecondCrossReady())
+            while (!IsSecondCrossReady() && i < MovesLimitation)
             {
+                i++;
+
                 var alg = crossAlgorithms.FirstOrDefault(a => DoesStateMatch(a.StateFrom));
                 if (alg == null)
                 {
@@ -223,45 +245,60 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
                 }
             }
 
+            succeded = !(i == MovesLimitation);
+
             return solution;
         }
 
-        public List<MoveAlgorithm> SolveThirdLayerCubiesLocations()
+        public List<MoveAlgorithm> SolveThirdLayerCubiesLocations(out bool succeded)
         {
             var solution = new List<MoveAlgorithm>();
 
             var thirdLayerAlgorithms = _algorithms.Where(a => a.Phase == Phase.ThirdLayer).ToList();
             var initAlg = thirdLayerAlgorithms.FirstOrDefault(a => a.Name == "Init");
 
-            while (!IsAnyThirdLayerCubieInPlace())
+            int i = -1;
+
+            while (!IsAnyThirdLayerCubieInPlace() && i < MovesLimitation)
             {
+                i++;
+
                 solution.Add(initAlg);
                 foreach (var move in initAlg.Moves)
                     _model.Rotate90Degrees(move.Layer, move.Rotation);
             }
 
-            while (!IsCubieInPlaceInTheTopRightCorner())
+            while (!IsCubieInPlaceInTheTopRightCorner() && i < MovesLimitation)
             {
+                i++;
+
                 solution.Add(new MoveAlgorithm(FlipAxis.Vertical, RotationType.Clockwise));
                 _model.FlipCube(FlipAxis.Vertical, RotationType.Clockwise);
             }
 
-            while (!AreThirdLayerCubiesInPlace())
+            while (!AreThirdLayerCubiesInPlace() && i < MovesLimitation)
             {
+                i++;
+
                 solution.Add(initAlg);
                 foreach (var move in initAlg.Moves)
                     _model.Rotate90Degrees(move.Layer, move.Rotation);
             }
 
+            succeded = !(i == MovesLimitation);
+
             return solution;
         }
 
-        public List<MoveAlgorithm> SolveThirdLayer()
+        public List<MoveAlgorithm> SolveThirdLayer(out bool succeded)
         {
             var solution = new List<MoveAlgorithm>();
 
-            while (!IsCubieInPlaceInTheTopRightCorner())
+            int i = -1;
+
+            while (!IsCubieInPlaceInTheTopRightCorner() && i < MovesLimitation)
             {
+                i++;
                 solution.Add(new MoveAlgorithm(FlipAxis.Vertical, RotationType.Clockwise));
                 _model.FlipCube(FlipAxis.Vertical, RotationType.Clockwise);
             }
@@ -275,10 +312,12 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
 
             var fourAlg = _algorithms.FirstOrDefault(a => a.Phase == Phase.ThirdLayer && a.Name == "Four");
 
-            while (!IsLeftLayerReady())
+            while (!IsLeftLayerReady() && i < MovesLimitation)
             {
-                while (!IsCubieMatchInTheTopLeftCorner())
+                i++;
+                while (!IsCubieMatchInTheTopLeftCorner() && i < MovesLimitation)
                 {
+                    i++;
                     solution.Add(fourAlg);
                     foreach (var move in fourAlg.Moves)
                         _model.Rotate90Degrees(move.Layer, move.Rotation);
@@ -288,11 +327,14 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
                 _model.Rotate90Degrees(LayerType.Left, RotationType.Clockwise);
             }
 
-            while (!IsLeftLayerInPlace())
+            while (!IsLeftLayerInPlace() && i < MovesLimitation)
             {
+                i++;
                 solution.Add(new MoveAlgorithm() { Moves = new List<Move> { new Move(LayerType.Left, RotationType.Clockwise) } });
                 _model.Rotate90Degrees(LayerType.Left, RotationType.Clockwise);
             }
+
+            succeded = !(i == MovesLimitation);
 
             return solution;
         }
@@ -304,9 +346,9 @@ namespace ScrarchEngine.Libraries.RubiksCube.Solver.Methods.Beginners
             bool success;
 
             solution.AddRange(SolveCross(out success));
-            solution.AddRange(SolveFirstLayer());
-            solution.AddRange(SolveSecondLayer());
-            solution.AddRange(SolveSecondFlatCross());
+            solution.AddRange(SolveFirstLayer(out success));
+            solution.AddRange(SolveSecondLayer(out success));
+            solution.AddRange(SolveSecondFlatCross(out success));
             //solution.AddRange(SolveSecondCross());
             //solution.AddRange(SolveThirdLayerCubiesLocations());
             //solution.AddRange(SolveThirdLayer());
