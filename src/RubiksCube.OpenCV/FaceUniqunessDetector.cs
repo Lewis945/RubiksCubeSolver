@@ -50,7 +50,7 @@ namespace RubiksCube.OpenCV
 
                 double correl = Cv2.CompareHist(faceHistogram, fHistogram, HistCompMethods.Correl);
 
-                if (correl > 0.9) return false;
+                if (correl > 0.5) return false;
             }
 
             _faces.Add(face);

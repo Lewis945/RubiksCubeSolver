@@ -134,7 +134,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RubiksCube.OpenCV\RubiksCube.OpenCV.csproj">
-      <Project>{F0B87E5E-E1E7-417D-9771-CC37AC2999F5}</Project>
+      <Project>{f0b87e5e-e1e7-417d-9771-cc37ac2999f5}</Project>
       <Name>RubiksCube.OpenCV</Name>
     </ProjectReference>
     <ProjectReference Include="..\ScrarchEngine.Libraries.RubiksCube\ScrarchEngine.Libraries.RubiksCube.csproj">

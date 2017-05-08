@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using System.Linq;
 using System.Text;
 using ScrarchEngine.Libraries.RubiksCube.Extensions;
+using RubiksCube.OpenCV;
 
 namespace RubiksCube.Game
 {
@@ -129,6 +130,13 @@ namespace RubiksCube.Game
 
             _solution = null;
             MessageBox.Show("Done!");
+        }
+
+        private void recognizeButton_Click(object sender, EventArgs e)
+        {
+            //Bootstrapper.Main();
+            var colors = Bootstrapper.GetFaceColors();
+            MessageBox.Show("6 faces found.");
         }
     }
 }

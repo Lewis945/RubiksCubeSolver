@@ -14,7 +14,6 @@ namespace RubiksCube.Game
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Main());
-            //RubiksCube.OpenCV.Bootstrapper.Main();
         }
     }
 }
