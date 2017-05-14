@@ -1,0 +1,42 @@
+\documentclass[../../../../main]{subfiles}
+
+\begin{document}
+
+Accord NET is a framework for machine learning, math statistics, basic scientific computing and computer vision entirely made with {\Csharp}. It includes classification algorithms (\ac{SVM}, decision trees, neural networks, deep learning and etc.), regression algorithms (linear regression, polynomial regression, logarithmic regression, logistic regression and etc.), clustering algorithms (K-Means, Mean-Shift, Gaussian Mixture Models and etc.), algorithms for distribution analyses.
+
+In general, Accord.NET was created to extend features of the AForge.NET created by Andrew Kirillov for the .NET Framework in 2006. However in 2012 Andrew announced the end of support for the AForge.NET thus Accord.NET absorbed most of the original AForge.NET code into its code-base and continued to develop and support the code under Accord.NET name.
+
+\begin{figure} [!ht]
+  \centering    
+    \lstset{style=sharpc}
+        \begin{lstlisting}
+            double[,] A = 
+            {
+                {1, 2, 3},
+                {6, 2, 0},
+                {0, 0, 1}
+            };
+
+            // Singular value decomposition
+            var svd = new SingularValueDecomposition(A);
+            var U = svd.LeftSingularVectors;
+            var S = svd.Diagonal;
+            var V = svd.RightSingularVectors;
+
+            // Eigenvalue decomposition
+            var eig = new EigenvalueDecomposition(A);
+            var V = eig.Eigenvectors;
+            var D = eig.DiagonalMatrix;
+
+            // LU decomposition
+            var lu = new LuDecomposition(A);
+            var L = lu.LowerTriangularFactor;
+            var U = lu.UpperTriangularFactor;         
+        \end{lstlisting}
+  \caption{Accord.NET decomposition samples.}
+  \label{accordnetdecompose}
+\end{figure}
+
+As can be seen from the \ref{accordnetdecompose} Accord.NET includes a huge amount of different mathematical extensions for the standard .NET value types thus having a single .NET matrix a value decomposition can be done in 1 line of code. This library has such type of helpers for the enormous amount of mathematical operations.
+
+\end{document}

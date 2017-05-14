@@ -70,10 +70,49 @@
 \SetKwData{Defined}{Defined}
 \SetKwFunction{parseStatement}{parseStatement}
 
+\usepackage{listings}
+\usepackage{color}
 
 % Nice todo notes
 \usepackage{todonotes}
 
+% Register acronyms
+\usepackage{acronym}
+
+% Register references
+\usepackage{biblatex}
+\addbibresource{references.bib}
+
+\newcommand{\Csharp}{%
+  {\settoheight{\dimen0}{C}C\kern-.05em \resizebox{!}{\dimen0}{\raisebox{\depth}{\#}}}}
+
+\lstdefinestyle{sharpc}{language=[Sharp]C}
+\lstdefinestyle{cplusplus}{language=C++}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=Java,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+%chapter referencing
+\usepackage{xparse,nameref}
+\NewDocumentCommand{\chapref}{s m}{Chapter~\ref{#2}\IfBooleanF{#1}{ \nameref{#2}}}
 
 % Proper way to create coloured code listings
 \usepackage{listings}
@@ -147,6 +186,8 @@
 \setcounter{secnumdepth}{4} % how many sectioning levels to assign numbers to
 \setcounter{tocdepth}{4}    % how many sectioning levels to show in ToC
 
+\newcommand{\degree}{\ensuremath{^\circ}}
+
 \begin{document}
 
 %\maketitle
@@ -175,24 +216,37 @@
 \subfile{sections/abbreviations-and-acronyms}
 \newpage
 
-\section{Introduction}
+\chapter{Introduction}
 \subfile{sections/introduction}
 \newpage
 
-\section{Background and Related work}
+\chapter{Background and Related work}
+\label{chap:background}
 \subfile{sections/related/index}
 \newpage
 
-\section{Experiments}
+\chapter{Experiments}
+\label{chap:experiments}
 \subfile{sections/experiments/index}
 \newpage
 
-\section{Contribution}
+\chapter{Contribution}
+\label{chap:contribution}
 \subfile{sections/contribution/index}
 \newpage
 
-\section{Conclusion}
+\chapter{Conclusion}
+\label{chap:conclusion}
 \subfile{sections/conclusion}
+\newpage
+
+% References samples
+TEXT\cite{latexcompanion} \\
+TEXT\parencite[see][p10]{latexcompanion} \\
+TEXT\parencite[compare][]{knuthwebsite} \\
+TEXT\parencite[e.g.][page 300]{einstein} \\
+
+\printbibliography[heading=bibintoc]
 \newpage
 
 \end{document}

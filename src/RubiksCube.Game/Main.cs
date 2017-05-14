@@ -134,7 +134,7 @@ namespace RubiksCube.Game
 
         private void recognizeButton_Click(object sender, EventArgs e)
         {
-            //Bootstrapper.Main();
+            Bootstrapper.Main();
             var colors = Bootstrapper.GetFaceColors();
             MessageBox.Show("6 faces found.");
         }
