@@ -1,30 +1,82 @@
-@article{einstein,
-    author        = {Albert Einstein},
-    title         = {Zur Elektrodynamik bewegter K{\"o}rper. (German) [On the electrodynamics of moving bodies]},
-    journaltitle  = {Annalen der Physik},
-    year          = {1905},
-    volume        = {322},
-    number        = {10},
-    pages         = {891-921},
-    doi           = {http://dx.doi.org/10.1002/andp.19053221004}
+%---------------- Examples ------------------%
+%@article{einstein,
+%    author        = {Albert Einstein},
+%    title         = {Zur Elektrodynamik bewegter K{\"o}rper. (German) [On the electrodynamics of moving %bodies]},
+%    journaltitle  = {Annalen der Physik},
+%    year          = {1905},
+%    volume        = {322},
+%    number        = {10},
+%    pages         = {891-921},
+%    doi           = {http://dx.doi.org/10.1002/andp.19053221004}
+%}
+%
+%@online{knuthwebsite,
+%    author        = {Donald Knuth},
+%    title         = {Knuth: Computers and Typesetting},
+%    year          = {1984},
+%    url           = {http://www-cs-faculty.stanford.edu/~uno/abcde.html}
+%}
+%
+%@book{latexcompanion,
+%    author        = {Michel Goossens and Frank Mittelbach and Alexander Samarin},
+%    title         = {The \LaTeX\ Companion},
+%    year          = {1993},
+%    publisher     = {Addison-Wesley},
+%    location      = {Reading, Massachusetts}
+%}
+
+% References samples
+%TEXT\cite{latexcompanion} \\
+%TEXT\parencite[see][p10]{latexcompanion} \\
+%TEXT\parencite[compare][]{knuthwebsite} \\
+%TEXT\parencite[e.g.][page 300]{einstein} \\
+
+%---------------- Examples ------------------%
+
+%---------------- CV Basics ------------------%
+
+@online{digital_images,
+    author        = {Cornell University Library/Research Department},
+    title         = {Moving Theory into Practise. Digital Imaging Tutorial},
+    year          = {2000-2003},
+    url           = {http://preservationtutorial.library.cornell.edu}
 }
 
-@online{knuthwebsite,
-    author        = {Donald Knuth},
-    title         = {Knuth: Computers and Typesetting},
-    year          = {1984},
-    url           = {http://www-cs-faculty.stanford.edu/~uno/abcde.html}
+@Book{learning_opencv,
+    author        = {Gary Bradski, Adrian Kaehler},
+    title         = {Learning OpenCV},
+    year          = {2008},
+    url           = {http://www.bogotobogo.com/cplusplus/files/OReilly%20Learning%20OpenCV.pdf}
 }
 
-@book{latexcompanion,
-    author        = {Michel Goossens and Frank Mittelbach and Alexander Samarin},
-    title         = {The \LaTeX\ Companion},
+@online{cv_basics_linda_shapiro,
+    author        = {Linda Shapiro},
+    title         = {Computer Vision Basics},
+    year          = {2006},
+    url           = {https://courses.cs.washington.edu/courses/cse576/06sp/notes/Basics1.pdf}
+}
+
+@online{opencv_docs_basic_tresholding_operations,
+    title         = {Basic Thresholding Operations},
+    url           = {http://docs.opencv.org/2.4/doc/tutorials/imgproc/threshold/threshold.html}
+}
+
+@online{opencv_docs_thresholding,
+    title         = {Image Thresholding},
+    url           = {http://docs.opencv.org/trunk/d7/d4d/tutorial_py_thresholding.html}
+}
+
+@online{opencv_docs_image_smoothing,
+    title         = {Smoothing Images},
+    url           = {http://docs.opencv.org/2.4/doc/tutorials/imgproc/gausian_median_blur_bilateral_filter/gausian_median_blur_bilateral_filter.html}
+}
+
+@book{digital_image_processing_gonzalez,
+    author        = {Rafael C. Gonzalez, Richard E. Woods},
+    title         = {Digital Image Processing},
     year          = {1993},
     publisher     = {Addison-Wesley},
-    location      = {Reading, Massachusetts}
 }
-
-%----------------
 
 @article{rosenfeldpfaltz,
     author        = {A. Rosenfeld and J. Pfaltz},
@@ -32,8 +84,149 @@
     journaltitle  = {Journal of the Association for Computing Machinery},
     year          = {1966},
     pages         = {471-494},
-    doi           = {http://pageperso.lif.univ-mrs.fr/~edouard.thiel/rech/1966-rosenfeld-pfaltz.pdf}
 }
+
+@article{factorization_sfm,
+    author        = {Peter Sturm, Bill Triggs},
+    title         = {A factorization based algorithm for multi-image projective structure and motion},
+    doi           = {10.1007/3-540-61123-1_183}
+}
+
+@online{morphology_website,
+    author        = {R. Fisher, S. Perkins, A. Walker and E. Wolfart},
+    title         = {Morphology},
+    year          = {2003},
+    url           = {http://homepages.inf.ed.ac.uk/rbf/HIPR2/morops.htm}
+}
+
+@online{opencv_docs_understanding_features,
+    title         = {Understanding Features},
+    year          = {2014},
+    url           = {http://docs.opencv.org/3.0-beta/doc/py_tutorials/py_feature2d/py_features_meaning/py_features_meaning.html#features-meaning}
+}
+
+@online{feature_matching_presentation,
+    author        = {UW CSE vision faculty},
+    title         = {Features and Image Matching},
+    url           = {https://courses.cs.washington.edu/courses/cse455/09wi/Lects/lect6.pdf}
+}
+
+@online{cv_basics_3_linda_shapiro,
+    author        = {Linda Shapiro},
+    title         = {Edge Operators},
+    year          = {2006},
+    url           = {https://courses.cs.washington.edu/courses/cse576/06sp/notes/Basics3.pdf}
+}
+
+@online{opencv_docs_canny,
+    title         = {Canny Edge Detection},
+    url           = {http://docs.opencv.org/trunk/da/d22/tutorial_py_canny.html},
+}
+
+@online{opencv_docs_sobel_derivatives,
+    title         = {Sobel Derivatives},
+    url           = {http://docs.opencv.org/2.4/doc/tutorials/imgproc/imgtrans/sobel_derivatives/sobel_derivatives.html}
+}
+
+@online{opencv_docs_harris_corners_1,
+    title         = {Harris Corner Detection},
+    year          = {2014},
+    url           = {http://docs.opencv.org/3.0-beta/doc/py_tutorials/py_feature2d/py_features_harris/py_features_harris.html#harris-corners}
+}
+
+@online{opencv_docs_harris_corners_2,
+    title         = {Harris corner detector},
+    url           = {http://docs.opencv.org/2.4/doc/tutorials/features2d/trackingmotion/harris_detector/harris_detector.html}
+}
+
+@article{good_feature_to_track_shi_tomasi,
+    author        = {Jianbo Shi, Carlo Tomasi},
+    title         = {Good Features to Track},
+    year          = {1994},
+    url           = {http://www.ai.mit.edu/courses/6.891/handouts/shi94good.pdf}
+}
+
+@article{distinctive_features_si_lowe,
+    author        = {David G. Lowe},
+    title         = {Distinctive Image Features from Scale-Invariant Keypoints},
+    year          = {2004},
+    url           = {https://www.cs.ubc.ca/~lowe/papers/ijcv04.pdf}
+}
+
+@online{opencv_docs_sift,
+    title         = {Introduction to SIFT (Scale-Invariant Feature Transform)},
+    year          = {2014},
+    url           = {http://docs.opencv.org/3.0-beta/doc/py_tutorials/py_feature2d/py_sift_intro/py_sift_intro.html#sift-intro}
+}
+
+@article{surf_bay,
+    author        = {Herbert Bay, Tinne Tuytelaars, and Luc Van Gool},
+    title         = {SURF: Speeded Up Robust Features},
+    year          = {2006},
+    url           = {http://www.vision.ee.ethz.ch/~surf/eccv06.pdf}
+}
+
+@online{opencv_docs_surf,
+    title         = {Introduction to SURF (Speeded-Up Robust Features)},
+    year          = {2014},
+    url           = {http://docs.opencv.org/3.0-beta/doc/py_tutorials/py_feature2d/py_surf_intro/py_surf_intro.html#surf}
+}
+
+@article{machine_learning_high_speed_corner_rosten,
+    author        = {Edward Rosten, Tom Drummond},
+    title         = {Machine learning for high-speed corner detection},
+    year          = {2006},
+    url           = {https://www.edwardrosten.com/work/rosten_2006_machine.pdf}
+}
+
+@online{brief_calonder,
+    author        = {Michael Calonder, Vincent Lepetit, Christoph Strecha, and Pascal Fua},
+    title         = {BRIEF: Binary Robust Independent Elementary Features⋆},
+    year          = 2010},
+    url           = {https://www.robots.ox.ac.uk/~vgg/rg/papers/CalonderLSF10.pdf}
+}
+
+@article{orb_rublee,
+    author        = {Ethan Rublee, Vincent Rabaud, Kurt Konolige, Gary Bradski},
+    title         = {ORB: an efficient alternative to SIFT or SURF},
+    year          = {2011},
+    url           = {http://www.willowgarage.com/sites/default/files/orb_final.pdf}
+}
+
+@online{opencv_docs_orb,
+    title         = {ORB (Oriented FAST and Rotated BRIEF)},
+    year          = {2014},
+    url           = {http://docs.opencv.org/3.0-beta/doc/py_tutorials/py_feature2d/py_orb/py_orb.html#orb}
+}
+
+@online{opencv_docs_matchers,
+    title         = {Feature Matching},
+    year          = {2014},
+    url           = {http://docs.opencv.org/3.0-beta/doc/py_tutorials/py_feature2d/py_matcher/py_matcher.html#matcher}
+}
+
+
+@online{opencv_docs_feature_matching_homography,
+    title         = {Feature Matching + Homography to find Objects},
+    year          = {2014},
+    url           = {http://docs.opencv.org/3.0-beta/doc/py_tutorials/py_feature2d/py_feature_homography/py_feature_homography.html#py-feature-homography}
+}
+
+@article{support_vector_networks_vapnik,
+    author        = {Cortes C, Vapnik V.},
+    title         = {Support-vector networks},
+    year          = {1995},
+    doi           = {10.1007/BF00994018}
+}
+
+@online{binary_image_analysis_washington,
+    title         = {Binary Image Analysis},
+    url           = {https://courses.cs.washington.edu/courses/cse373/00au/chcon.pdf}
+}
+
+%---------------- CV Basics ------------------%
+
+%---------------- Stereovision Basics ------------------%
 
 @Book{Hartley2004, 
     author = "Hartley, R.~I. and Zisserman, A.",
@@ -43,23 +236,57 @@
     publisher = "Cambridge University Press, ISBN: 0521540518"
 }
 
+
+%---------------- Stereovision Basics ------------------%
+
+%---------------- SfM Basics ------------------%
+
 @Book{RichardSzeliski2010, 
     author = "Richard Szeliski",
     title = "Computer Vision: Algorithms and Applications",
     year = "2010",
 }
 
+@online{sfm_theia,
+    author        = {Chris Sweeney},
+    title         = {Structure from Motion (SfM)},
+    year          = {2016},
+    url           = {http://www.theia-sfm.org/sfm.html}
+}
+
+%---------------- SfM Basics ------------------%
+
+%---------------- Tracking and Mapping ------------------%
+
+@Book{springer_handbook_of_robotics, 
+    author = "Bruno Siciliano Prof., Oussama Khatib Prof.",
+    title = "Springer Handbook of Robotics",
+    pages = {871-889},
+    year = "2008",
+}
+
+@article{fast_slam,
+    author        = {Michael Montemerlo, Sebastian Thrun, Daphne Koller, Ben Wegbreit},
+    title         = {FastSLAM: A Factored Solution to the Simultaneous Localization and Mapping Problem},
+    year          = {2002},
+    url           = {http://www.aaai.org/Papers/AAAI/2002/AAAI02-089.pdf}
+}
+
 @article{ptam,
     author        = {Georg Klein and David Murray},
     title         = {Parallel Tracking and Mapping for Small AR Workspaces},
-    doi           = {http://www.robots.ox.ac.uk/~gk/publications/KleinMurray2007ISMAR.pdf}
+    url           = {http://www.robots.ox.ac.uk/~gk/publications/KleinMurray2007ISMAR.pdf}
 }
 
 @article{dtam,
     author        = {Richard Newcombe, Steven Lovegrove and Andrew Davison},
     title         = {DTAM: Dense Tracking and Mapping in Real-Time},
-    doi           = {https://www.robots.ox.ac.uk/~vgg/rg/papers/newcombe_davison__2011__dtam.pdf}
+    url           = {https://www.robots.ox.ac.uk/~vgg/rg/papers/newcombe_davison__2011__dtam.pdf}
 }
+
+%---------------- Tracking and Mapping ------------------%
+
+%---------------- Kalman ------------------%
 
 @article{kalman1960,
     Author = {Kalman, Rudolph Emil},
@@ -71,184 +298,32 @@
     Year = {1960}
 }
 
-@online{knuthwebsite1,
-    author        = {1},
-    title         = {1},
-    year          = {1},
-    url           = {https://courses.cs.washington.edu/courses/cse576/06sp/notes/Basics1.pdf}
+%---------------- Kalman ------------------%
+
+%---------------- Seminars ------------------%
+
+@article{sudoku_solver_zakharov,
+    author = {Vitalii Zakharov},
+    title = {Sudoku solver},
+    year = {2015}
 }
 
-@online{knuthwebsite2,
-    author        = {1},
-    title         = {1},
-    year          = {1},
-    url           = {http://preservationtutorial.library.cornell.edu}
+@article{rubiks_cube_zakharov,
+    author = {Vitalii Zakharov},
+    title = {Rubik's Cube Solver},
+    year = {2016}
 }
 
-@online{knuthwebsite3,
-    author        = {1},
-    title         = {1},
-    year          = {1},
-    url           = {http://docs.opencv.org/trunk/d7/d4d/tutorial_py_thresholding.html}
+@article{puzzle_games_solver_q3_zakharov,
+    author = {Vitalii Zakharov},
+    title = {Puzzle games (like Rubik's cube) solver Q3},
+    year = {2016}
 }
 
-@online{knuthwebsite4,
-    author        = {1},
-    title         = {1},
-    year          = {1},
-    url           = {http://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_imgproc/py_colorspaces/py_colorspaces.html}
+@article{puzzle_games_solver_q4_zakharov,
+    author = {Vitalii Zakharov},
+    title = {Puzzle games (like Rubik's cube) solver Q4},
+    year = {2017}
 }
 
-@online{knuthwebsite5,
-    author        = {1},
-    title         = {1},
-    year          = {1},
-    url           = {http://homepages.inf.ed.ac.uk/rbf/HIPR2/morops.htm}
-}
-
-@online{knuthwebsite6,
-    author        = {1},
-    title         = {1},
-    year          = {1},
-    url           = {http://www.bogotobogo.com/cplusplus/files/OReilly%20Learning%20OpenCV.pdf}
-}
-
-@online{knuthwebsite7,
-    author        = {1},
-    title         = {1},
-    year          = {1},
-    url           = {http://docs.opencv.org/2.4/doc/tutorials/imgproc/threshold/threshold.html}
-}
-
-@online{knuthwebsite8,
-    author        = {},
-    title         = {},
-    year          = {},
-    url           = {https://courses.cs.washington.edu/courses/cse576/06sp/notes/Basics3.pdf}
-}
-
-@online{knuthwebsite9,
-    author        = {1},
-    title         = {1},
-    year          = {1},
-    url           = {http://docs.opencv.org/3.0-beta/doc/py_tutorials/py_feature2d/py_features_meaning/py_features_meaning.html#features-meaning}
-}
-
-@online{knuthwebsite10,
-    author        = {1},
-    title         = {1},
-    year          = {1},
-    url           = {http://docs.opencv.org/3.0-beta/doc/py_tutorials/py_feature2d/py_table_of_contents_feature2d/py_table_of_contents_feature2d.html}
-}
-
-@online{knuthwebsite11,
-    author        = {1},
-    title         = {1},
-    year          = {1},
-    url           = {https://courses.cs.washington.edu/courses/cse455/09wi/Lects/lect6.pdf}
-}
-
-@online{knuthwebsite12,
-    author        = {1},
-    title         = {1},
-    year          = {1},
-    url           = {http://docs.opencv.org/trunk/da/d22/tutorial_py_canny.html}
-}
-
-@online{knuthwebsite13,
-    author        = {1},
-    title         = {1},
-    year          = {1},
-    url           = {http://docs.opencv.org/2.4/doc/tutorials/imgproc/imgtrans/sobel_derivatives/sobel_derivatives.html}
-}
-
-@online{knuthwebsite14,
-    author        = {1},
-    title         = {1},
-    year          = {1},
-    url           = {http://docs.opencv.org/2.4/doc/tutorials/features2d/trackingmotion/harris_detector/harris_detector.html}
-}
-
-@online{knuthwebsite15,
-    author        = {1},
-    title         = {1},
-    year          = {1},
-    url           = {http://docs.opencv.org/3.0-beta/doc/py_tutorials/py_feature2d/py_features_harris/py_features_harris.html#harris-corners}
-}
-
-@online{knuthwebsite16,
-    author        = {1},
-    title         = {1},
-    year          = {1},
-    url           = {http://docs.opencv.org/3.0-beta/doc/py_tutorials/py_feature2d/py_sift_intro/py_sift_intro.html#sift-intro}
-}
-
-@online{knuthwebsite17,
-    author        = {1},
-    title         = {1},
-    year          = {1},
-    url           = {http://docs.opencv.org/3.0-beta/doc/py_tutorials/py_feature2d/py_surf_intro/py_surf_intro.html#surf}
-}
-
-@online{knuthwebsite18,
-    author        = {1},
-    title         = {1},
-    year          = {1},
-    url           = {http://docs.opencv.org/3.0-beta/doc/py_tutorials/py_feature2d/py_orb/py_orb.html#orb}
-}
-
-@online{knuthwebsite19,
-    author        = {1},
-    title         = {1},
-    year          = {1},
-    url           = {http://docs.opencv.org/3.0-beta/doc/py_tutorials/py_feature2d/py_feature_homography/py_feature_homography.html#py-feature-homography}
-}
-
-@online{knuthwebsite20,
-    author        = {1},
-    title         = {1},
-    year          = {1},
-    url           = {http://docs.opencv.org/3.0-beta/doc/py_tutorials/py_feature2d/py_matcher/py_matcher.html#matcher}
-}
-
-@online{knuthwebsite21,
-    author        = {1},
-    title         = {1},
-    year          = {1},
-    url           = {http://www.ai.mit.edu/courses/6.891/handouts/shi94good.pdf}
-}
-
-@online{knuthwebsite22,
-    author        = {1},
-    title         = {1},
-    year          = {1},
-    url           = {https://www.cs.ubc.ca/~lowe/papers/ijcv04.pdf}
-}
-
-@online{knuthwebsite23,
-    author        = {1},
-    title         = {1},
-    year          = {1},
-    url           = {https://www.edwardrosten.com/work/rosten_2006_machine.pdf}
-}
-
-@online{knuthwebsite24,
-    author        = {1},
-    title         = {1},
-    year          = {1},
-    url           = {http://www.willowgarage.com/sites/default/files/orb_final.pdf}
-}
-
-@online{knuthwebsite25,
-    author        = {1},
-    title         = {1},
-    year          = {1},
-    url           = {https://www.robots.ox.ac.uk/~vgg/rg/papers/CalonderLSF10.pdf}
-}
-
-@online{knuthwebsite26,
-    author        = {1},
-    title         = {1},
-    year          = {1},
-    url           = {https://courses.cs.washington.edu/courses/cse373/00au/chcon.pdf}
-}
+%---------------- Seminars ------------------%

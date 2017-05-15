@@ -3,7 +3,9 @@
 
 \begin{document}
 
-Stereo vision is a field of computer vision and its purpose is to provide information about 3D structures on digital images. This is achieved by comparing some feature points of scene taken from two views at the same time. In traditional way it is done by a stereo camera, which is, basically, two cameras placed horizontally within some distance, as human eyes. This technique allows to get relative distance from a camera to the object on the scene. This information is also known as relative depth information which is represented as disparity map.
+\paragraph{Stereovision basics}
+
+Stereo vision is a field of computer vision and its purpose is to provide information about 3D structures on digital images. This is achieved by comparing some feature points of scene taken from two views at the same time. In traditional way it is done by a stereo camera, which is, basically, two cameras placed horizontally within some distance, as human eyes. This technique allows to get relative distance from a camera to the object on the scene. This information is also known as relative depth information which is represented as disparity map \cite{Hartley2004}.
 
 There are few steps that precede finding of depth information because images taken by camera could contain some distortions and etc. The first and the most important step is to calibrate cameras with their inartistic parameters to make it function as a single system. This operation will provide extrinsic parameters of the camera, which is rotation and translation vectors of the camera. Calibration is achieved by showing calibration grid to the camera which looks like a chessboard. It is used because size of squares should be known and the grid pattern is simple for detection.
 
@@ -54,7 +56,7 @@ To determine the 3D point coordinates by two or more its 2D projection so called
          Z = f\frac{B}{D}, X = u\frac{Z}{f}, Y = v\frac{Z}{f}
          \label{realCoordinatesFormula}
       \end{equation}
-  \caption{Formulas of 3D points.}
+  \caption{Equations of 3D point's coordinates.}
 \end{figure}
 
 Basically, if the baseline is known, 3D coordinates could be found with the equation \ref{realCoordinatesFormula} where B is a baseline, d is a disparity, f is a focal length, u and v are column and row with the origin in center of the image.

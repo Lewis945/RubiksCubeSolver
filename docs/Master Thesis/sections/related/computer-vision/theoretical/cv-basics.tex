@@ -3,7 +3,9 @@
 
 \begin{document}
 
-\textbf{Digital images} are the first step in any computer vision process. They represent an electronic snapshots of something that we see, for instance, captured scene by photo camera or some scanned document and etc. It got used to sample all digital images as a set of pixels (picture elements or grid of dots, in other words). Any pixel is represented as a binary value (set of zeros and ones) so these values illustrates tonality of pixels (white, black, etc.). The binary digits or bits are interpreted and read by a computer to produce an analog version of the image in order to display or print it.
+\paragraph{Computer vision basics}
+
+\textbf{Digital images} are the first step in any computer vision process. They represent an electronic snapshots of something that we see, for instance, captured scene by photo camera or some scanned document and etc. It got used to sample all digital images as a set of pixels (picture elements or grid of dots, in other words). Any pixel is represented as a binary value (set of zeros and ones) so these values illustrates tonality of pixels (white, black, etc.). The binary digits or bits are interpreted and read by a computer to produce an analog version of the image in order to display or print it \cite{digital_images}.
 
 Images have a property called "Bit Depth", its value is constituted by number of bits used to represent a pixel. Image tonality is dependant on bits depth so the larger its value the larger variety of possible tones for the pixel. Digital images could be bi-tonal(black and white), gray-scale, or color. For example, pixels in bi-tonal images are depicted as one bit (zero or one, black and white); gray-scale images, on the contrary, can be made of multiple bits, usually from two to eight but can be more. Color digital images are another side of coin, they are typically represented as a set of bits in range from 8 to 24 or more. Taking the 24-bit images into the view, their values are usually divided into 3 group, first 8 bits for red color, next 8 for green, and last 8 for blue.
 Here is a list that shows how possible variety of tones is dependant on number of bits per pixel:
@@ -18,16 +20,16 @@ Here is a list that shows how possible variety of tones is dependant on number o
     \item 24 bits, ($2^{24}$) = 16.7 million tones
 \end{itemize}
 
-\textbf{Computer vision pipeline} can be divided into 3 main phases: low-level processing where image results into another image (blurring, sharpening, thresholding), mid-level processing where image results into set of features (\ac{FAST}, \ac{SURF} feature detection algorithms), high-level processing where features are analyzed and some data is received (\ac{CCA}). 
+\textbf{Computer vision pipeline} can be divided into 3 main phases: low-level processing where image results into another image (blurring, sharpening, thresholding), mid-level processing where image results into set of features (\ac{FAST}, \ac{SURF} feature detection algorithms), high-level processing where features are analyzed and some data is received (\ac{CCA}) \cite{cv_basics_linda_shapiro}. 
 
 \textbf{Thresholding}. Nowadays computer vision is gray-scale and cannot work with colors. In order to remove noise and make gray-scale image more precise for computer vision it should be thresholded. This operation is one of the simplest segmentation operations. There are also some algorithms that can threshold color images but they still produce gray-scale images as a result. There are multiple thresholding algorithms and they produces very different result due to complexity of computations.
-There are two the most simplest thresholding algorithms: global and adaptive thresholding. The first one is very primitive, it is provided with a threshold value and compares each pixel intensity whether its larger or lower this value. The intensity of a pixel is calculated as $((R+G+B)/3))$. Based on the comparison result it replaces pixel intensity with either 0 or maximal intensity. There are multiple variants of this operation, it can be binary, inverted binary, truncated, truncated to zero, threshold to zero and inverted.
+There are two the most simplest thresholding algorithms: global and adaptive thresholding. The first one is very primitive, it is provided with a threshold value and compares each pixel intensity whether its larger or lower this value. The intensity of a pixel is calculated as $((R+G+B)/3))$. Based on the comparison result it replaces pixel intensity with either 0 or maximal intensity. There are multiple variants of this operation, it can be binary, inverted binary, truncated, truncated to zero, threshold to zero and inverted \cite{digital_image_processing_gonzalez}.
 
 \begin{figure} [ht!]
     \begin{center}
         \includegraphics[width=200pt]{Threshold_Tutorial_Theory_Base_Figure}
         \includegraphics[width=200pt]{Threshold_Tutorial_Theory_Binary}
-        \caption{Global Threshold example}
+        \caption{Global Threshold example \cite{opencv_docs_basic_tresholding_operations}.}
         \label{fig:Global Threshold}
     \end{center}
 \end{figure}
@@ -39,15 +41,15 @@ There are two the most simplest thresholding algorithms: global and adaptive thr
             maxValue, & \mbox{if } currentIntensity\mbox{ > } tresh\\ 
             0, & \mbox{if } currentIntensity\mbox{ < } tresh
         \end{cases}
-  \caption{Formula of Global Threshold}
+  \caption{Equation of Global Threshold.}
 \end{figure}
 
-Truncated threshold, on the contrary to binary, replaces only values that are larger or lower the trash, depending on whether operation is inverted or not, not both at the same time.
+Truncated threshold, on the contrary to binary, replaces only values that are larger or lower the trash, depending on whether operation is inverted or not, not both at the same time \cite{opencv_docs_basic_tresholding_operations}.
 
 \begin{figure} [ht!]
     \begin{center}
         \includegraphics[width=200pt]{Threshold_Tutorial_Theory_Truncate}
-        \caption{Global Truncated Threshold example}
+        \caption{Global Truncated Threshold example \cite{opencv_docs_basic_tresholding_operations}.}
         \label{fig:Global Truncated Threshold}
     \end{center}
 \end{figure}
@@ -59,7 +61,7 @@ Truncated threshold, on the contrary to binary, replaces only values that are la
             thresh, & \mbox{if } currentIntensity\mbox{ > } tresh\\ 
             currentIntensity, & \mbox{if } currentIntensity\mbox{ < } tresh
         \end{cases}
-  \caption{Formula of Global Truncated Threshold}
+  \caption{Equation of Global Truncated Threshold.}
 \end{figure}
 
 Threshold to zero is quite similar to the simple threshold but instead of putting maximal value it puts the real one.
@@ -67,7 +69,7 @@ Threshold to zero is quite similar to the simple threshold but instead of puttin
 \begin{figure} [!ht]
     \begin{center}
         \includegraphics[width=200pt]{Threshold_Tutorial_Theory_Zero}
-        \caption{Global Threshold to Zero example}
+        \caption{Global Threshold to Zero example \cite{opencv_docs_basic_tresholding_operations}.}
         \label{fig:Global Threshold to Zero}
     \end{center}
 \end{figure}
@@ -79,31 +81,31 @@ Threshold to zero is quite similar to the simple threshold but instead of puttin
             currentIntensity, & \mbox{if } currentIntensity\mbox{ > } tresh\\ 
             0, & \mbox{if } currentIntensity\mbox{ < } tresh
         \end{cases}
-  \caption{Formula of Global Threshold to Zero}
+  \caption{Equation of Global Threshold to Zero.}
 \end{figure}
 
-Adaptive thresholding, from the other side, does not use fixed threshold value, it computes this value from surrounding pixels, for instance, it takes an eleven by eleven square where the needed pixel is in the center and computes threshold value from this block of pixels. This algorithm is much slower but it produces much better results and it is more appropriate for real world tasks, since it works better for images with varying illumination.
+Adaptive thresholding, from the other side, does not use fixed threshold value, it computes this value from surrounding pixels, for instance, it takes an eleven by eleven square where the needed pixel is in the center and computes threshold value from this block of pixels. This algorithm is much slower but it produces much better results and it is more appropriate for real world tasks, since it works better for images with varying illumination \cite{learning_opencv}.
 
 \begin{figure} [!ht]
 \begin{center}
 \includegraphics[width=200pt]{adaptive_thresholding_logic}
-\caption{Adaptive thresholding logic demonstration}
+\caption{Adaptive thresholding logic demonstration.}
 \label{fig:adaptiveThresholdingLogic}
 \end{center}
 \end{figure}
 
-\textbf{Otsu's Binarization} uses different approach to calculate threshold value, it works with bi-modal images (histogram has 2 peaks) so the threshold value is taken approximately in the middle of these two peaks. The algorithm is accurate only for bi-modal images, it's better not to use it for others, results will be unsatisfying.
+\textbf{Otsu's Binarization} uses different approach to calculate threshold value, it works with bi-modal images (histogram has 2 peaks) so the threshold value is taken approximately in the middle of these two peaks. The algorithm is accurate only for bi-modal images, it's better not to use it for others, results will be unsatisfying \cite{opencv_docs_thresholding}.
 
 \begin{figure} [!ht]
 \begin{center}
 \includegraphics[width=200pt]{OpenCV_Otsu_Thresholding2}
-\caption{Otsu's Binarization demonstration}
+\caption{Otsu's Binarization demonstration.}
 \label{fig:otsuThresholding}
 \end{center}
 \end{figure}
 
 \textbf{Image Filtering}. In computer vision filtering is used to clear images from noise. There are multiple common types of it: "Salt and pepper" noise that contains multiple randomly located black and white pixels, "Impulse noise" that contains randomly located white pixels, and Gaussian noise where noise is Gaussian-distributed.
-One of the most important entities in the image filtering is convolutional matrix, also known as kernel or mask, which is a small matrix used for image filtering. It is related to a form of mathematical convolution. In addition, it should be mentioned that convolution is not traditional matrix multiplication, even though it is denoted by * (asterisk). It is the process of adding each element of the image to its local neighbors, weighted by the kernel. 
+One of the most important entities in the image filtering is convolutional matrix, also known as kernel or mask, which is a small matrix used for image filtering. It is related to a form of mathematical convolution. In addition, it should be mentioned that convolution is not traditional matrix multiplication, even though it is denoted by * (asterisk). It is the process of adding each element of the image to its local neighbors, weighted by the kernel \cite{opencv_docs_image_smoothing}. 
 
 \begin{figure} [!ht]
   \centering    
@@ -163,9 +165,9 @@ Bilateral filtering is significantly different from the others, this filtering t
   \caption{The bilateral filter definition and its normalization term}
 \end{figure}
 
-$I^{filtered}$ from the formula \ref{eq:bilateral_filter} is the resulting image; $I$ is the initial image, $x$ is the coordinate of the current pixel; $\Omega$ is the neighborhood, so called window, with $x$ in its center; $f_r$ and $g_s$ are two convolutional matrices for smoothing and they could be Gaussian functions.
+$I^{filtered}$ from the equation \ref{eq:bilateral_filter} is the resulting image; $I$ is the initial image, $x$ is the coordinate of the current pixel; $\Omega$ is the neighborhood, so called window, with $x$ in its center; $f_r$ and $g_s$ are two convolutional matrices for smoothing and they could be Gaussian functions.
 
-\textbf{Morphological transformations} are widely used and simple operations based on the image shape, they are techniques for analysis and processing of geometrical structures. Initially they were designed for binary digital images but nowadays they can also be applied to gray-scale image and different spatial structures as graphs, solids, or meshes. The most common morphological operations are erosion, dilation, opening and closing.
+\textbf{Morphological transformations} are widely used and simple operations based on the image shape, they are techniques for analysis and processing of geometrical structures. Initially they were designed for binary digital images but nowadays they can also be applied to gray-scale image and different spatial structures as graphs, solids, or meshes. The most common morphological operations are erosion, dilation, opening and closing \cite{morphology_website}.
 
 A structuring element in morphological transformations is a shape mask. It can be of any shape or size that can be represented digitally.
 
@@ -226,16 +228,16 @@ Morphological gradient in computer vision is simply a difference between dilatio
 \end{figure}
 
 \textbf{Feature detection and description}. In image processing there is no way to define image features as something exact and there is no universal algorithm to get them from an image. Usually the definition of features goes out from the problem that is trying to be solved but in general they can be characterized as \ac{POI} for a given problem. 
-Feature detection is an operation of finding and analyzing image for some interesting points; it often results in the form of points, lines, curves, or regions lists. Detection and analyzing operations could be really time consuming or require large computational power thus feature detection algorithms could become a part of more high level algorithms so that they are called only on some localized regions to improve speed and time complexity. 
+Feature detection is an operation of finding and analyzing image for some interesting points; it often results in the form of points, lines, curves, or regions lists. Detection and analyzing operations could be really time consuming or require large computational power thus feature detection algorithms could become a part of more high level algorithms so that they are called only on some localized regions to improve speed and time complexity \cite{opencv_docs_understanding_features}. 
 
-Some popular types of features have become very popular and are widely used, they are edges, corners (points of intersection), and blobs (regions of interesting points).
-Edges, in general, are defined as points on the edge (boundary) in between image blobs. Corners are referred as point-like features, basically, the name is just used by tradition. In fact those features are not corners at every scenario. They were developed from the edge detection when people tried to analyze rapid changes in direction, which is a corner. Blob features are good when images are too smooth so that corners can't be detected. These features contain additional information about image structures in terms of regions, different from what point like features do.
+Some popular types of features have become very popular and are widely used, they are edges \cite{cv_basics_3_linda_shapiro}, corners (points of intersection), and blobs (regions of interesting points).
+Edges, in general, are defined as points on the edge (boundary) in between image blobs. Corners are referred as point-like features, basically, the name is just used by tradition. In fact those features are not corners at every scenario. They were developed from the edge detection when people tried to analyze rapid changes in direction, which is a corner. Blob features are good when images are too smooth so that corners can't be detected. These features contain additional information about image structures in terms of regions, different from what point like features do \cite{feature_matching_presentation}.
 
 Feature extraction, on the other side, is the operation applied to the image with the information retrieved from the detection step, it proceed the extraction of image region around the feature. This action gives a feature descriptor as a result but may consume a large amount of computational power.
 
 Nowadays, many different types of features have been defined, thus many different feature detection and extraction algorithms have been developed.
 
-Canny edge detection is one of the most popular edge detection algorithms. It is named by its author, John Canny. This algorithm has multiple stages: noise reduction, computing intensity gradient, non-maximum suppression, hysteresis thresholding. It uses 5 by 5 Gaussian filter to reduce noise because edge detection operation is very vulnerable to a noise. Image is filtered with Sobel matrix to get horizontal and vertical direction first derivatives which is done to find edge gradient and direction. After this, image is filtered to reduce pixels that might not be components of the edge. Filtering is done by checking local maximum of the pixel in the direction of gradient through the neighboring pixels. In short, if the result of this check gives a local maximum, pixel is kept for the next stage, otherwise put to zero. Binary image is given in the end of this stage. Last step is analysis of detected edges, they are filtered (thresholded) on the basis of two thresholding values, minimum and maximum. If the pixel intensity gradient is larger then maximum, it is marked as edge, if lower then minimum then discarded. The most interesting case is when the value lies in between, in this case edges are checked for connectivity with those who is already marked as real edge, if the connection exists they are also marked as edges, otherwise discarded.
+Canny edge detection is one of the most popular edge detection algorithms. It is named by its author, John Canny. This algorithm has multiple stages: noise reduction, computing intensity gradient, non-maximum suppression, hysteresis thresholding \cite{opencv_docs_canny}. It uses 5 by 5 Gaussian filter to reduce noise because edge detection operation is very vulnerable to a noise. Image is filtered with Sobel matrix \cite{opencv_docs_sobel_derivatives} to get horizontal and vertical direction first derivatives which is done to find edge gradient and direction. After this, image is filtered to reduce pixels that might not be components of the edge. Filtering is done by checking local maximum of the pixel in the direction of gradient through the neighboring pixels. In short, if the result of this check gives a local maximum, pixel is kept for the next stage, otherwise put to zero. Binary image is given in the end of this stage. Last step is analysis of detected edges, they are filtered (thresholded) on the basis of two thresholding values, minimum and maximum. If the pixel intensity gradient is larger then maximum, it is marked as edge, if lower then minimum then discarded. The most interesting case is when the value lies in between, in this case edges are checked for connectivity with those who is already marked as real edge, if the connection exists they are also marked as edges, otherwise discarded.
 
 \begin{figure} [!ht]
   \centering    
@@ -248,7 +250,7 @@ Canny edge detection is one of the most popular edge detection algorithms. It is
   \caption{Definition of gradient and direction where $G_x$ and $G_y$ are first derivatives in horizontal and vertical directions.}
 \end{figure}
 
-Harris corner detection algorithm is developed by Chris Harris and Mike Stephens. They were one of the earliest people who were trying to find corners, regions in the image where intensity value in all directions varies in the large range. The idea was to get the difference in intensity in all directions. For corner detection $E(u,v)$ function is maximized by applying Taylor Expansion. This was done to create a score function that will determine whether the corner is in the window or not. Eigenvalues $\lambda_1$ and $\lambda_2$ are retrieved from the matrix created in the process of maximizing $E(u,v)$ and they decide what region is corner. The region is determined to be an edge when its score is less then zero, that happens when $\lambda_1>>\lambda_2$ or $\lambda_1<<\lambda_2$, which means that the difference between them should be significant. On the contrary, if the score is large, which happens when lambdas are large and approximately equal, region is determined as a corner.
+Harris corner detection algorithm is developed by Chris Harris and Mike Stephens. They were one of the earliest people who were trying to find corners, regions in the image where intensity value in all directions varies in the large range \cite{opencv_docs_harris_corners_1}. The idea was to get the difference in intensity in all directions. For corner detection $E(u,v)$ function is maximized by applying Taylor Expansion. This was done to create a score function that will determine whether the corner is in the window or not. Eigenvalues $\lambda_1$ and $\lambda_2$ are retrieved from the matrix created in the process of maximizing $E(u,v)$ and they decide what region is corner. The region is determined to be an edge when its score is less then zero, that happens when $\lambda_1>>\lambda_2$ or $\lambda_1<<\lambda_2$, which means that the difference between them should be significant. On the contrary, if the score is large, which happens when lambdas are large and approximately equal, region is determined as a corner \cite{opencv_docs_harris_corners_2}.
 
 \begin{figure} [!ht]
   \centering    
@@ -266,7 +268,7 @@ Harris corner detection algorithm is developed by Chris Harris and Mike Stephens
   \caption{Definition of the Harris scoring function.}
 \end{figure}
 
-From the other side, Jianbo Shi and Carlo Thomasi in 1994 wrote a paper called "Good features to track", where they suggested to take another scoring function which gave much better results in comparison with Harris Corner Detection. The idea was to compare results of scoring function to a threshold value. In their version, the determined region as a corner only if both $\lambda_1$ and $\lambda_2$ are larger then the score, which is minimum from both lambda values.
+From the other side, Jianbo Shi and Carlo Thomasi in 1994 wrote a paper called "Good features to track" \cite{good_feature_to_track_shi_tomasi}, where they suggested to take another scoring function which gave much better results in comparison with Harris Corner Detection. The idea was to compare results of scoring function to a threshold value. In their version, the determined region as a corner only if both $\lambda_1$ and $\lambda_2$ are larger then the score, which is minimum from both lambda values.
 
 \begin{figure} [!ht]
   \centering    
@@ -276,9 +278,9 @@ From the other side, Jianbo Shi and Carlo Thomasi in 1994 wrote a paper called "
   \caption{Definition of the Shi-Tomasi scoring function.}
 \end{figure}
 
-\ac{SIFT} is an algorithm authored by David Lowe in 2004 and described in the article "Distinctive Image Features from Scale-Invariant Keypoint". The author has created it due to the scale problems for corner detection in already created algorithms, while corner remains a corner after rotation, scaling breaks the logic. Algorithm contains 5 stages: scale-space extrema detection, key point localization, orientation assignment, key point descriptor, key point matching. First of all, it uses different windows to detect key points with different scale and it uses scale-space filtering for this. \ac{LoG} is used as a blob detector with a scale parameter $\sigma$. Then it searches for the local maxima through scale-space and results into a list of tuples $(x,y,\sigma)$ that can be a potential key points. Since the  \ac{LoG} is a bit costly operation \ac{SIFT} uses difference of Gaussian because it is less computationally expensive and, in fact, is \ac{LoG}'s approximation. It is done by getting difference of blurring image with two different values ($\sigma$). After \ac{DoG} is complete, scale-space is searched for a local extrema and if it is found, that is a potential key point. Paper gives some optimal values retrieved by empirical research, $\sigma$ value is $1.6$, and another $\sigma$ is $1.6\sqrt{2}$. Potential key points are found but they are not accurate enough.To get more precise location of extrema algorithm uses Taylor series expansion of scale-space and compares intensity of current extrema with threshold value so that if it is less, key point is rejected. It also uses similar to Harris Corner detection edge filtering since \ac{DoG} is not good at that and discard those key points whose ration is greater then a threshold. Next, in order to be invariant to image rotation, each key point is assigned with orientation. To achieve this orientation histogram covering 360 degrees is created. The next step is creation of key point descriptor from the 16 by 16 neighborhood of the current key point. This region is divided into 16 sub-locks where for each an orientation histogram is created. It also performs some operations to be resistant to illumination changes, rotation changes and etc. Total of 128 bin values is represented as a vector to represent a key point descriptor. The last step is key points matching, that is done by identifying the nearest neighbour. Due to some reasons like noise or others the second nearest match may be very close to the first one and in this case ratio between them is taken and depending on its value they might be rejected or not.
+\ac{SIFT} is an algorithm authored by David Lowe in 2004 and described in the article "Distinctive Image Features from Scale-Invariant Keypoint" \cite{distinctive_features_si_lowe}. The author has created it due to the scale problems for corner detection in already created algorithms, while corner remains a corner after rotation, scaling breaks the logic. Algorithm contains 5 stages: scale-space extrema detection, key point localization, orientation assignment, key point descriptor, key point matching. First of all, it uses different windows to detect key points with different scale and it uses scale-space filtering for this. \ac{LoG} is used as a blob detector with a scale parameter $\sigma$. Then it searches for the local maxima through scale-space and results into a list of tuples $(x,y,\sigma)$ that can be a potential key points. Since the  \ac{LoG} is a bit costly operation \ac{SIFT} uses difference of Gaussian because it is less computationally expensive and, in fact, is \ac{LoG}'s approximation. It is done by getting difference of blurring image with two different values ($\sigma$). After \ac{DoG} is complete, scale-space is searched for a local extrema and if it is found, that is a potential key point. Paper gives some optimal values retrieved by empirical research, $\sigma$ value is $1.6$, and another $\sigma$ is $1.6\sqrt{2}$. Potential key points are found but they are not accurate enough.To get more precise location of extrema algorithm uses Taylor series expansion of scale-space and compares intensity of current extrema with threshold value so that if it is less, key point is rejected. It also uses similar to Harris Corner detection edge filtering since \ac{DoG} is not good at that and discard those key points whose ration is greater then a threshold. Next, in order to be invariant to image rotation, each key point is assigned with orientation. To achieve this orientation histogram covering 360 degrees is created. The next step is creation of key point descriptor from the 16 by 16 neighborhood of the current key point. This region is divided into 16 sub-locks where for each an orientation histogram is created. It also performs some operations to be resistant to illumination changes, rotation changes and etc. Total of 128 bin values is represented as a vector to represent a key point descriptor. The last step is key points matching, that is done by identifying the nearest neighbour. Due to some reasons like noise or others the second nearest match may be very close to the first one and in this case ratio between them is taken and depending on its value they might be rejected or not \cite{opencv_docs_sift}.
 
-In 2006 3 people, Herbert Bay, Tinne Tuytelaars, Luc Van Gool created a replacement for \ac{SIFT} called \ac{SURF}. Basically, this algorithm brings speed improvement at each step of \ac{SIFT}. For the fist step, it goes much deeper and approximates \ac{LoG} with box filter, which is a convolution filter. This type of operation has some advantage: easily calculated with a help of integral images, can be performed in parallel for different scales. During orientation assignment it uses wavelet responses in both directions. It also estimates the dominant orientation as a sum of all responses in the orientation window with angle of 60\degree. Since many tasks do not require rotation invarience, \ac{SURF} has a concept called Upright-SURF or U-SURF where there is no orientation findings that speeds up the process by 15\%. On the feature description step it uses wavelet responses again in both directions. The neighborhood of the key point is divided into 4 by 4 sub-regions and for each of them it forms a vector from wavelet responses.
+In 2006 3 people, Herbert Bay, Tinne Tuytelaars, Luc Van Gool created a replacement for \ac{SIFT} called \ac{SURF} \cite{surf_bay}. Basically, this algorithm brings speed improvement at each step of \ac{SIFT}. For the fist step, it goes much deeper and approximates \ac{LoG} with box filter, which is a convolution filter. This type of operation has some advantage: easily calculated with a help of integral images, can be performed in parallel for different scales. During orientation assignment it uses wavelet responses in both directions. It also estimates the dominant orientation as a sum of all responses in the orientation window with angle of 60\degree. Since many tasks do not require rotation invarience, \ac{SURF} has a concept called Upright-SURF or U-SURF where there is no orientation findings that speeds up the process by 15\%. On the feature description step it uses wavelet responses again in both directions. The neighborhood of the key point is divided into 4 by 4 sub-regions and for each of them it forms a vector from wavelet responses.
 
 \begin{figure} [!ht]
   \centering    
@@ -290,7 +292,7 @@ In 2006 3 people, Herbert Bay, Tinne Tuytelaars, Luc Van Gool created a replacem
 
 This results into the feature descriptor with 64 dimensions but \ac{SURF} also has an extended 128 dimension version where $\sum{d_x}$ and $\sum{|d_x|}$ are computed separately for $d_y<0$ and $d_y\geq0$, the same is done for $\sum{d_y}$ and $\sum{|d_y|}$ depending on $d_x$ sign.
 
-\ac{SURF} also has a great improvement which is a use of a sign of Laplacian. It is already computed during detection, a trace of Hessian Matrix, thus it adds no cost to be computed. It allows to distinguish bright blobs on dark background and the opposite situation. During matching, it uses minimal information, compares features by having the same type of contrast, which allows to do matching faster without reducing performance.
+\ac{SURF} also has a great improvement which is a use of a sign of Laplacian. It is already computed during detection, a trace of Hessian Matrix, thus it adds no cost to be computed. It allows to distinguish bright blobs on dark background and the opposite situation. During matching, it uses minimal information, compares features by having the same type of contrast, which allows to do matching faster without reducing performance \cite{opencv_docs_surf}.
 
 \begin{figure} [ht]
     \begin{center}
@@ -300,7 +302,7 @@ This results into the feature descriptor with 64 dimensions but \ac{SURF} also h
     \end{center}
 \end{figure}
 
-All mentioned features detection algorithms are not fast enough to be used in real time tasks, one of examples is \ac{SLAM}. In 2006 Tom Drummond and Edward Rosten have written an article "Machine learning for high-speed corner detection" where they proposed new algorithm called \ac{FAST}.
+All mentioned features detection algorithms are not fast enough to be used in real time tasks, one of examples is \ac{SLAM}. In 2006 Tom Drummond and Edward Rosten have written an article "Machine learning for high-speed corner detection" where they proposed new algorithm called \ac{FAST} \cite{machine_learning_high_speed_corner_rosten}.
 
 The idea is pretty simple, it takes a circle of 16 pixels around the current pixel and if at least $n$ of them are contiguous and their intensities are larger then the sum of current pixel intensity and threshold value or less then difference of them it implies that the pixel is corner. To improve the speed it also has a concept of a high-speed test to reject more non-corners then it already dose. It takes only 4 pixels, first it takes 1-st and 9-th and if they meet the condition next couple of 5-th and 13-th are checked. Only to those who passed high-speed test full check is applied. The method has its pros and cons so to fix some of cons machine learning non-maximal suppression is used.
 
@@ -320,12 +322,12 @@ Machine learning part of algorithm works as follows, it takes a set of images fr
   \caption{FAST feature state conditions.}
 \end{figure}
 
-\ac{BRIEF} was published by Michael Calonder, Vincent Lepetit, Christoph Strecha, and Pascal Fua in 2010. This algorithm brings a significant improvement to the way how features are matched. Basically, it is not a fully functional feature detection algorithm, it is only matching already found features thus have to be used in tandem with some feature detection algorithm. \ac{SIFT} and \ac{SURF} use vectors as feature descriptors but they take enormous amount of space, 256 bytes per feature which is not sufficient for embedded systems, for instance. These vectors can be compressed to binary string that can be used to match features with Hamiltonian distance which is a simple XOR on bit count operations. Unfortunately compression does not solve the problem of memory consumption because it still has to compute descriptors. Here comes \ac{BRIEF}, it can find this binary strings without actually finding feature descriptors. In order to do this, it uses unique algorithm to get some set of location pairs from the smoothed image patch. Iterating over this set it compares elements of pairs and compares their intensity, depending on the result of comparison it creates a bit-string of zeroes and ones. Afterwards, Hamiltonian distance can be used to match the results.
+\ac{BRIEF} was published by Michael Calonder, Vincent Lepetit, Christoph Strecha, and Pascal Fua in 2010 \cite{brief_calonder}. This algorithm brings a significant improvement to the way how features are matched. Basically, it is not a fully functional feature detection algorithm, it is only matching already found features thus have to be used in tandem with some feature detection algorithm. \ac{SIFT} and \ac{SURF} use vectors as feature descriptors but they take enormous amount of space, 256 bytes per feature which is not sufficient for embedded systems, for instance. These vectors can be compressed to binary string that can be used to match features with Hamiltonian distance which is a simple XOR on bit count operations. Unfortunately compression does not solve the problem of memory consumption because it still has to compute descriptors. Here comes \ac{BRIEF}, it can find this binary strings without actually finding feature descriptors. In order to do this, it uses unique algorithm to get some set of location pairs from the smoothed image patch. Iterating over this set it compares elements of pairs and compares their intensity, depending on the result of comparison it creates a bit-string of zeroes and ones. Afterwards, Hamiltonian distance can be used to match the results.
 
-In 2011, Vincent Rabaud, Ethan Rublee, Kurt Konolige and Gary Bradski from "OpenCV Labs" created an alternative to \ac{SIFT} and \ac{SURF}. They described it in the paper called "ORB: An efficient alternative to \ac{SIFT} or \ac{SURF}". The main attractiveness of \ac{ORB} is that it is free from patents while is good as \ac{SIFT} and \ac{SURF}. 
-Basically it uses \ac{FAST} for key points detection and by applying Harris corner finds $N$ best points. It also uses \ac{BRIEF} as the feature descriptor. To fix the issues with rotations for both \ac{FAST} and \ac{BRIEF} it suggests some additional computations. As an improvement to \ac{FAST}, to get the rotation algorithm computes the direction vector from the corner point to the intensity weighted centroid with this corner placed in the center. For \ac{BRIEF} it controls the process according to key points orientation. For a set of binary tests at some location it creates a matrix, with a size twice larger then the set, with coordinates of pixels. Afterwards using the orientation of key point it computes rotation matrix with the help of which it computes rotated version of matrix with points coordinates. In addition, it uses multi-probe local sensitivity hashing instead of original version of it for matching. The algorithm is good for inefficient devices with low computational power.
+In 2011, Vincent Rabaud, Ethan Rublee, Kurt Konolige and Gary Bradski from "OpenCV Labs" created an alternative to \ac{SIFT} and \ac{SURF}. They described it in the paper called "ORB: An efficient alternative to \ac{SIFT} or \ac{SURF}" \cite{orb_rublee}. The main attractiveness of \ac{ORB} is that it is free from patents while is good as \ac{SIFT} and \ac{SURF}. 
+Basically it uses \ac{FAST} for key points detection and by applying Harris corner finds $N$ best points. It also uses \ac{BRIEF} as the feature descriptor. To fix the issues with rotations for both \ac{FAST} and \ac{BRIEF} it suggests some additional computations. As an improvement to \ac{FAST}, to get the rotation algorithm computes the direction vector from the corner point to the intensity weighted centroid with this corner placed in the center. For \ac{BRIEF} it controls the process according to key points orientation. For a set of binary tests at some location it creates a matrix, with a size twice larger then the set, with coordinates of pixels. Afterwards using the orientation of key point it computes rotation matrix with the help of which it computes rotated version of matrix with points coordinates. In addition, it uses multi-probe local sensitivity hashing instead of original version of it for matching. The algorithm is good for inefficient devices with low computational power \cite{opencv_docs_orb}.
 
-Matchers are algorithms for checking feature descriptors for similarity. Query descriptor can be compared with all other descriptors via Brute Force approach or use other algorithms with better heuristic like \ac{kNN} or \ac{FLANN}. The main problem is that each matcher can't work with all feature descriptors. For instance simple \ac{FLANN} can't work with bit strings as descriptors while \ac{FLANN} with locality sensitive hashing index can do this.
+Matchers are algorithms for checking feature descriptors for similarity. Query descriptor can be compared with all other descriptors via Brute Force approach or use other algorithms with better heuristic like \ac{kNN} or \ac{FLANN}. The main problem is that each matcher can't work with all feature descriptors. For instance simple \ac{FLANN} can't work with bit strings as descriptors while \ac{FLANN} with locality sensitive hashing index can do this \cite{opencv_docs_matchers}.
 
 The most popular combinations of feature detector, extractor and matcher are \ac{SURF} with \ac{SURF} and \ac{FLANN}, \ac{SIFT} with \ac{SIFT} and \ac{FLANN}, \ac{ORB} with \ac{ORB} and Brute force, \ac{ORB} with \ac{BRIEF} and Brute force. \ac{FAST} can be used as a feature detector in all these combinations.
 
@@ -333,7 +335,7 @@ Brute-Force matcher simply takes the descriptor of some feature from the first i
 
 \ac{FLANN} is used for large data-sets because it provides much better performance then Brute force. It consists of a set of algorithms for nearest neighbour search so that those algorithms are optimized to be faster.
 
-Homography, in computer vision, is a relation between two point's sets from the same planar surface which is true for the pinhole camera model. It can be computed with knowledge of camera parameters so that rotation and translation information can be extracted. This information is useful in many tasks; they are augmented reality, navigation and etc.
+Homography, in computer vision, is a relation between two point's sets from the same planar surface which is true for the pinhole camera model. It can be computed with knowledge of camera parameters so that rotation and translation information can be extracted. This information is useful in many tasks; they are augmented reality, navigation and etc \cite{opencv_docs_feature_matching_homography}.
 
 In computer vision, machine learning techniques are widely used. One of them is classification, analyzing new observed features for belonging to some defined categories. The process of creating those categories is also known as clustering.
 
@@ -343,9 +345,9 @@ In pattern recognition, the \ac{kNN}is a non-parametric method used for classifi
 During the training phase algorithm only stores the feature vectors and labels of classes retrieved from training data. 
 Two commonly used distance metrics in the algorithm are Euclidean and Hamming depending on what should be classified, for example, Hamming is used for text classification.
 
-\ac{SVM} algorithm was developed by Vladimir Vapnik and Alexey Chervonenkis in 1963 but in 1992, Bernhard Boser, Isabelle Guyon and Vladimir Vapnik suggested a way to make \ac{SVM} nonlinear classifier. \ac{SVM} as it is known today, with soft margin, was published in 1995 by one of its initial authors, Vapnik, and Corinna Cortes. \ac{SVM} algorithm is a set of controlled learning models used to analyze data for regression and classification analysis. With a help of training data this algorithm builds a model that can classify new samples to one of the two categories. Thus it is linear binary classifier but with a help of trick, called "kernel trick", that performs implicit mapping to a high-dimensional feature spaces, it can become non-linear classifier. In addition, it can work with unlabeled sample data with a help of support vector clustering algorithm. Basically, \ac{SVM}s are very useful for working with text, especially handwritten, because they make pre-labeling stage unnecessary. They also show high search accuracy after multiple runs of relevance feedback.
+\ac{SVM} algorithm was developed by Vladimir Vapnik and Alexey Chervonenkis in 1963 but in 1992, Bernhard Boser, Isabelle Guyon and Vladimir Vapnik suggested a way to make \ac{SVM} nonlinear classifier. \ac{SVM} as it is known today, with soft margin, was published in 1995 by one of its initial authors, Vapnik, and Corinna Cortes \cite{support_vector_networks_vapnik}. \ac{SVM} algorithm is a set of controlled learning models used to analyze data for regression and classification analysis. With a help of training data this algorithm builds a model that can classify new samples to one of the two categories. Thus it is linear binary classifier but with a help of trick, called "kernel trick", that performs implicit mapping to a high-dimensional feature spaces, it can become non-linear classifier. In addition, it can work with unlabeled sample data with a help of support vector clustering algorithm. Basically, \ac{SVM}s are very useful for working with text, especially handwritten, because they make pre-labeling stage unnecessary. They also show high search accuracy after multiple runs of relevance feedback.
 
-Connected components analysis or labeling is a category of algorithms that are used to identify and analyze connected set of pixels. In general it is done by taking binary image and producing another image where each pixel is marked for belonging to some group, object on the image represented as a blob of connected pixels. 
+Connected components analysis or labeling is a category of algorithms that are used to identify and analyze connected set of pixels. In general it is done by taking binary image and producing another image where each pixel is marked for belonging to some group, object on the image represented as a blob of connected pixels \cite{binary_image_analysis_washington}. 
 
 \begin{figure} [!ht]
   \centering    

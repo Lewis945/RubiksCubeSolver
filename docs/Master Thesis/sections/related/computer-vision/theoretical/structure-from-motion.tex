@@ -3,25 +3,25 @@
 
 \begin{document}
 
-\cite{RichardSzeliski2010}
+\paragraph{Structure from motion}
 
 Structure from motion problem is, basically, the case of finding a set of 3D points with projection matrices and translation vectors for corresponding views from the set of images. This process is a 3D reconstruction from a sequence of images.
 
-Sequential methods are usually used, they are iterative thus reconstruction is done partially, step by step. The process starts from the first image, when the new image is registered algorithm processes new portion of data, performs triangulation and add new 3D data to the reconstruction model. Initialization is usually achieved by finding fundamental matrix from the first two views and decomposing it.
+Sequential methods are usually used, they are iterative thus reconstruction is done partially, step by step. The process starts from the first image, when the new image is registered algorithm processes new portion of data, performs triangulation and add new 3D data to the reconstruction model. Initialization is usually achieved by finding fundamental matrix from the first two views and decomposing it \cite{RichardSzeliski2010}.
 
-These methods have some complications, first of all, they require huge amount of corresponding points per each image in a sequence. Usually seven or more correspondence must be present at three or more views. Large set of images require too much computational power in order to process these. Secondly, there are a number of structure and motion combinations that are not appropriate for the mentioned methods. These cases might be the camera rotation without any translation or planar scenes. Basically, it is impossible to avoid those cases without an expert planning on how to take pictures for the structure from motion sequence.
+These methods have some complications, first of all, they require huge amount of corresponding points per each image in a sequence. Usually seven or more correspondence must be present at three or more views. Large set of images require too much computational power in order to process these. Secondly, there are a number of structure and motion combinations that are not appropriate for the mentioned methods. These cases might be the camera rotation without any translation or planar scenes. Basically, it is impossible to avoid those cases without an expert planning on how to take pictures for the structure from motion sequence \cite{sfm_theia}.
 
 The most common strategy for registering images is epipolar constraints. It is achieved by using the correspondence of the image from the current view to the image of the previous view. Essential matrix is typically used but intrinsic camera parameters must be known. Its decomposition gives relative camera orientation and translation vector.
 
 \begin{figure} [ht]
     \begin{center}
         \includegraphics[width=200pt]{incremental_sfm}
-        \caption{Demonstration of incremental structure from motion. (http://www.theia-sfm.org/sfm.html)}
+        \caption{Demonstration of incremental structure from motion \cite{sfm_theia}.}
         \label{fig:incrementalSfm}
     \end{center}
 \end{figure}
 
-On the other hand, factorization methods do the job simultaneously. These methods belong to the family of batch methods. \ac{SVD} factorization based linear methods have been created for many affine camera models like orthographic, para-perspective or weak perspective and etc. These methods distribute reconstruction error among all measurements but, unfortunately, they are not applicable for the real world situations because camera lenses have too wide angle thus cannot be approximated as linear.
+On the other hand, factorization methods do the job simultaneously. These methods belong to the family of batch methods. \ac{SVD} factorization based linear methods have been created for many affine camera models like orthographic, para-perspective or weak perspective and etc. These methods distribute reconstruction error among all measurements but, unfortunately, they are not applicable for the real world situations because camera lenses have too wide angle thus cannot be approximated as linear \cite{factorization_sfm}.
 
 Lastly, after receiving initial estimations for 3D points and projection matrices it is needed to minimize function cost with the non-linear iterative optimization. This optimization is called bundled adjustment. It, basically, refines camera and structure parameters initial estimations to get those parameters that predict the locations of features among all images in the most efficient way.
 

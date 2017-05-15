@@ -3,9 +3,11 @@
 
 \begin{document}
 
+\paragraph{Tracking and Mapping}
+
 Tracking and Mapping is somewhat a logical group that unites multiple algorithms under the hood. For instance, real-time Structure from Motion is also referred to as monocular \ac{SLAM} which is a group of tracking and mapping algorithms.
 
-\ac{SLAM} approximately solves the problem of building and updating the map of environment; at the same time it computes and keeps track of the object position in the environment, e.g. robot. 
+\ac{SLAM} approximately solves the problem of building and updating the map of environment; at the same time it computes and keeps track of the object position in the environment, e.g. robot \cite{springer_handbook_of_robotics}. 
 
 Maps are used to determine a position in space and for a graphic representation of a terrain plan or for navigation. They are used to assess the actual location by recording information obtained from the perception form and comparing it with the current set of representations. The contribution of maps to the assessment of the current location in space increases with a decrease in the accuracy and quality of space sensing sensors. Maps basically reflect the type of space fixed at the time of their construction. It is not at all necessary that the kind of space will be the same at the time of using the maps.
 
@@ -23,7 +25,7 @@ Monte Carlo methods and Extended Kalman Filter are often used in approximation p
 
 \ac{SLAM} group of algorithms usually used in robotics, self-driven cars,and etc. Despite this fact, it is still an open field of research since current solutions are not ideal.
 
-Methods for finding camera pose in an unknown environment were already developed by adapting monocular \ac{SLAM}. Two the most known algorithms are EKF-SLAM and FastSLAM 2.0 but they are incremental which means that tracking and mapping operations are done one after another in a single pipeline. This leads to an update of every landmark and camera position at every frame. While this approach might be suitable for robotics it is not good enough for hand-held camera. This statement is argued by the fact that robot is able to move at a stable constant slow speed, for the hand it is not that easy to do, and robot usually uses more data then just camera to build map with \ac{SLAM}. Errors generated during the work-flow of hand-held monocular \ac{SLAM} can cause the corruption of generated maps in the mentioned iterative methods.
+Methods for finding camera pose in an unknown environment were already developed by adapting monocular \ac{SLAM}. Two the most known algorithms are EKF-SLAM and FastSLAM 2.0 \cite{fast_slam} but they are incremental which means that tracking and mapping operations are done one after another in a single pipeline. This leads to an update of every landmark and camera position at every frame. While this approach might be suitable for robotics it is not good enough for hand-held camera. This statement is argued by the fact that robot is able to move at a stable constant slow speed, for the hand it is not that easy to do, and robot usually uses more data then just camera to build map with \ac{SLAM}. Errors generated during the work-flow of hand-held monocular \ac{SLAM} can cause the corruption of generated maps in the mentioned iterative methods.
 
 \begin{figure} [ht!]
     \begin{center}
@@ -44,11 +46,11 @@ Since none of mentioned approaches was robust enough for hand-held case for the 
 \end{figure}
 
 \ac{PTAM} initialization should be performed before tracking begins. Initialization movement of camera must include slight translation, just rotating camera will fail it. 
-Decoupling of tracking and mapping allows algorithm not to process each frame since the algorithm is not iterative. Selective processing of frames is necessary for rejecting those with redundant information, for example, similar frames when camera is not moving. This selectivity helps to speed up the algorithm in comparison with iterative methods. Fact that key-frames are not following each other frame by frame means that processing can be done not within a strict real-time but should be finished by the time when new key-frame is added.
+Decoupling of tracking and mapping allows algorithm not to process each frame since the algorithm is not iterative. Selective processing of frames is necessary for rejecting those with redundant information, for example, similar frames when camera is not moving. This selectivity helps to speed up the algorithm in comparison with iterative methods. Fact that key-frames are not following each other frame by frame means that processing can be done not within a strict real-time but should be finished by the time when new key-frame is added \cite{ptam}.
 
 From the other side, bundle adjustment replaces incremental mapping. It was chosen because of its successful usage in real-time visual odometry and tracking same as it is well-proven instrument in Structure from Motion. The initial map is built with five-point algorithm. Tracking is achieved by applying local bundle adjustment to the $n$ most recent camera poses where $n$ is set manually to achieve real-time performance. Building long-term map makes this algorithm different in comparison with other solutions. This map is built so that feature points are visited over and over again thus it can perform full-map optimization. In addition, 2D features tracking was not efficient enough for initialization step thus authors decided to rely on epipolar feature search.
 
-On the contrary, there is another algorithm aiming to solve the same problem as \ac{PTAM}, its name is \ac{DTAM}. Authors claim that dense methods for tracking and mapping can provide more accurate and robust results in comparison with other world perception models based on features. In contrast with other real-time monocular \ac{SLAM} algorithms it builds dense 3D model and uses it for camera pose tracking.
+On the contrary, there is another algorithm aiming to solve the same problem as \ac{PTAM}, its name is \ac{DTAM}. Authors claim that dense methods for tracking and mapping can provide more accurate and robust results in comparison with other world perception models based on features. In contrast with other real-time monocular \ac{SLAM} algorithms it builds dense 3D model and uses it for camera pose tracking \cite{dtam}.
 
 
 \begin{figure} [ht!]
