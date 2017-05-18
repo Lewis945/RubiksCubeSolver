@@ -35,11 +35,11 @@ Initially this stage was done as coloring all the small connected components int
 
 \subsubsection{Segmentation}
 
-This part of the program is responsible for determining where the numbers on the image are. Usually segmentation is the hardest part of the OCR process. However, in this case, software should process standard 9 by 9 Sudoku, which grid is square and its size is already known, thus there is no need to do complex segmentation operations. But even in case of none-standard grid it was possible to do the segmentation with Hough-lines algorithm, that would make the process universal. For time reasons it was decided to stick to the 9 by 9 grid. It was cut into 81 equal pieces. Then all the pieces were checked whether they contained a number or not. In order to do this there was area selected so that it was half of the size of the piece and was centered. If the sum of the pixels inside was equal to 0 it means that it was empty. Otherwise, piece of the image was processed in order to find all contours by picking the middle point. Algorithm works as follows, it tries to find the biggest and the closest to the center point contour. Found contour is supposed to be a number. Then it expands the size of the search window until some bounding value. Segmented images are stored in the matrix of image arrays and "None"'s and sent to the OCR stage.
+This part of the program is responsible for determining where the numbers on the image are. Usually segmentation is the hardest part of the OCR process. However, in this case, software should process standard 9 by 9 Sudoku, which grid is square and its size is already known, thus there is no need to do complex segmentation operations. But even in case of none-standard grid it was possible to do the segmentation with Hough-lines algorithm, that would make the process universal. For time reasons it was decided to stick to the 9 by 9 grid. It was cut into 81 equal pieces. Then all the pieces were checked whether they contained a number or not. In order to do this there was area selected so that it was half of the size of the piece and was centered. If the sum of the pixels inside was equal to 0 it means that it was empty. Otherwise, piece of the image was processed in order to find all contours by picking the middle point. Algorithm works as follows, it tries to find the biggest contour that is at the same time the closest to the center point. Found contour is supposed to be a number. Then it expands the size of the search window until some bounding value. Segmented images are stored in the matrix of image arrays and "None"'s are sent to the OCR stage.
 
 \subsubsection{Optical Character Recognition}
 
-The purpose of the OCR is to take an image, process it and return characters that are presented on the image.
+The purpose of the OCR is to take an image, process it and return characters that are presented in the image.
 Every recognition algorithms has steps:
 \begin{enumerate}
 \item  Determine input image features
@@ -47,10 +47,10 @@ Every recognition algorithms has steps:
 \item  Classify input image
 \end{enumerate}
 
-Images may have different parameters (shape, color scheme, borders and etc.). Before classifying it is needed to bring all the images to the same standard (shape, binary color). For this purpose images were re-sized to some specified size and image matrix was vectorized because vector must represent an image in the classification algorithm. Optimal size of the image was chosen by experiment. For \ac{SVM} classification pixel values were changed to zero for black and one for white. That was done because \ac{SVM} classification algorithm requires that kind of representation. \ac{kNN} classification algorithm was also used for experiment purposes.
+Images may have different parameters (shape, color scheme, borders and etc.). Before classifying it is needed to bring all the images to the same standard (shape, binary color). For this purpose images were re-sized to some specified size and image matrix was vectorized because vector must represent an image in the classification algorithm. Optimal size of the image was chosen by experiment. For \ac{SVM} classification pixel values were changed to zero for black and one for white. Here the feature vector was composed explicitly of pixel values of the binary image. No additional feature extraction was applied. That was done because \ac{SVM} classification algorithm requires that kind of representation. \ac{kNN} classification algorithm was also used for experiment purposes.
 Both algorithms gave almost the same results.
 
-Classification of Sudoku numbers was done as follows, the matrix with segments matrices in positions where some numbers are supposed to be and 'NONE' for the opposite situation was created. Afterwards, it is transposed to a vector and passed to the classification stage. Classification algorithm, from its side, returns the label of the classified image, that is the needed number.
+Classification of Sudoku numbers was done as follows, the multi-dimensional matrix of segments was created. It has some numbers or 'NONE' objects as its values. Afterwards, it was reshaped to a vector and passed to the classification stage. Classification algorithm, from its side, returns the label of the classified image, that is the needed number.
 
 \subsubsection{Conclusion}
 
@@ -58,18 +58,18 @@ This project gave a good understanding of computer vision algorithms and their p
 
 \begin{figure} [ht!]
     \begin{center}
-        \includegraphics[width=220pt]{initial}
+        \includegraphics[width=172pt]{initial}
         \includegraphics[width=175pt]{warpped}
         \caption{Extracting Sudoku's grid example.}
         \label{fig:sudoku_extraction}
     \end{center}
 \end{figure}
 
-Python implementation has shown itself as a good approach. Built approach behaved as expected for the images with medium or high quality. For the bad quality images results were not that good but the success rate was still more than 30\%. As can be seen from figures \ref{fig:sudoku_extraction} and \ref{fig:sudoku_ocr} Sudoku grid was properly extracted. Lastly, all numbers on the grid were recognized and reprojected back onto the image.
+Python implementation has shown itself as a good approach. Built approach behaved as expected for the images with medium or high quality. For the low quality images results were not that good but the success rate was still more than 30\%. As can be seen from figures \ref{fig:sudoku_extraction} and \ref{fig:sudoku_ocr} Sudoku grid was properly extracted. Lastly, all numbers on the grid were recognized and reprojected back onto the image.
 
 \begin{figure} [ht!]
     \begin{center}
-        \includegraphics[width=250pt]{recognized}
+        \includegraphics[width=230pt]{recognized}
         \caption{OCR result displayed on the extracted grid.}
         \label{fig:sudoku_ocr}
     \end{center}

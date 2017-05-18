@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using ScrarchEngine.Libraries.RubiksCube.Extensions;
 using RubiksCube.OpenCV;
+using System.Drawing;
 
 namespace RubiksCube.Game
 {
@@ -134,9 +135,98 @@ namespace RubiksCube.Game
 
         private void recognizeButton_Click(object sender, EventArgs e)
         {
-            Bootstrapper.Main();
+            //Bootstrapper.Main();
             var colors = Bootstrapper.GetFaceColors();
             MessageBox.Show("6 faces found.");
         }
+
+        #region Face mappings
+
+        private static Dictionary<Color, FacePieceType> _colorToTypeMappings = new Dictionary<Color, FacePieceType>
+        {
+            { Color.Blue, FacePieceType.Blue },
+            { Color.Green, FacePieceType.Green },
+            { Color.Orange, FacePieceType.Orange },
+            { Color.Red, FacePieceType.Red },
+            { Color.White, FacePieceType.White },
+            { Color.Yellow, FacePieceType.Yellow }
+        };
+
+        private static Dictionary<FacePieceType, Color> _typeToColorMappings = new Dictionary<FacePieceType, Color>
+        {
+            {  FacePieceType.Blue ,Color.Blue},
+            {  FacePieceType.Green,Color.Green },
+            { FacePieceType.Orange , Color.Orange},
+            { FacePieceType.Red , Color.Red},
+            { FacePieceType.White ,  Color.White},
+            { FacePieceType.Yellow , Color.Yellow}
+        };
+
+        private static Dictionary<FacePieceType, List<FacePieceType>> _mappingClockwiseOrder = new Dictionary<FacePieceType, List<FacePieceType>>
+        {
+            { FacePieceType.Blue, new List<FacePieceType> { FacePieceType.White, FacePieceType.Green, FacePieceType.Yellow, FacePieceType.Red, FacePieceType.Orange } },
+            { FacePieceType.Green, new List<FacePieceType> { FacePieceType.White, FacePieceType.Blue, FacePieceType.Yellow, FacePieceType.Orange, FacePieceType.Red } },
+
+            { FacePieceType.Orange, new List<FacePieceType> { FacePieceType.White, FacePieceType.Red, FacePieceType.Yellow, FacePieceType.Blue, FacePieceType.Green }  },
+            { FacePieceType.Red, new List<FacePieceType> { FacePieceType.White, FacePieceType.Orange, FacePieceType.Yellow, FacePieceType.Green, FacePieceType.Blue }  },
+
+            { FacePieceType.White, new List<FacePieceType> { FacePieceType.Red, FacePieceType.Yellow, FacePieceType.Orange, FacePieceType.Blue, FacePieceType.Green }  },
+            { FacePieceType.Yellow, new List<FacePieceType> { FacePieceType.Red, FacePieceType.White, FacePieceType.Orange, FacePieceType.Green, FacePieceType.Blue }  }
+        };
+
+        private void MapFacesToModel(List<List<Color>> facesColors)
+        {
+            var firstFace = facesColors.FirstOrDefault();
+            rubicsCubeControl.RubiksCubeModel.SetFaceColors(FaceType.Front, MapColors(firstFace));
+
+            var middlePiece = firstFace[4];
+            var middlePieceType = _colorToTypeMappings[middlePiece];
+
+            facesColors.Remove(firstFace);
+
+            var order = _mappingClockwiseOrder[middlePieceType];
+
+            int i = 0;
+            foreach (var item in order)
+            {
+                var color = _typeToColorMappings[item];
+                var face = facesColors.FirstOrDefault(f => f[4] == color);
+
+                if (i == 0)
+                    rubicsCubeControl.RubiksCubeModel.SetFaceColors(FaceType.Up, MapColors(face));
+
+                if (i == 1)
+                    rubicsCubeControl.RubiksCubeModel.SetFaceColors(FaceType.Back, MapColors(face));
+
+                if (i == 2)
+                    rubicsCubeControl.RubiksCubeModel.SetFaceColors(FaceType.Down, MapColors(face));
+
+                if (i == 3)
+                    rubicsCubeControl.RubiksCubeModel.SetFaceColors(FaceType.Left, MapColors(face));
+
+                if (i == 4)
+                    rubicsCubeControl.RubiksCubeModel.SetFaceColors(FaceType.Right, MapColors(face));
+
+                i++;
+            }
+        }
+
+        private FacePieceType[,] MapColors(List<Color> colors)
+        {
+            var facePieceTypeArray = new FacePieceType[3, 3];
+
+            int k = 0;
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    facePieceTypeArray[i, j] = _colorToTypeMappings[colors[k]];
+                    k++;
+                }
+            }
+            return facePieceTypeArray;
+        }
+
+        #endregion
     }
 }

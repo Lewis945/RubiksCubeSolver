@@ -4,7 +4,11 @@
 % A package for setting layout and margins for your thesis 
 \usepackage[a4paper]{geometry}
 %
-\usepackage[english]{babel} 
+%\usepackage[estonian, english]{babel} 
+
+\usepackage[utf8]{inputenc}
+\usepackage[estonian, english]{babel}
+
 %
 %
 % When you write in Estonian then you want to use text with right character set
@@ -208,10 +212,12 @@
 \subfile{sections/abstract}
 \newpage
 
-\section*{Abstraktne}
-\addcontentsline{toc}{section}{\protect\numberline{}Abstraktne}
+\selectlanguage{estonian}
+\section*{Kokkuvõte}
+\addcontentsline{toc}{section}{\protect\numberline{}Kokkuvõte}
 \subfile{sections/resume}
 \newpage
+\selectlanguage{english}
 
 \section*{Acknowledgements}
 \addcontentsline{toc}{section}{\protect\numberline{}Acknowledgements} 
@@ -248,6 +254,11 @@
 \newpage
 
 \printbibliography[heading=bibintoc]
+\newpage
+
+\addcontentsline{toc}{section}{\protect\numberline{}Appendices} 
+\chapter*{Appendices}
+\subfile{sections/appendix}
 \newpage
 
 \section*{License}

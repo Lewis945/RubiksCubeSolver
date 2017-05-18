@@ -4,11 +4,13 @@
 
 \begin{document}
 
-The current project is representing a deep research in the field of computer vision with its complex algorithms and stereo vision concepts. Kalman filter was analyzed for suitability to the current problem. The program was developed in {\Csharp}. It can extract data about a Rubik's cube, build cube's model, solve and render it. Even though the extraction part is not giving incredible results it works as expected.
+The current project is representing a deep research in the field of computer vision with its complex algorithms and stereo vision concepts. Kalman filter was analyzed for suitability to the current problem. The program was developed in {\Csharp}. It can extract data about a Rubik's cube, build cube's model, solve and render it. The extraction part is not giving incredible results however it works as expected. Contours approach for face detection was the most stable due to its simplicity. On the other hand, \ac{PTAM}-based blob solution was accepted as a working one, however, it has a limitation at bootstrapping stage thus it is rejected for usage in the final application. In addition, \ac{PTAM}-based plane solution was rejected due to its pipeline complexity. The current solution fails to detect planes one by one without restarting. Hence, the Kalman filter usage is postponed for the time when \ac{PTAM} will be adopted to match the requirements of the assigned task.
+
+On the other hand, \ac{PTAM} and Kalman are not rejected as the solution itself. Self-written \ac{PTAM} solution requires multiple modifications to be able to store the state of the pipeline. In addition, it should be updated in order to track bootstrapped but unseen key points. This changes will be the field for Kalman filter usage.
 
 \begin{figure} [ht!]
     \begin{center}
-        \includegraphics[width=300pt]{program_window}
+        \includegraphics[width=270pt]{program_window}
         \caption{Window of the program.}
         \label{fig:framework_program_window}
     \end{center}
