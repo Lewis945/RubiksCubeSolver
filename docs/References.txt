@@ -9,6 +9,8 @@ Camera Calibration and 3D Reconstruction (http://docs.opencv.org/2.4/modules/cal
 
 An Implementation of Camera Calibration Algorithms, Meredith Drennan  (http://cecas.clemson.edu/~stb/ece847/projects/Camera_Calibration.pdf)
 
+Line of intersection between two planes (http://stackoverflow.com/questions/6408670/line-of-intersection-between-two-planes)
+
 https://github.com/luizcorreia/Camera-Calibration
 https://github.com/zhoudavinci/Camera-Calibration-by-EmguCV
 https://github.com/MasteringOpenCV/code/tree/master/Chapter3_MarkerlessAR

@@ -35,17 +35,45 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
-    <Folder Include="Solver\Methods\Beginners\" />
+    <None Include="packages.config" />
+    <None Include="Solver\Methods\Beginners\Patterns\FirstLayer.json" />
+    <None Include="Solver\Methods\Beginners\Patterns\SecondCross.json" />
+    <None Include="Solver\Methods\Beginners\Patterns\SecondFlatCross.json" />
+    <None Include="Solver\Methods\Beginners\Patterns\SecondLayer.json" />
+    <None Include="Solver\Methods\Beginners\Patterns\ThirdLayer.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\CloneExtensions.cs" />
+    <Compile Include="Json\CustomMoveConverter.cs" />
+    <Compile Include="Json\CustomStateConverter.cs" />
+    <Compile Include="Models\Cubie.cs" />
     <Compile Include="Models\Face.cs" />
+    <Compile Include="Models\FacePiece.cs" />
     <Compile Include="Models\FacePieceType.cs" />
     <Compile Include="Models\FaceType.cs" />
+    <Compile Include="Models\FlipAxis.cs" />
     <Compile Include="Models\LayerType.cs" />
+    <Compile Include="Models\RotationIndex.cs" />
     <Compile Include="Models\RotationType.cs" />
     <Compile Include="Models\RubiksCubeModel.cs" />
     <Compile Include="Models\Utilities.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Solver\BaseSolver.cs" />
+    <Compile Include="Solver\Methods\Beginners\BeginnersSolver.cs" />
+    <Compile Include="Solver\Methods\Beginners\Phase.cs" />
+    <Compile Include="Solver\Methods\Dfs\DfsSolver.cs" />
+    <Compile Include="Solver\Methods\Beginners\MoveAlgorithm.cs" />
+    <Compile Include="Solver\Methods\TwoWayBfs\TwoWayBfsSolver.cs" />
+    <Compile Include="Solver\Move.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Solver\Methods\Beginners\Patterns\FirstCross.json" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

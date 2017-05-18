@@ -1,0 +1,14 @@
+﻿[
+  {
+    "Name": "Init",
+    "Phase": "ThirdLayer",
+    "IsFinal": false,
+    "Moves": "URU'L'UR'U'L"
+  },
+  {
+    "Name": "Four",
+    "Phase": "ThirdLayer",
+    "IsFinal": true,
+    "Moves": "RU'R'U"
+  }
+]

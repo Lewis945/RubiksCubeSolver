@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ScrarchEngine.Libraries.RubiksCube.Models
 {
@@ -9,41 +10,82 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
             { FaceType.Left, FacePieceType.Red },
             { FaceType.Back, FacePieceType.Green },
             { FaceType.Right, FacePieceType.Orange },
-            { FaceType.Top, FacePieceType.White },
-            { FaceType.Bottom, FacePieceType.Yellow }
+            { FaceType.Up, FacePieceType.White },
+            { FaceType.Down, FacePieceType.Yellow }
         };
 
-        public FacePieceType[,] _field;
+        public FacePieceType[,] Field { get; set; }
 
-        public FacePieceType this[int x, int y]
+        public FacePieceType this[int index]
         {
             get
             {
-                return _field[x, y];
+                int i = 0;
+                int j = 0;
+                GetIndecies(index, out i, out j);
+
+                return Field[i, j];
             }
             set
             {
-                _field[x, y] = value;
+                int i = 0;
+                int j = 0;
+                GetIndecies(index, out i, out j);
+
+                Field[i, j] = value;
             }
         }
 
-        public FaceType Type { get; private set; }
+        public FacePieceType this[int i, int j]
+        {
+            get
+            {
+                return Field[i, j];
+            }
+            set
+            {
+                Field[i, j] = value;
+            }
+        }
+
+        public FaceType Type { get; set; }
+
+        public FacePieceType PieceType { get { return Field[1, 1]; } }
+
+        internal Face() { }
 
         public Face(FaceType type)
         {
             Type = type;
-            _field = new FacePieceType[3, 3];
+            Field = new FacePieceType[3, 3];
 
-            for (int i = 0; i < _field.GetLength(0); i++)
-                for (int j = 0; j < _field.GetLength(1); j++)
-                    _field[i, j] = FacePieceTypeMap[type];
+            for (int i = 0; i < Field.GetLength(0); i++)
+                for (int j = 0; j < Field.GetLength(1); j++)
+                    Field[i, j] = FacePieceTypeMap[type];
+        }
+
+        public Face(FacePieceType[,] faces)
+        {
+            if (faces.GetLength(0) != 3 && faces.GetLength(1) != 3)
+                throw new ArgumentException("Array dimensions are not appropriate", nameof(faces));
+
+            Field = faces;
+        }
+
+        public LayerType GetLayer(int index)
+        {
+            int i = 0;
+            int j = 0;
+            GetIndecies(index, out i, out j);
+
+            return GetLayer(i, j);
         }
 
         public LayerType GetLayer(int x, int y)
         {
             var layerType = LayerType.None;
 
-            if (Type == FaceType.Top || Type == FaceType.Bottom)
+            if (Type == FaceType.Up || Type == FaceType.Down)
             {
                 if (x == 0)
                     layerType |= LayerType.Back;
@@ -64,9 +106,9 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
 
             if (y == 0)
             {
-                if (Type == FaceType.Front || Type == FaceType.Top)
+                if (Type == FaceType.Front || Type == FaceType.Up)
                     layerType |= LayerType.Left;
-                else if (Type == FaceType.Back || Type == FaceType.Bottom)
+                else if (Type == FaceType.Back || Type == FaceType.Down)
                     layerType |= LayerType.Right;
 
                 else if (Type == FaceType.Left)
@@ -76,7 +118,7 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
             }
             else if (y == 1)
             {
-                if (Type == FaceType.Front || Type == FaceType.Back || Type == FaceType.Top || Type == FaceType.Bottom)
+                if (Type == FaceType.Front || Type == FaceType.Back || Type == FaceType.Up || Type == FaceType.Down)
                     layerType |= LayerType.MiddleFromLeft;
 
                 else if (Type == FaceType.Left || Type == FaceType.Right)
@@ -84,9 +126,9 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
             }
             else if (y == 2)
             {
-                if (Type == FaceType.Front || Type == FaceType.Top)
+                if (Type == FaceType.Front || Type == FaceType.Up)
                     layerType |= LayerType.Right;
-                else if (Type == FaceType.Back || Type == FaceType.Bottom)
+                else if (Type == FaceType.Back || Type == FaceType.Down)
                     layerType |= LayerType.Left;
 
                 else if (Type == FaceType.Left)
@@ -101,14 +143,42 @@ namespace ScrarchEngine.Libraries.RubiksCube.Models
         public void Rotate90Degrees(RotationType direction)
         {
             if (direction == RotationType.Clockwise)
-                _field = Utilities.RotateMatrixClockwise(_field);
+                Field = Utilities.RotateMatrixClockwise(Field);
             else
-                _field = Utilities.RotateMatrixCounterClockwise(_field);
+                Field = Utilities.RotateMatrixCounterClockwise(Field);
         }
 
         public FacePieceType[,] GetField()
         {
-            return _field;
+            return Field;
+        }
+
+        public override string ToString()
+        {
+            return $@"{this[0]} {this[1]} {this[2]} {Environment.NewLine}
+                      {this[3]} {this[4]} {this[5]} {Environment.NewLine}
+                      {this[6]} {this[7]} {this[8]} {Environment.NewLine}";
+        }
+
+        public static void GetIndecies(int index, out int i, out int j)
+        {
+            i = 0;
+            j = 0;
+
+            if (index > 0 && index < 3)
+            {
+                j = index;
+            }
+            else if (index > 2 && index < 6)
+            {
+                i = 1;
+                j = index - 3;
+            }
+            else if (index > 5 && index < 9)
+            {
+                i = 2;
+                j = index - 6;
+            }
         }
     }
 }

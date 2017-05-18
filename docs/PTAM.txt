@@ -1,1 +1,2 @@
 ﻿PTAM: Parallel Tracking and Mapping (http://ahumaninmachinesworld.blogspot.com.ee/2015/06/ptam-parallel-tracking-and-mapping.html)
+Bootstrapping planar AR and tracking without markers (http://www.morethantechnical.com/2015/03/16/bootstrapping-planar-ar-tracking-without-markers-wcode/)

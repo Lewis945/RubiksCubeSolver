@@ -1,0 +1,53 @@
+\documentclass[../../main]{subfiles}
+\graphicspath{{images/rubiks-exp/}}
+
+\begin{document}
+
+At this point, there was an idea to use planes as an alternative to contours approach. \ac{PTAM} was chosen for finding planes and in future it could become the mechanism for an object tracking due to its nature \cite{puzzle_games_solver_q3_zakharov}.
+
+\subsubsection{Bootstrapping}
+
+This step is the first one and the most important. It, firstly, stores initial data, for instance, extracted key points from the first image, gray-scale representation of the first image and sets the pipeline to move on. Next it should analyze images from a video stream or an image sequence by comparing it to the first image stored in memory. As a result 3D point cloud is created, actually its simplified version. In addition, \ac{PTAM} is the algorithm for augmented reality thus it is possible to project different objects onto the detected surface.
+
+\paragraph*{Optical flow and homography filtering.}
+
+Optical flow algorithm is used within this solution in order to detect key points location in the next view using previous views. After that the algorithm checks if 80\% of the points have survived and if not it stops bootstrapping and says that tracking has failed. If this condition is satisfied and more than the specified number of points are tracked then algorithm homography is used for filtering. Using the mask it checks how many points have survived homography in order to filter the bootstrapped and tracked key points again. This is done to achieve the most precise computations using only the most effective key points. Afterwards, it checks camera motion by comparing key points stored in memory with the currently tracked ones. To analyze if the motion is sufficient it uses \ac{OpenCV}'s function $estimateRigidTransform$. If all the conditions are met it moves to the next step.
+
+\paragraph*{Extracting essential matrix from fundamental.}
+
+During this step it finds fundamental matrix using the bootstrapped and tracked key points. In computer vision, the fundamental matrix is a 3 by 3 matrix that relates corresponding points in stereo images. Then it filters key points again. The next step is computing essential matrix. In computer vision, the essential matrix is a 3 by 3 matrix, with some additional properties, which relates corresponding points in stereo images assuming that the cameras satisfy the pinhole camera model. The algorithm needs to have intrinsic parameters of the camera before it starts the work because it does not include calibration part. Intrinsic parameters are physical camera parameters like focal length and etc. To compute essential matrix it multiplies transposed intrinsic matrix by fundamental matrix and multiplies this by intrinsic matrix, not transposed. This matrix is needed to extract camera rotation and translation in relative perspective from the bootstrapped image to the current one. In order to do this it decomposes essential matrix with \ac{SVD}. Decomposition results into 2 possible rotation matrices and 2 possible translation vectors. If the determinant of the first rotation matrix plus $1.0f$ is less than $1e-09$ than algorithm changes signs of all numbers of the essential matrix and computes decomposition again. Then it proceeds to the next step.
+
+\paragraph*{Triangulation of points.}
+
+At this stage the assumption is made. Its essence is that the both views (images) extrinsic parameters matrix are composed of the rotation matrices and translation vectors. The constructed matrix is 3 by 4. However, \ac{SVD} generates 2 rotation matrices and 2 translation vectors. Thus the algorithm has to create four possible extrinsic matrices for the second view (camera) in order to triangulate until the correct one is found. It might happen that algorithm fails if the triangulation results will be wrong for all 4 tries.  In order to triangulate, it normalizes bootstrapped and tracked key points coordinates. Afterwards, it proceeds triangulation and computes status by checking $z$ component of the points. Key points are filtered by this status array. After that the reprojection error is computed. If the error is not acceptable it runs triangulation again with different set of rotation and translation components. However, if the error is acceptable it goes to the next step where it finds the plane.
+
+\paragraph*{Finding a plane using 3d point cloud.}
+
+This step contains \ac{PCA}. This analysis is necessary because it allows to get 3D structure information. It is used for plane's normal extraction in order to proceed key points filtering again. If more than 75\% of key points belong to the same plane the bootstrap tracking is considered to be finished.
+
+\subsubsection{Tracking}
+
+This stage is final for the \ac{PTAM} part of this solution. It computes optical flow for the key points that passed triangulation. \ac{PTAM} is the augmented reality algorithm hence it requires the logic to compute projection matrix in order to render something on the plane. In order to do this it solves \ac{PnP}.
+The main difference between the real \ac{PTAM} and this simplified version is that the real one can track all captured key points even if they are out of the camera view. On the contrary, the described approach just removes all unseen key points until the minimal amount exists and in the end it terminates. The suggested simplification significantly reduced time for implementation and understanding of the algorithm work flow.
+
+\subsubsection{Planes for a corner detection}
+
+The idea behind the \ac{PTAM} usage was to find all contiguous planes where every 3 of them with 90 degrees angle between each other create a Rubik's cube angle. For this purpose, this triplets are used to find planes intersections (cube's corners). Using the triangulated data it is possible to find 3D coordinate for any 2D point in the specific view.
+
+\begin{figure} [ht]
+    \begin{center}
+        \includegraphics[width=190pt]{planes_intersection}
+        \caption{Example of planes intersection, cube's corner.}
+        \label{fig:planes_intersection}
+    \end{center}
+\end{figure}
+
+\newpage
+
+These manipulations are useful in two senses, they allow to find a Rubik's cube corners and to track those corners in the 3D space, however it requires algorithm modification. Figure \ref{fig:planes_intersection} illustrates 3 planes intersection with the underlined corner point.
+
+\subsubsection{Conclusion}
+
+Algorithm performed very well for finding and tracking a single Rubik's cube face but it showed pretty bad results for the continuous running of the algorithm to find contiguous planes. The reason for that is illumination. The algorithm was able to find one, two or three random planes in a row but it definitely brakes somewhere in the middle. This causes problems for triangulation stage, since the algorithm world space is relative to the first bootstrap thus if the algorithm fails the next bootstrap will become new first bootstrap. In simple words, algorithm is lost and it has to start from the beginning. It is possible to modify this algorithm to handle such type of problems but this topic is out of thesis scope.
+
+\end{document}

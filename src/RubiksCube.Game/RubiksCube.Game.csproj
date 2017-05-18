@@ -46,6 +46,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GraphicsEngine\DrawingMode.cs" />
+    <Compile Include="GraphicsEngine\Mesh.cs" />
+    <Compile Include="GraphicsEngine\Point3D.cs" />
+    <Compile Include="GraphicsEngine\Polygon.cs" />
+    <Compile Include="GraphicsEngine\RenderingControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GraphicsEngine\RenderingControl.designer.cs">
+      <DependentUpon>RenderingControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GraphicsEngine\RenderingControl.MouseHangling.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GraphicsEngine\RenderingControl.Rendering.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GraphicsEngine\RotationDirection.cs" />
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -54,20 +71,13 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Rendering\DrawingMode.cs" />
-    <Compile Include="Rendering\Mesh.cs" />
-    <Compile Include="Rendering\Point3D.cs" />
-    <Compile Include="Rendering\Polygon.cs" />
-    <Compile Include="Rendering\RenderingControl.cs">
+    <Compile Include="Rendering\Controls\RubicsCubeControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Rendering\RenderingControl.Designer.cs">
-      <DependentUpon>RenderingControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Rendering\RenderingControl.Rendering.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Rendering\RotationType.cs" />
+    <Compile Include="Rendering\Cube3D.cs" />
+    <Compile Include="Rendering\Face3D.cs" />
+    <Compile Include="Rendering\FacePosition.cs" />
+    <Compile Include="Rendering\PositionSpec.cs" />
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>
@@ -88,9 +98,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <Compile Include="Rendering\RenderingControl.MouseHangling.cs">
-      <SubType>UserControl</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -127,7 +134,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RubiksCube.OpenCV\RubiksCube.OpenCV.csproj">
-      <Project>{F0B87E5E-E1E7-417D-9771-CC37AC2999F5}</Project>
+      <Project>{f0b87e5e-e1e7-417d-9771-cc37ac2999f5}</Project>
       <Name>RubiksCube.OpenCV</Name>
     </ProjectReference>
     <ProjectReference Include="..\ScrarchEngine.Libraries.RubiksCube\ScrarchEngine.Libraries.RubiksCube.csproj">

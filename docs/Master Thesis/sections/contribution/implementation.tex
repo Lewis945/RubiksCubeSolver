@@ -1,0 +1,197 @@
+\documentclass[../../main.tex]{subfiles}
+
+\begin{document}
+
+Implementation was done using .NET {\Csharp} and its wrappers for \ac{OpenCV} library. It could be easily reasoned by the fact that it is better to deal with the complicated tasks using the tool that you know and can use to reach the goal. On the contrary, {\Csharp} is a great tool with many convenient helpers to make implementation quicker and less painful.
+Multiple \ac{OpenCV} wrappers were used in the implementation on different stages of development process. OpenCvSharp was good enough on the whole way before, however, it was not able to do specific operations for the \ac{PTAM} code base. Thus \ac{EmguCV} was applied later as a replacement for OpenCvSharp.
+
+All various logic units were split into the separate static classes for exact purposes. The project was also split into some set of library projects in order to separate \ac{OpenCV}, Rubik's cube and rendering code bases. The project is called framework thus every library can be easily substituted with another one. The project contains 2 modules for camera calibration with \ac{EmguCV}.
+
+\subsubsection*{Extraction}
+
+Extraction logic is contained in $RubiksCube.OpenCV$ project and its $FaceDetector$ and $FaceExtractor$ classes. The work-flow is as follows, $FaceDetector$ calls another utility class $ContourUtil$ to find specific contours. These contours are those who passes specified in the configuration threshold values and whose approximation shows 4 corners and convex structure. Afterwards, found contours are distinguished by the center of mass, it means that contours with similar or close enough center of mass are rejected to keep only one of them. This is done with \ac{OpenCV} method $Cv2.Moments$ and specific {\Csharp} \ac{Linq} code, see figure \ref{fig:impl_filtering_contours}.
+
+\begin{figure} [!ht]
+  \centering    
+    \lstset{style=sharpc}
+        \begin{lstlisting}
+            var matched_countours = ContourUtil.FindContours(copy);
+            matched_countours = matched_countours.Distinct(...(x, y) =>
+            {
+                double mx = GetMassCenter(x);
+                double my = GetMassCenter(y);
+                double dx = Math.Abs(mx.X - my.X);
+                double dy = Math.Abs(mx.Y - my.Y);
+                double distance = Math.Sqrt(dx * dx + dy * dy);
+                return mx == my || distance < 5 && distance > 0;
+            })).ToList();
+        \end{lstlisting}
+  \caption{Linq code that filters contours by center of mass.}
+  \label{fig:impl_filtering_contours}
+\end{figure}
+
+After that, filtered contours are checked for having the same angle to the horizon. With 9 distinct contours under the same angle it is supposed that 9 face's pieces are found. They form a cube face thus it is needed to find 4 extremums of the group that are supposed to be face's corners. If some points appear to be the same or to close then additional filtering logic is applied. It is needed to extract the found face thus $FaceExtractor$ utility class is called to extract \ac{OpenCV} $Mat$ class containing extracted and transformed in perspective face's image. With the help of $FaceUniquenessDetector$ utility class the extracted $Mat$ object is checked for its originality. 
+ 
+\begin{figure} [!ht]
+\centering    
+\lstset{style=sharpc}
+    \begin{lstlisting}
+    Mat faceHsv = face.CvtColor(ColorConversionCodes.BGR2HSV);
+    Mat faceHistogram = new Mat();
+    Cv2.CalcHist(new Mat[] { faceHsv }, channels, new Mat(), faceHistogram, 2, histSize, ranges, true, false);
+    Cv2.Normalize(faceHistogram, faceHistogram, 0, 1, NormTypes.MinMax, -1, new Mat());
+    \end{lstlisting}
+\caption{OpenCV code to calculate histogram.}
+\label{fig:impl_fcalc_hist}
+\end{figure}
+ 
+It is done with \ac{OpenCV} $Cv2.CalcHist$ and $Cv2.CompareHist$ methods (figure \ref{fig:impl_fcalc_hist}), in short. If the correlation between the current face and any of the previous ones is too high, the current face is not unique. The last step is extracting colors from unique faces and forming some data structure to pass it to the next stage. $ColorsExtractor$ utility class is used to extract colors, see figure \ref{fig:impl_extract_color}. 
+
+\begin{figure} [!ht]
+\centering    
+\lstset{style=sharpc}
+    \begin{lstlisting}
+    Mat sub = new Mat(face, new Rect(i * subWidth, j * subHeight, subWidth, subHeight));
+    var intensity = sub.At<Vec3b>(centerX, centerY);
+
+    byte blue = intensity.Item0;
+    byte green = intensity.Item1;
+    byte red = intensity.Item2;        
+    \end{lstlisting}
+\caption{OpenCV code to extract RGB data.}
+\label{fig:impl_extract_color}
+\end{figure}
+
+It has to segment a face into specified (in the configuration) number of pieces and take color probe from the center pixel of each piece in order to convert it to the .NET $Color$ class. Later this colors are compared to six possible cube face colors and converted to the closest to them using $ClosestColorHue$ of $ColorsExtractor$, see figure \ref{fig:impl_hue_color}. 
+
+\begin{figure} [!ht]
+\centering    
+\lstset{style=sharpc}
+    \begin{lstlisting}
+    public static Color ClosestColorHue(Color target)
+    {
+        var hue1 = target.GetHue();
+        var diffs = Colors.Select(n => GetHueDistance(n.GetHue(), hue1));
+        var diffMin = diffs.Min(n => n);
+        var index = diffs.ToList().FindIndex(n => n == diffMin);
+        return Colors[index];
+    }       
+    \end{lstlisting}
+\caption{{\Charp} code that computes cube's color from the detected color.}
+\label{fig:impl_hue_color}
+\end{figure}
+
+Finally, extracted colors are sent to be mapped to the Rubik's cube operational and rendering models.
+On the other hand, \ac{PTAM} was another implemented algorithm but since its code was initially written in C++ and some currently unsupported libraries it was decided to write another simplified version of \ac{PTAM}. It does not allow to track key points when they are out of the view however while camera sees them everything is as designed. All main stages are included. \ac{PTAM} like approach is implemented in $RubiksCube.OpenCV.TestCase$ $PtamLileAlgorithm$ class split into 3 main stages: bootstrapping, bootstrap tracking and tracking. The most interesting for extraction stage is bootstrap tracking logic. Firstly, it computes optical flow with $CvInvoke.CalcOpticalFlowPyrLK$, then it validates if enough key points survived optical flow (see figure \ref{fig:impl_calc_optical_flow}).
+
+\begin{figure} [!ht]
+\centering    
+\lstset{style=sharpc}
+    \begin{lstlisting}
+CvInvoke.CalcOpticalFlowPyrLK(prevGray, currGray, Utils.GetPointsVector(trackedFeatures), corners, status, errors, new Size(11, 11), 3, new MCvTermCriteria(30, 0.01));
+if (CvInvoke.CountNonZero(status) < status.Size * 0.8)
+    throw new Exception("Tracking failed.");
+    \end{lstlisting}
+\caption{EmguCV code that computes Optical Flow.}
+\label{fig:impl_calc_optical_flow}
+\end{figure}
+
+Homography validation follows next to check how many key points survived at the current step in comparison with the initial value. If the value fails threshold, the process is considered to be failed. Secondly, stereo vision approaches are used. The implemented solution estimates the rigid transformation with $CvInvoke.EstimateRigidTransform$ to validate camera motion between bootstrapped image and the currently observed. If the motion is sufficient it performs points triangulation. It is very interesting process, implemented in $OpenCvUtilities$ class. It finds fundamental matrix with $CvInvoke.FindFundamentalMat$ (see figure \ref{fig:impl_fundamental_matrix}) and checks how many key points survived.
+
+\begin{figure} [!ht]
+\centering    
+\lstset{style=sharpc}
+    \begin{lstlisting}
+    Mat f = new Mat();
+    VectorOfByte status = new VectorOfByte();
+    CvInvoke.FindFundamentalMat(trackedFeaturesPts, bootstrapPts, f, FmType.Ransac, 0.006 * maxVal, 0.99, status);
+    var fMat = new Matrix<double>(f.Rows, f.Cols, f.DataPointer);
+    int inliersNum = CvInvoke.CountNonZero(status);
+    \end{lstlisting}
+\caption{EmguCV code that computes fundamental matrix.}
+\label{fig:impl_fundamental_matrix}
+\end{figure}
+
+Afterwards, essential matrix is computed from the intrinsic camera parameters and fundamental matrix. Essential matrix is decomposed with \ac{SVD} (see figure \ref{fig:impl_svd}) and two rotation matrices and two translation vectors are produced. These results are mixed into four possible projection matrices. To check what projection matrix is correct the triangulation procedure is run until the matrix is found.
+
+\begin{figure} [!ht]
+\centering    
+\lstset{style=sharpc}
+    \begin{lstlisting}
+    CvInvoke.SVDecomp(e, w, u, vt, SvdFlag.ModifyA);   
+    r1 = u * wMat * vt;
+    r2 = u * wMatTranspose * vt;
+    um.GetCol(2).CopyTo(t1);
+    um.GetCol(2).CopyTo(t2);
+    \end{lstlisting}
+\caption{EmguCV's SVD.}
+\label{fig:impl_svd}
+\end{figure}
+ 
+This process is also very important, at this point 3D points are projected back to the image and re-projection error is computed. This error helps to understand how many points have survived and successfully been triangulated. Hence, they can be used for tracking. Finding 3D points is important because the aim is to find information about face's plane in 3D space. 
+
+\begin{figure} [!ht]
+\centering    
+\lstset{style=sharpc}
+    \begin{lstlisting}
+    Mat projected = new Mat();
+    CvInvoke.PCAProject(trackedFeatures3Dm, mean, eigenvectors, projected);
+    var projectedMatrix = new Matrix<double>(projected.Rows, projected.Cols, projected.DataPointer);
+    projectedMatrix.GetCol(2).SetValue(0);
+    projectedMatrix.CopyTo(trackedFeatures3Dm);
+    \end{lstlisting}
+\caption{EmguCV's PCA.}
+\label{fig:impl_pca}
+\end{figure}
+
+With the help of \ac{PCA} using $CvInvoke.PCACompute$ (see figure \ref{ig:impl_pca}) it finds eigenvectors and mean of the known 3D point matrix. Afterwards, \ac{PCA} of $Accord$ library is used because $EmguCV$ does not return eigenvalues. Retrieved data is used to find planes normal and its inliers (3D points that lie in the same plane). Described analysis is what was needed for extraction logic.
+
+\subsubsection*{Tracking}
+
+\ac{PTAM} like approach makes tracking possible. In comparison with bootstrap tracking of a plane simple tracking is done much easier. It also uses optical flow with the same code base as in the previous step. The difference is that it does not need to triangulate points again. It uses already found 3D points and their 2D positions on the current image.
+
+\subsubsection*{Mapping}
+
+Extracted colors should be mapped to the cube model in order to solve and render it. Data is mapped to $ScrarchEngine.Libraries.RubiksCube.Models.RubiksCubeModel$ class that represents a Rubik's cube in the project. This model has multiple methods for rotating cube's layers, flipping it or checking for cubes consistency. The mapping also includes face orientation analyses implemented through the iterative face orientation checkup. Faces positions are simply determined on the basis of their central pixels relation.
+
+\subsubsection*{Solving}
+
+Beginner solving algorithm was implemented to solve any 3 by 3 Rubik's cube. $BeginnerSolver$ class is inherited from $BaseSolver$ thus new solver can be easily created and applied. To simplify and replace solution hard-coding the declarative \ac{JSON} structure was created. Solution formulas now could be written in \ac{JSON} where the name of the formula, its phase, state that should be to run the formula and moves are written in the specific globally known notation.
+
+\begin{figure} [!ht]
+  \centering    
+    \lstset{style=sharpc}
+        \begin{lstlisting}
+            [
+               {
+                    "Name": "Up Front cubie on right|front",
+                    "Phase": "FirstCross",
+                    "IsFinal": true,
+                    "StateFrom": {
+                      "Right": [
+                        [ null, null, null ],
+                        [ "Up", null, null ],
+                        [ null, null, null ]
+                      ],
+                      "Front": [
+                        [ null, null, null ],
+                        [ null, null, "Front" ],
+                        [ null, null, null ]
+                      ]
+                    },
+                    "Moves": "F"
+                  },
+            ]     
+        \end{lstlisting}
+  \caption{Example of json formula declaration.}
+  \label{jsonsolformuladecl}
+\end{figure}
+
+As can be seen from the listing \ref{jsonsolformuladecl} the state is declared as face's 2-dimensional array. This array should contain related face's names at specific positions. For instance, from the above listing, Up-Front cubie is on the Right-Front sides thus it is written like this and if the cube front layer will be rotated clockwise the cubie will be placed where it should be. $IsFinal$ flag displays that this algorithm puts cubie in its place and no more formulas should be used after this. In other cases, the solver will run formulas until the cubie is in place.
+On the other hand, this \ac{JSON} notation is not yet perfect, since algorithms are for humans, cube must be flipped and rotated to run formulas when handling cube at some specific position. Currently, it is necessary to write some code within the solver class inherited from $BaseSolver$ for specific algorithm stages or flips, they cannot be reflected in \ac{JSON} yet.
+
+\subsubsection*{Rendering}
+
+To render the cube self-written software rendering engine oriented on cube was used. $RenderingControl$ was created with inheritance from $UserControl$. This class includes rendering and mouse handling split into partial classes. This class encapsulates rendering and updating loops with abstract $Update()$ and $Render()$ methods used to write the logic of the game. Rendering control allows to zoom and rotate displayed image. To render the cube the $RubiksCubeModel$ is split into cubies, imitating real puzzle pieces and each of them is converted to the 3D cube while only visible pieces are colored (others are black). Every cube is rotated with respect to its position, it means with respect to layers containing it. These manipulations are performed in $GenerateCubes3D$ and the result is a list of 3D cubes with specific positions and rotations in 3D space. Afterwards, cubes are projected on the screen. At each step of update loop described transformation code is performed to translate $RubiksCubeModel$ to the list of polygons represented as $Face3D$ in order to be rendered with render loop.
+
+\end{document}

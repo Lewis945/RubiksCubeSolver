@@ -1,0 +1,55 @@
+\documentclass[../../../../main]{subfiles}
+
+\begin{document}
+
+\paragraph{EmguCV}
+
+\ac{EmguCV} is one of the most mature and complete \ac{OpenCV} wrappers for the .NET platform. For the open source projects it is free if the project source code will be contributed to the open source community with the right to share it with anyone. This is done under GNU GPL license v3. On the contrary, for the private use commercial licence have to be bought.
+
+\begin{figure} [!ht]
+  \centering    
+    \lstset{style=sharpc}
+        \begin{lstlisting}
+            using System;
+            using Emgu.CV;
+            using Emgu.CV.CvEnum;
+            using Emgu.CV.Structure;
+            
+            namespace HelloWorld
+            {
+               public class Program
+               {
+                  public static void Main(string[] args)
+                  {
+                     String win1 = "Test Window";
+                     CvInvoke.NamedWindow(win1);
+            
+                     Mat img = new Mat(200, 400, DepthType.Cv8U, 3); 
+                     img.SetTo(new Bgr(255, 0, 0).MCvScalar);
+            
+                     //Draw "Hello, world." on the image using the specific font
+                     CvInvoke.PutText(
+                        img, 
+                        "Hello, world", 
+                        new System.Drawing.Point(10, 80), 
+                        FontFace.HersheyComplex, 
+                        1.0, 
+                        new Bgr(0, 255, 0).MCvScalar);
+                     
+            
+                     CvInvoke.Imshow(win1, img); 
+                     CvInvoke.WaitKey(0); 
+                     CvInvoke.DestroyWindow(win1);
+                  }
+               }
+            }
+        \end{lstlisting}
+  \caption{EmguCV hello world application sample.}
+  \label{emgucvhelloworld}
+\end{figure}
+
+This framework is cross platform thus it can be used almost on every known platform such as Windows, Linux, Mac OS X, iOS, Android and Windows Phone. The whole implementation was written in pure {\Csharp} thus all the header files were ported.
+
+In general, \ac{EmguCV} is on of the best wrappers for the .NET but it has its pros and cons. If the advantages were already mentioned its disadvantages are still hidden. The main issue is that \ac{EmguCV} has its own enums and some methods that do not match with those of original C++ \ac{API}. This fact makes translating some code samples a hard task or sometimes even impossible. From the figure \ref{emgucvhelloworld} it can be seen that common syntax is made in the functional way thus it is easier to understand it to the C++ \ac{API} people.
+
+\end{document}

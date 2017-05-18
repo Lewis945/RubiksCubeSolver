@@ -1,0 +1,48 @@
+﻿[
+  {
+    "Name": "Second cross right corner",
+    "Phase": "SecondCross",
+    "IsFinal": true,
+    "StateFrom": {
+      "Up": [
+        [ null, "Up", null ],
+        [ null, null, "Up" ],
+        [ null, null, null ]
+      ],
+      "Back": [
+        [ null, "Back", null ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ],
+      "Right": [
+        [ null, "Right", null ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ]
+    },
+    "Moves": "RUR'URU2R'U"
+  },
+  {
+    "Name": "Second cross perpenicular line",
+    "Phase": "SecondCross",
+    "IsFinal": true,
+    "StateFrom": {
+      "Up": [
+        [ null, null, null ],
+        [ "Up", "Up", "Up" ],
+        [ null, null, null ]
+      ],
+      "Left": [
+        [ null, "Left", null ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ],
+      "Right": [
+        [ null, "Right", null ],
+        [ null, null, null ],
+        [ null, null, null ]
+      ]
+    },
+    "Moves": "RUR'URU2R'"
+  }
+]

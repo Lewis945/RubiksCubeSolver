@@ -1,0 +1,78 @@
+\documentclass[../../main]{subfiles}
+\graphicspath{{images/sudoku-exp/}}
+
+\begin{document}
+
+The \ac{OpenCV} research has been started from the Sudoku Solver project. It was created with Python as it is the tool with lowest entry threshold. This project requirements were perfect for starting, they allowed to understand computer vision basics deeper and showed how to map existing practises onto the problem of object detection. Furthermore, not only the object detection but also the object character recognition was covered in it \cite{sudoku_solver_zakharov}. 
+
+\subsubsection{Detection and Extraction}
+
+In order to extract a Sudoku grid it should be found first. For this purpose some assumptions had to be made. The assumption was formulated as following: Sudoku grid should cover from 60\% to 100\% of the observed image. As a starting point image was converted to black and white with adaptive thresholding as the most suitable approach. The next step was contours detection and iteration over them. Contours were filtered with some specified threshold value and only closed contours were interesting for the process. In order to make the application more human independent it was able to change upper and lower thresholding bounds if the needed contour was not found with the default values. Maximal area filtering was used to get the largest contour from the list of all detected ones. Polynomial approximation was applied to detect whether the largest contour is appropriate. This manipulations allowed to get straight lines in the contour and if four of them were found their intersections were returned as corner points. These points were assumed to be the corners of the Sudoku grid.
+
+Linear transformation was used for the proper extraction of Sudoku's grid with detected corners. This approach has some limitation related to the quality of an image. If the image quality is poor, Sudoku grid borders are broken into pieces or do not exist. In this case grid's corners extraction becomes impossible. However, for the good quality image this algorithm is very sufficient because it performs well and it is reliable enough.
+
+\subsubsection{Transformation}
+
+To transform the currently extracted square shape image the perspective transformation was applied. Perspective matrix is constructed with the corners found on the previous step and the new image dimensions computed at this stage.
+
+Figure \ref{eq:persptransform} displays two equations with 8 unknown variables. To find unknowns the system of 8 equations should be created (four per each equations). Constructed system makes possible to map points from distorted image to a flat square image.
+
+\begin{figure} [!ht]
+  \centering    
+    \begin{equation}
+        x = \frac{ax+by+c}{gx+hy+1}
+    \end{equation}
+     \begin{equation}
+        y = \frac{dx+ey+c}{gx+hy+1}
+    \end{equation}
+  \caption{Perspective transformation equations.}
+  \label{eq:persptransform}
+\end{figure}
+
+\subsubsection{Flooding}
+
+Initially this stage was done as coloring all the small connected components into the background color of the image. However, it was changed to \ac{OpenCV}'s method $fastNlMeansDenoising$ because it removes noise from the image. Parameters were found empirically to get the best results and performance. This method created partially blurred imaged thus it was necessary to threshold image in order to get the binary image. Image at this stage was inverted, it means background was black and numbers with lines were white.
+
+\subsubsection{Segmentation}
+
+This part of the program is responsible for determining where the numbers on the image are. Usually segmentation is the hardest part of the OCR process. However, in this case, software should process standard 9 by 9 Sudoku, which grid is square and its size is already known, thus there is no need to do complex segmentation operations. But even in case of none-standard grid it was possible to do the segmentation with Hough-lines algorithm, that would make the process universal. For time reasons it was decided to stick to the 9 by 9 grid. It was cut into 81 equal pieces. Then all the pieces were checked whether they contained a number or not. In order to do this there was area selected so that it was half of the size of the piece and was centered. If the sum of the pixels inside was equal to 0 it means that it was empty. Otherwise, piece of the image was processed in order to find all contours by picking the middle point. Algorithm works as follows, it tries to find the biggest contour that is at the same time the closest to the center point. Found contour is supposed to be a number. Then it expands the size of the search window until some bounding value. Segmented images are stored in the matrix of image arrays and "None"'s are sent to the OCR stage.
+
+\subsubsection{Optical Character Recognition}
+
+The purpose of the OCR is to take an image, process it and return characters that are presented in the image.
+Every recognition algorithms has steps:
+\begin{enumerate}
+\item  Determine input image features
+\item  Train a classification algorithm with some training data.
+\item  Classify input image
+\end{enumerate}
+
+Images may have different parameters (shape, color scheme, borders and etc.). Before classifying it is needed to bring all the images to the same standard (shape, binary color). For this purpose images were re-sized to some specified size and image matrix was vectorized because vector must represent an image in the classification algorithm. Optimal size of the image was chosen by experiment. For \ac{SVM} classification pixel values were changed to zero for black and one for white. Here the feature vector was composed explicitly of pixel values of the binary image. No additional feature extraction was applied. That was done because \ac{SVM} classification algorithm requires that kind of representation. \ac{kNN} classification algorithm was also used for experiment purposes.
+Both algorithms gave almost the same results.
+
+Classification of Sudoku numbers was done as follows, the multi-dimensional matrix of segments was created. It has some numbers or 'NONE' objects as its values. Afterwards, it was reshaped to a vector and passed to the classification stage. Classification algorithm, from its side, returns the label of the classified image, that is the needed number.
+
+\subsubsection{Conclusion}
+
+This project gave a good understanding of computer vision algorithms and their purpose on the real example. Since the exploration of computer vision was started from scratch such kind of a project was necessary to gain needed background. 
+
+\begin{figure} [ht!]
+    \begin{center}
+        \includegraphics[width=172pt]{initial}
+        \includegraphics[width=175pt]{warpped}
+        \caption{Extracting Sudoku's grid example.}
+        \label{fig:sudoku_extraction}
+    \end{center}
+\end{figure}
+
+Python implementation has shown itself as a good approach. Built approach behaved as expected for the images with medium or high quality. For the low quality images results were not that good but the success rate was still more than 30\%. As can be seen from figures \ref{fig:sudoku_extraction} and \ref{fig:sudoku_ocr} Sudoku grid was properly extracted. Lastly, all numbers on the grid were recognized and reprojected back onto the image.
+
+\begin{figure} [ht!]
+    \begin{center}
+        \includegraphics[width=230pt]{recognized}
+        \caption{OCR result displayed on the extracted grid.}
+        \label{fig:sudoku_ocr}
+    \end{center}
+\end{figure}
+
+\end{document}

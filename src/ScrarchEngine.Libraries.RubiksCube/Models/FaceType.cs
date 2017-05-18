@@ -5,8 +5,8 @@
     /// </summary>
     public enum FaceType
     {
-        Top,
-        Bottom,
+        Up,
+        Down,
         Left,
         Right,
         Back,

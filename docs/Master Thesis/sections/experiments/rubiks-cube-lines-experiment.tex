@@ -1,0 +1,45 @@
+\documentclass[../../main]{subfiles}
+\graphicspath{{images/rubiks-exp/}}
+
+\begin{document}
+
+This project is a continuation of the previous experiment described in Section \ref{subsec:sudoku_experiment}. Ideas developed for Sudoku were extrapolated on a Rubik's cube face detection problem as they are assumed to be similar in some sense \cite{rubiks_cube_zakharov}.
+
+\subsubsection{Contour and corner detection}
+
+Contour detection was covered in the previous step but in this case there were some issues to be solved. From the beginning, it was an issue that edges of the cube are not very clear thus face extraction with the biggest contour is not an option. On the contrary, small contours of face pieces were detected with higher success rate. Therefore, they were used for face detection. So as the next step, the closed contours with proper approximation of 4 corners were picked. These contours were supposed to be diffused square pieces of cube's face. The mentioned operations still were not able to filter all duplicates. They occur from time to time if \ac{OpenCV} detects a couple of different contours for the same object. To reject unnecessary contours, all of those with almost the same center of mass were removed but one. In order to find a face it is not enough to find contours. Diagonal of these small contours were computed and if 9 diagonals exist and located at the same angle to horizon their contours assumed to be face's pieces. The following action is to find the extremums or top-left, top-right, bottom-left, bottom-right points. The found extremums are expected to be the face's corners.
+
+\subsubsection{Extraction}
+
+The corner detection is covered in the previous subsection thus at this point 4 detected corners should to be passed to the next stage to apply linear transformation. As a result, plane image of the face will be stored.
+This approach has the limitation for an input. It is not possible to detect the face corners if an image or a video quality is poor or contours are broken. These circumstances will fail face extraction. However, if the source quality is sufficient then this algorithm performs well because of its simplicity and performance.
+
+\subsubsection{Transforming Image}
+
+At this stage the same approach as in the Sudoku experiment was used. The same set of equations was used to transform the image. The system of equations from figure \ref{eq:persptransform} makes mapping of points from distorted image to a flat square image possible. To achieve this \ac{OpenCV}'s $GetPerspectiveTransform$ and $WarpPerspective$ methods were used for applying perspective transformation to the source.
+
+\subsubsection{Identifying unique faces}
+
+There are many possible options to check images for similarities like feature matching, color histograms, cross correlation, euclidean distance. Looking at a cube it is clear that there are no specific features on it, only colored pieces. The other case is the observation problem, the cube can be shown in different orientations. From the observations made, color histograms was chosen as a best choice to distinguish faces.
+All uniquely detected faces were stored in the list and compared with every newly detected face. In order to achieve this images were converted to \ac{HSV} to calculate the histogram and normalize the results. To compare images correlation was used and performed well. For example, if the correlation is more than 0.6 it is assumed that faces are too similar thus the new one has to be rejected as already found.
+This algorithm is a simple one however the empirical research showed that it works as expected.
+
+\subsubsection{Color detection}
+
+Color detection is nearly the easiest part of the program. In order to detect \ac{RGB} color representation for each piece of a cube face it should be segmented into $n$ equal squares, since the 3 by 3 Rubik's cube was used. The segmentation operation produces nine pieces and this approach cannot handle larger cubes.
+After the piece of the face is cut out, the center pixel \ac{RGB} data and intensity are taken. The extracted data is collected into specific data structure and this is the end of the process. Extracted \ac{RGB} colors are mapped to the new data structure in order to convert it to the Rubik's cube 3D model for solving and rendering purposes. 
+
+\subsubsection{Conclusion}
+
+This project was a continuation of the Sudoku ideas projected onto the Rubik's cube. At this stage single faces were extracted correctly but some faces extraction might fail due to illumination conditions. In fact, cube's surface may be different and it means that when the light falls on the surface it may be reprojected and create color distortions thus it brakes edge detection. Under the good illumination conditions corners of faces and pieces colors are extracted correctly.  From the figure \ref{fig:rubiks_cube_face_detected} it is clearly seen that this approach is applicable for the given problem.
+
+\begin{figure} [ht]
+    \begin{center}
+        \includegraphics[width=150pt]{detected_face}
+        \includegraphics[width=150pt]{extracted_face}
+        \caption{Detected and extracted face sample with distorted colors.}
+        \label{fig:rubiks_cube_face_detected}
+    \end{center}
+\end{figure}
+
+\end{document}

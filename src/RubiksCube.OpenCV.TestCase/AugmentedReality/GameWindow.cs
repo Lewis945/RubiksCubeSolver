@@ -50,24 +50,27 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
                 Transformation lastPose = new Transformation();
                 while (true)
                 {
-                    var frame = Capture.QueryFrame();
-                    if (frame == null) break;
-                    if (counter % 8 == 0)
+                    if (Capture != null)
                     {
-                        var processedFrame = ProcessFrame(frame);
-                        lastPose = processedFrame.PatternPose;
-                        _captureBuffer.Enqueue(processedFrame);
-                    }
-                    else
-                    {
-                        _captureBuffer.Enqueue(new ProcessedFrame { PatternPose = lastPose, IsPatternPresent = true, Image = frame });
-                    }
+                        var frame = Capture.QueryFrame();
+                        if (frame == null) break;
+                        if (counter % 8 == 0)
+                        {
+                            var processedFrame = ProcessFrame(frame);
+                            lastPose = processedFrame.PatternPose;
+                            _captureBuffer.Enqueue(processedFrame);
+                        }
+                        else
+                        {
+                            _captureBuffer.Enqueue(new ProcessedFrame { PatternPose = lastPose, IsPatternPresent = true, Image = frame });
+                        }
 
-                    counter++;
+                        counter++;
 
-                    if (_captureBuffer.Count > 50)
-                    {
-                        _render = true;
+                        if (_captureBuffer.Count > 50)
+                        {
+                            _render = true;
+                        }
                     }
                 }
             });
@@ -105,8 +108,8 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
             {
                 if (!_isInit)
                 {
-                    //_backgroundImage = ProcessFrame(_backgroundImage);
-                    //_isInit = true;
+                    _currentProcessedFrame = ProcessFrame(_backgroundImage);
+                    _isInit = true;
                 }
             }
         }
@@ -217,7 +220,7 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
             if (processedFrame.IsPatternPresent)
             {
                 // Set the pattern transformation
-                Matrix4 glMatrix = processedFrame.PatternPose.getMat44();
+                Matrix4 glMatrix = processedFrame.PatternPose.GetMat44();
                 GL.LoadMatrix(ref glMatrix);
 
                 // Render model
@@ -232,24 +235,24 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
             float farPlane = 100.0f;  // Far clipping distance
 
             // Camera parameters
-            float f_x = calibration.Fx; // Focal length in x axis
-            float f_y = calibration.Fy; // Focal length in y axis (usually the same?)
-            float c_x = calibration.Cx; // Camera primary point x
-            float c_y = calibration.Cy; // Camera primary point y
+            double fX = calibration.Fx; // Focal length in x axis
+            double fY = calibration.Fy; // Focal length in y axis (usually the same?)
+            double cX = calibration.Cx; // Camera primary point x
+            double cY = calibration.Cy; // Camera primary point y
 
             var projectionMatrix = new Matrix4(
-                -2.0f * f_x / screen_width,
+                (float)(-2.0 * fX / screen_width),
                 0.0f,
                 0.0f,
                 0.0f,
                 //----------
                 0.0f,
-                2.0f * f_y / screen_height,
+                (float)(2.0f * fY / screen_height),
                 0.0f,
                 0.0f,
                 //----------
-                2.0f * c_x / screen_width - 1.0f,
-                2.0f * c_y / screen_height - 1.0f,
+                (float)(2.0f * cX / screen_width - 1.0f),
+                (float)(2.0f * cY / screen_height - 1.0f),
                 -(farPlane + nearPlane) / (farPlane - nearPlane),
                 -1.0f,
                 //----------
@@ -264,9 +267,9 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
 
         private void DrawCoordinateAxis()
         {
-            float[] lineX = new float[] { 0, 0, 0, 1, 0, 0 };
-            float[] lineY = new float[] { 0, 0, 0, 0, 1, 0 };
-            float[] lineZ = new float[] { 0, 0, 0, 0, 0, 1 };
+            float[] lineX = { 0, 0, 0, 1, 0, 0 };
+            float[] lineY = { 0, 0, 0, 0, 1, 0 };
+            float[] lineZ = { 0, 0, 0, 0, 0, 1 };
 
             GL.LineWidth(2);
 
@@ -289,9 +292,9 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
 
         private void DrawCubeModel()
         {
-            var LightAmbient = new float[] { 0.25f, 0.25f, 0.25f, 1.0f };    // Ambient Light Values
-            var LightDiffuse = new float[] { 0.1f, 0.1f, 0.1f, 1.0f };    // Diffuse Light Values
-            var LightPosition = new float[] { 0.0f, 0.0f, 2.0f, 1.0f };    // Light Position
+            var lightAmbient = new[] { 0.25f, 0.25f, 0.25f, 1.0f };    // Ambient Light Values
+            var lightDiffuse = new[] { 0.1f, 0.1f, 0.1f, 1.0f };    // Diffuse Light Values
+            var lightPosition = new[] { 0.0f, 0.0f, 2.0f, 1.0f };    // Light Position
 
             GL.PushAttrib(AttribMask.ColorBufferBit | AttribMask.CurrentBit | AttribMask.EnableBit | AttribMask.LightingBit | AttribMask.PolygonBit);
 
@@ -304,9 +307,9 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
             GL.Enable(EnableCap.Lighting);
             GL.Disable(EnableCap.Light0);
             GL.Enable(EnableCap.Light1);
-            GL.Light(LightName.Light1, LightParameter.Ambient, LightAmbient);
-            GL.Light(LightName.Light1, LightParameter.Diffuse, LightDiffuse);
-            GL.Light(LightName.Light1, LightParameter.Position, LightPosition);
+            GL.Light(LightName.Light1, LightParameter.Ambient, lightAmbient);
+            GL.Light(LightName.Light1, LightParameter.Diffuse, lightDiffuse);
+            GL.Light(LightName.Light1, LightParameter.Position, lightPosition);
             GL.Enable(EnableCap.ColorMaterial);
 
             GL.Scale(0.25f, 0.25f, 0.25f);

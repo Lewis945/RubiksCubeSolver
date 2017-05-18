@@ -1,0 +1,74 @@
+\documentclass[../../../../main]{subfiles}
+
+\begin{document}
+
+\paragraph{OpenCvSharp}
+
+OpenCvSharp is one of many {\Csharp} OpenCV's wrappers. It has been created by the japanies developer nicknamed "shimat". This project is opensource and licensed under BSD 3-Clause License. This wrapper is good for its similarity to the classical C++ \ac{API} of \ac{OpenCV} though it easy to translate C++ samples to {\Csharp} without major changes. It was modelled close to the native C++ \ac{API} as much as possible.
+
+Almost all classes of this library implements $IDisposable$ interface and that means there is no need to think of unmanaged resources as in C++, no memory leaks and etc. OpenCvSharp does not force users to stick to object-oriented work flow, if user wants to, it is possible to use functional style that is native for \ac{OpenCV}. Library also includes transformation of \ac{OpenCV} images to .NET bitmaps that simplifies image manipulations.
+
+It can be used on both Windows and Linux but for Linux it is only possible via Mono Framework. In general, any platform that Mono supports can be used.
+
+\begin{figure} [!ht]
+  \centering    
+    \lstset{style=sharpc}
+        \begin{lstlisting}
+        // Edge detection by Canny algorithm
+        using OpenCvSharp;
+        
+        public class Program 
+        {
+            public static void Main() 
+            {
+                Mat source = new Mat("image.png", ImreadModes.GrayScale);
+                Mat target = new Mat();
+                
+                Cv2.Canny(source, target, 50, 200);
+                using (new Window("Source image", source)) 
+                using (new Window("Target image", target)) 
+                    Cv2.WaitKey();
+            }
+        }
+        \end{lstlisting}
+  \caption{OpenCvSharp Canny edge detection sample.}
+  \label{opencvsharpcanny}
+\end{figure}
+
+\begin{figure} [!ht]
+  \centering    
+    \lstset{style=cplusplus}
+        \begin{lstlisting}
+        #include ...
+        using ...
+        
+        int main(int arg, char** argv)
+        {
+            string image_name = "someimage.jpg";
+        
+            Mat source, source_gray;
+            Mat target, detected_edges;
+            
+            source = imread(image_name.c_str(), IMREAD_COLOR);
+            cvtColor(source, source_gray, COLOR_BGR2GRAY);
+        
+            Canny(source_gray, detected_edges, ...);
+            target = Scalar::all(0);
+        
+            source.copyTo(target, detected_edges);
+        
+            namedWindow( "Display window", WINDOW_AUTOSIZE); 
+            imshow("Source image", source);                
+            imshow("Target image", target);
+        
+            waitKey(0);
+            return 0;
+        }
+        \end{lstlisting}
+  \caption{C++ OpenCV API Canny edge detection sample.}
+  \label{cpluspluscanny}
+\end{figure}
+
+As it can be seen from figures \ref{opencvsharpcanny} and \ref{cpluspluscanny} \ac{API}'s are very similar but C++ requires more code to write for the same operation but it is quite easy to translate these samples in both ways due to their similarity.
+
+\end{document}

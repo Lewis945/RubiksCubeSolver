@@ -21,16 +21,22 @@ namespace RubiksCube.OpenCV.TestCase
         [STAThread]
         public static void Main(string[] args)
         {
-            //RubiksCube.OpenCV.TestCase.AugmentedReality.Bootstrapper.Run("Images\\PyramidPatternTest.bmp", "Images\\PyramidPattern.jpg", AugmentedReality.SourceType.Image);
-            RubiksCube.OpenCV.TestCase.AugmentedReality.Bootstrapper.Run("Videos\\napkins-video.mp4", "Images\\napkins-pattern.jpg", AugmentedReality.SourceType.Video);
+            #region AugmentedReality
 
-            //UMat image;
-            //image = SiftExamples.Run(new Mat("Images\\PyramidPatternTest.bmp", LoadImageType.Grayscale));
-            //image = FastExamples.Run(new Mat("Images\\PyramidPatternTest.bmp", LoadImageType.Grayscale));
-            //image = FreakExamples.Run(new Mat("Images\\PyramidPatternTest.bmp", LoadImageType.Grayscale));
-            //image = OrbExamples.Run(new Mat("Images\\PyramidPatternTest.bmp", LoadImageType.Grayscale));
-            //image = SurfExamples.Run(new Mat("Images\\PyramidPatternTest.bmp", LoadImageType.Grayscale));
-            //ImageViewer.Show(image, "Image");
+            //RubiksCube.OpenCV.TestCase.AugmentedReality.Bootstrapper.Run("Images\\PyramidPatternTest.bmp", "Images\\PyramidPattern.jpg", AugmentedReality.SourceType.Image);
+            //RubiksCube.OpenCV.TestCase.AugmentedReality.Bootstrapper.Run("Videos\\napkins-video.mp4", "Images\\napkins-pattern.jpg", AugmentedReality.SourceType.Video);
+
+            #endregion
+
+            #region PtamLikeApproach
+
+            RubiksCube.OpenCV.TestCase.PtamLikeApproach.Bootstrapper.Run("Videos\\cube2.avi");
+            //RubiksCube.OpenCV.TestCase.PtamLikeApproach.Bootstrapper.Run("Videos\\rubik1.avi");
+            //RubiksCube.OpenCV.TestCase.PtamLikeApproach.Bootstrapper.Run();
+
+            #endregion
+
+            //Utilities.WriteVideo("Videos\\rubik.avi");
         }
     }
 }

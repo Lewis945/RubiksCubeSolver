@@ -16,17 +16,17 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
     public class PatternDetector
     {
         private Pattern _pattern;
-        private PatternTrackingInfo _patternInfo;
+        private readonly PatternTrackingInfo _patternInfo;
 
         /// <summary>
         /// 
         /// </summary>
-        public Pattern Pattern { get { return _pattern; } }
+        public Pattern Pattern => _pattern;
 
         /// <summary>
         /// 
         /// </summary>
-        public PatternTrackingInfo PatternTrackingInfo { get { return _patternInfo; } }
+        public PatternTrackingInfo PatternTrackingInfo => _patternInfo;
 
         /// <summary>
         /// 
@@ -56,7 +56,7 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
 
             _patternInfo.Homography = homography;
 
-            var pts = Array.ConvertAll<Point, PointF>(_pattern.Points2d.ToArray(), (a) => { return a; });
+            var pts = Array.ConvertAll<Point, PointF>(_pattern.Points2d.ToArray(), a => a);
             pts = CvInvoke.PerspectiveTransform(pts, homography);
             var points = Array.ConvertAll(pts, Point.Round);
 
@@ -69,16 +69,16 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
 
         protected Pattern BuildPatternFromImage(Mat image)
         {
-            _pattern = new Pattern();
-
-            // Store original image in pattern structure
-            _pattern.Size = new Size(image.Cols, image.Rows);
-            _pattern.Frame = image.Clone();
-            _pattern.GrayImg = GetGray(image);
+            _pattern = new Pattern
+            {
+                Size = new Size(image.Cols, image.Rows),
+                Frame = image.Clone(),
+                GrayImg = GetGray(image),
+                Points2d = new VectorOfPoint(4),
+                Points3d = new VectorOfPoint3D32F(4)
+            };
 
             // Build 2d and 3d contours (3d contour lie in XY plane since it's planar)
-            _pattern.Points2d = new VectorOfPoint(4);
-            _pattern.Points3d = new VectorOfPoint3D32F(4);
 
             // Image dimensions
             int w = image.Cols;
@@ -90,7 +90,7 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
             float unitH = h / maxSize;
 
             _pattern.Points2d.Clear();
-            _pattern.Points2d.Push(new Point[] {
+            _pattern.Points2d.Push(new[] {
                 new Point(0, 0),
                 new Point(w, 0),
                 new Point(w, h),
@@ -99,7 +99,7 @@ namespace RubiksCube.OpenCV.TestCase.AugmentedReality
 
             _pattern.Points3d.Clear();
             _pattern.Points3d.Push(
-                new MCvPoint3D32f[] {
+                new[] {
                     new MCvPoint3D32f(-unitW, -unitH, 0),
                     new MCvPoint3D32f(unitW, -unitH, 0),
                     new MCvPoint3D32f(unitW, unitH, 0),

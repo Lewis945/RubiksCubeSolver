@@ -108,7 +108,7 @@ namespace RubiksCube.OpenCV
                     Cv2.Circle(dst, p4, 10, Scalar.Red);
 
                     var bitmap = OpenCvSharp.Extensions.BitmapConverter.ToBitmap(dst);
-                    bitmap.Save("Results\\face-corners-" + Guid.NewGuid() + ".png", ImageFormat.Png);
+                    bitmap.Save("Results\\face-corners-" + Guid.NewGuid() + ".jpg", ImageFormat.Jpeg);
                 }
             }
 
