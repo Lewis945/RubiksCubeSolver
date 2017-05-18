@@ -5,19 +5,21 @@
 
 \paragraph{Stereovision basics}
 
-Stereo vision is a field of computer vision and its purpose is to provide information about 3D structures on digital images. This is achieved by comparing some feature points of scene taken from two views at the same time. In traditional way it is done by a stereo camera, which is, basically, two cameras placed horizontally within some distance, as human eyes. This technique allows to get relative distance from a camera to the object on the scene. This information is also known as relative depth information which is represented as disparity map \cite{Hartley2004}.
+Stereo vision is a field of computer vision and its purpose is to provide information about 3D structures on digital images. This is achieved by comparing some feature points of scene taken from two views at the same time. In traditional way it is done by a stereo camera, which is, basically, two cameras placed horizontally within specific distance, as human eyes. This technique allows to get relative distance from a camera to the object on the scene. This information is also known as relative depth information which is represented as disparity map \cite{Hartley2004}.
 
-There are few steps that precede finding of depth information because images taken by camera could contain some distortions and etc. The first and the most important step is to calibrate cameras with their inartistic parameters to make it function as a single system. This operation will provide extrinsic parameters of the camera, which is rotation and translation vectors of the camera. Calibration is achieved by showing calibration grid to the camera which looks like a chessboard. It is used because size of squares should be known and the grid pattern is simple for detection.
+There are few steps that precede finding of depth information because images taken by camera could contain some distortions and etc. The first and the most important step is to calibrate cameras with their intrinsic parameters to make it function as a single system. This operation will provide extrinsic parameters of the camera, which is rotation and translation vectors of the camera. Calibration is achieved by showing calibration grid to the camera which looks like a chessboard. It is used because size of squares should be known and the grid pattern is simple for detection. Calibration grid is depicted in the figure \ref{fig:calibrationGrid}.
 
 \begin{figure} [ht]
     \begin{center}
-        \includegraphics[width=200pt]{calibration_grid}
+        \includegraphics[width=180pt]{calibration_grid}
         \caption{Calibration grid.}
         \label{fig:calibrationGrid}
     \end{center}
 \end{figure}
 
-The results of calibration process are used to rectify images so that both images are changed in order to be projections to the same real world plane. Rectified images significantly reduce computations that are needed to get the 3D information from the scene. This refers to epipolar geometry, stereo vision geometry. It describes relations between projections and 3D points that comes from the assumption that camera corresponds to the pinhole camera model. This model describes already mentioned relations from the ideal pinhole camera perspective. Pinhole is a light proof box with a tiny hole from one side thus pinhole camera does not have any lens, as a result, it produce inverted image projected to the opposite to the hole side. From the nature of the camera, model does not take into consideration any kind of distortions caused by lens and etc. To correct the lens distortion pixel to real 3D coordinates transformation can be used.
+\newpage
+
+The results of calibration process are used to rectify images so that both images are changed in order to be projections to the same real world plane. Rectified images significantly reduce computations that are needed to get the 3D information from the scene. This refers to epipolar geometry (stereo vision) geometry. It describes relations between projections and 3D points that comes from the assumption that camera corresponds to the pinhole camera model. This model describes already mentioned relations from the ideal pinhole camera perspective. Pinhole is a light proof box with a tiny hole from one side thus pinhole camera does not have any lens, as a result, it produces inverted image. Figure \ref{fig:pinholeCamera} illustrates pinhole camera logic. From the nature of the camera, model does not take into consideration any kind of distortions caused by lens and etc. To correct the lens distortion pixel to real 3D coordinates transformation can be used.
 
 \begin{figure} [ht]
     \begin{center}
@@ -27,14 +29,15 @@ The results of calibration process are used to rectify images so that both image
     \end{center}
 \end{figure}
 
-Epipolar constraints between two cameras are described by essential and fundamental matrices. Essential matrix can be thought as a pre-step before fundamental matrix. One limitation of the essential matrix is that it can be used only with calibrated cameras however if the cameras are calibrated it can be used to get relative orientation in the cameras space and to find 3D position of point's pairs. It is possible to extract rotation and translation vectors with this method using \ac{SVD} decomposition. On the other hand, fundamental matrix deals with the uncalibrated cameras. In case having fundamental matrix and camera calibration information it is possible to get essential matrix for further processing. 
+Epipolar constraints between two cameras are described by essential and fundamental matrices. Essential matrix can be thought as a pre-step before fundamental matrix. One limitation of the essential matrix is that it can be used only with calibrated cameras however if the cameras are calibrated it can be used to get relative orientation in the cameras space and to find 3D position of pairs of points. It is possible to extract rotation and translation vectors with this method using \ac{SVD}. On the other hand, fundamental matrix deals with the uncalibrated cameras. In case of having fundamental matrix and camera calibration information it is possible to get essential matrix for further processing. Figure \ref{fig:essential_matrix} shows essential matrix equation described in the "Multiple View Geometry in Computer Vision" book \parencite[see][p257]{Hartley2004} where $K$ is the intrinsic camera parameters.
 
 \begin{figure} [ht]
   \centering  
       \begin{equation}
          E = K'^TFK  
       \end{equation}
-  \caption{Equation of Essential matrix, K is the intrinsic camera parameters. \parencite[see][p257]{Hartley2004}}
+  \label{fig:essential_matrix}
+  \caption{Equation of Essential matrix}
 \end{figure}
 
 In a simple stereo-vision system depth of a point can be easily found with an equation \ref{depthFormula} where $f$ is a focal length of the camera, $b$ is a distance between cameras, $d$ is a distance between corresponding points, also known as disparity.
@@ -59,7 +62,7 @@ To determine the 3D point coordinates by two or more its 2D projection so called
   \caption{Equations of 3D point's coordinates.}
 \end{figure}
 
-Basically, if the baseline is known, 3D coordinates could be found with the equation \ref{realCoordinatesFormula} where B is a baseline, d is a disparity, f is a focal length, u and v are column and row with the origin in center of the image.
+If the baseline is known (line $CC'$ from the figure \ref{fig:triangulation}), 3D coordinates could be found with the equation \ref{realCoordinatesFormula} where $B$ is a baseline, $D$ is a disparity, $f$ is a focal length, $u$ and $v$ are column and row with the origin in center of the image. Figure \ref{fig:triangulation} represents triangulation process.
 
 \begin{figure} [ht]
     \begin{center}

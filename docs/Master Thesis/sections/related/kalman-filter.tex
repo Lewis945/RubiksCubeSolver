@@ -6,15 +6,15 @@
 \subsection{Kalman filter}
 
 Kalman filter is one of the most known and used set of mathematical tools for sensor's noise influence reduction. It was named after the author of "A New Approach to Linear Filtering
-and Prediction Problems" \cite{kalman1960} R. E. Kalman. Basically, this filter is a set of mathematical equations designed to solve the predictor-corrector estimation problem and its huge advantage is that it minimizes estimated error covariance. Advantages in digital computing and simplicity made this filter very practical and provoked an extensive research in the field of navigation.
+and Prediction Problems" \cite{kalman1960} R. E. Kalman. Tthis filter is a set of mathematical equations designed to solve the predictor-corrector estimation problem and its huge advantage is that it minimizes estimated error covariance. Advantages in digital computing and simplicity made this filter very practical and provoked an extensive research in the field of navigation.
 
 Generally, Kalman filter can be used in any dynamic system where some uncertain information exists. This filter is making educated guesses about the next step of the system based on mathematical model of the system. Even when noisy data interferes with the real measurements Kalman filter does a great job on guessing what is really going on in the system.
-Due to the nature of Kalman filter it is an ideal tool for dynamic, changing systems. The reason for that is it does not require huge amounts of memory or computational power since it only needs to store previous step state in order to compute the prediction and current measurements to adjust current system state. All of that is done by a set of mathematical equations thus it makes Kalman filter a great tool for real time or embedded systems.
+Due to the nature of Kalman filter it is an ideal tool for dynamic, changing systems. The reason is absence of requirements for huge amounts of memory or computational power since it only needs to store previous step state in order to compute the prediction and current measurements to adjust current system state. All of that is done by a set of mathematical equations thus it makes Kalman filter a great tool for real time and embedded systems.
 
 \subsubsection*{Kalman filter vision}
 
-Kalman filter requires mathematical description of the system with its parameters and it assumes that these parameters are Gaussian distributed and random. Every parameter has the most likely state which is a mean of the random distribution and range of uncertainty values, variance. One more important thing about parameters is that they must be correlated which means that one parameter can be used to find the other one. Basically, Kalman filter aims to get as much information from uncertain measurements as possible.
-It describes correlation of parameters with so called covariance matrix. This matrix is symmetric and its values are degrees of correlation between two parameters states where these parameters are taken depending on the indices of the matrix value. Covariance matrix is often labelled as $\sum$.
+Kalman filter requires mathematical description of the system with its parameters and it assumes that these parameters are Gaussian distributed and random. Every parameter has the most likely state which is a mean of the random distribution and range of uncertainty values, variance. One more important thing about parameters is that they must be correlated which means that one parameter can be used to find another one. Kalman filter aims at getting as much information from uncertain measurements as possible.
+It describes correlation of parameters with so called covariance matrix. This matrix is symmetric and its values are degrees of correlation between two parameters states where these parameters are taken depending on the indices of the matrix value. Covariance matrix is often labelled as $\sum$. Figure \ref{fig:kalman_covariance_matrix} illustrates covariance matrix.
 
 \begin{figure} [ht!]
   \centering    
@@ -24,10 +24,11 @@ It describes correlation of parameters with so called covariance matrix. This ma
     \begin{equation}
        P_k = \begin{bmatrix} \sum_{pp} & \sum_{pv} \\ \sum_{vp} & \sum_{vv} \end{bmatrix}
     \end{equation}
+    \label{fig:kalman_covariance_matrix}
   \caption{Example of covariance matrix with position and velocity parameters.}
 \end{figure}
 
-As a next step, filter must somehow predict the next step depending on the previous one without knowing which state is real and which is not. This is done by prediction matrix F which should transform estimation of one state to the predicted one assuming that the original state was real. This manipulations leads to covariance matrix changes, if all values in the distribution are multiplied by prediction than new covariance matrix will be computed as multiplication of prediction matrix by covariance matrix and by transposed prediction matrix.
+As a next step, filter must somehow predict the next step depending on the previous one without knowing which state is real and which is not. This is done by prediction matrix F which should transform estimation of one state to the predicted one assuming that the original state was real. This manipulations leads to covariance matrix changes, if all values in the distribution are multiplied by prediction than new covariance matrix will be computed as multiplication of prediction matrix by covariance matrix and by transposed prediction matrix. This is represented in the figure \ref{fig:kalman_next_step}.
 
 \begin{figure} [ht!]
   \centering    
@@ -37,40 +38,43 @@ As a next step, filter must somehow predict the next step depending on the previ
      \begin{equation}
        P_k = F_k P_{k-1} F_k^T
     \end{equation}
-  \caption{Example of computation the next step state and covariance matrix equations.}
+    \label{fig:kalman_next_step}
+  \caption{Example of computing the next step state and covariance matrix equations.}
 \end{figure}
 
 \subsubsection*{Extraneous known influence}
 
-In the real world it might happen that the system is affected by something not related to the systems inside world, for instance, hole in the road that will affect the way car goes or the wind blowing at some region. This knowledge of some external factors that may affect system can be described mathematically and added to the prediction calculation as a correction. They are expressed as control vector and matrix multiplied together. Control vector contains known outside parameters, for example, speed of the wind, and control matrix contains changing parameters, for example, time delta between two moments on the time-line.
+In the real world it might happen that the system is affected by something not related to the systems inside world, for instance, hole in the road that will affect the way car goes or the wind blowing at some region. This knowledge of some external factors that may affect system can be described mathematically and added to the prediction calculation as a correction. They are expressed as control vector and matrix multiplied together. This is illustrated in teh figure \ref{fig:kalman_expanded_state_prediction}. Control vector contains known outside parameters, for example, speed of the wind, and control matrix contains changing parameters, for example, time delta between two moments on the time-line.
 
 \begin{figure} [!ht]
   \centering    
     \begin{equation}
        \hat{x_k} = F_k \hat{x}_{k-1} + B_k\vec{u_k}
     \end{equation}
+    \label{fig:kalman_expanded_state_prediction}
   \caption{Example of expanded system state prediction equation.}
 \end{figure}
 
 \subsubsection*{Extraneous unknown influence}
 
 It also might happen that factors of influence are not known and they cannot be described as control matrix and vector. In this case it is possible to model some uncertainty around the predicted state. This influence is treated as noise with some covariance but because of multiple possible next step noisy predictions they are treated as a single Gaussian blob with different covariance but same mean.
-Thus, in order to get expanded system covariance matrix that takes into consideration possible noise it is needed to add noise blob covariance to the system covariance.
+Thus, in order to get expanded system covariance matrix that takes into consideration possible noise it is needed to add noise blob covariance to the system covariance. This is shown in the figure \ref{ref:kalman_expanded_covariance_matrix}.
 
 \begin{figure} [!ht]
   \centering    
     \begin{equation}
        P_k = F_k P_{k-1}  F_k^T + Q_k
     \end{equation}
+    \label{ref:kalman_expanded_covariance_matrix}
   \caption{Example of expanded system covariance matrix equation.}
 \end{figure}
 
 The new uncertainty is predicted with the previous one plus some correction on the current uncertainty from the environment.
 
-\subsubsection*{Prediction correction with measurements}
+\subsubsection*{Prediction correction using measurements}
 
 System may contain several sensors that are giving some indirect information about its state. Data from sensors is not the same as data tracked by Kalman filter. One fact about filter is that it is very good for handling sensor noise.
-Here comes sensor matrix that transforms the predicted state to a sensor reading prediction. The next step is computing the most likely state based on predicted state Gaussian distribution and sensor reading Gaussian distribution. To get the most likely state it needs to understand if two probabilities are both true. The first one is that sensor reading is estimated measurement and the second one is that the previous estimate is the reading that should come from sensor. To get the most accurate estimate it multiplies those two Gaussian blobs and receives their intersection which is the estimate and the best guess. This new estimate is the Gaussian blob with its own mean and covariance. To get these mean and covariance matrix two formulas are used \ref{eq:kalman_new_mean} and \ref{eq:kalman_new_covariance}.
+Here comes sensor matrix that transforms the predicted state to a sensor reading prediction. The next step is computing the most likely state based on predicted state Gaussian distribution and sensor reading Gaussian distribution. To get the most likely state it needs to understand if two probabilities are both true. The first one is that sensor reading is estimated measurement and the second one is that the previous estimate is the reading that should come from sensor. To get the most accurate estimate it multiplies those two Gaussian blobs and receives their intersection which is the estimate and the best guess. 
 
 \begin{figure} [!ht]
   \centering    
@@ -83,18 +87,25 @@ Here comes sensor matrix that transforms the predicted state to a sensor reading
        \textstyle
        \sum' = \sum_0 - K \sum_0
     \end{equation}
+    \label{fig:kalman_new_mean_covariance}
   \caption{Example of the new mean and covariance matrix equations.}
 \end{figure}
 
-K is a Kalman gain that is computed from modeled sensor matrix $H_k$, system covariance matrix $P_k$, and the covariance of uncertainty (sensor nose) $R_k$.
+This new estimate is the Gaussian blob with its own mean and covariance. To get these mean and covariance matrix two formulas are used \ref{eq:kalman_new_mean} and \ref{eq:kalman_new_covariance}.
+
+From the figures \ref{fig:kalman_new_mean_covariance}, \ref{fig:kalman_gain} and \ref{fig:kalman_final_estimation} K is a Kalman gain that is computed from modeled sensor matrix $H_k$, system covariance matrix $P_k$, and the covariance of uncertainty (sensor nose) $R_k$.
 
 \begin{figure} [!ht]
   \centering    
     \begin{equation}
        K' = P_k H_k^T (H_k P_k H_k^T + R_k) ^ {-1}
     \end{equation}
+    \label{fig:kalman_gain}
   \caption{Example of Kalman gain equation.}
 \end{figure}
+
+From the equation \ref{eq:kalman_final_state_estim} $z_k$ is the mean of the estimated sensor distribution and it is equal to the reading from the sensor.
+All of these manipulations are the update stage of Kalman filter.
 
 \begin{figure} [!ht]
   \centering    
@@ -105,15 +116,13 @@ K is a Kalman gain that is computed from modeled sensor matrix $H_k$, system cov
     \begin{equation}
        P_k' = P_k - K' H_k P_k
     \end{equation}
+    \label{fig:kalman_final_estimation}
   \caption{Example of the final estimation equations.}
 \end{figure}
 
-From the equation \ref{eq:kalman_final_state_estim} $z_k$ is the mean of the estimated sensor distribution and it is equal to the reading from the sensor.
-All of these manipulations are the update stage of Kalman filter.
-
 \subsubsection*{Conclusion}
 
-To implement linear Kalman filter it is basically needed to only implement predict and update equations. After each time and measurement update pair, the process is repeated with the previous estimates used to project or predict the new estimates. The recursive nature is one of the very appealing features of the Kalman filter, it makes practical implementations much more clear and practical than an implementation of a Wiener filter that is designed to operate with all of the data directly per each estimate. The Kalman filter instead recursively evaluates the current estimations for all of the past measurements.
-For nonlinear systems Extended Kalamn filter is used. It linearize measurements and predictions of Kalman filter about their mean.
+To implement linear Kalman filter it is only needed to implement predict and update equations. After each time and measurement update pair, the process is repeated with the previous estimates used to project or predict the new estimates. The recursive nature is one of the very appealing features of the Kalman filter, its implementations are much clear and practical than an implementations of a Wiener filter that was designed to operate with all of the data directly per each estimate. The Kalman filter instead recursively evaluates the current estimations for all of the past measurements.
+For nonlinear systems Extended Kalamn filter is used. It linearizes measurements and predictions of Kalman filter about their mean.
 
 \end{document}

@@ -4,7 +4,7 @@
 
 \paragraph{OpenCvSharp}
 
-OpenCvSharp is one of many {\Csharp} OpenCV's wrappers. It has been created by the guy from Japan on GitHub called shimat. This project is opensource and licensed under BSD 3-Clause License. This wrapper is good for its similarity to the classical C++ \ac{API} of \ac{OpenCV} though it easy to translate C++ samples to {\Csharp} without major changes. It was modelled close to the native C++ \ac{API} as much as possible.
+OpenCvSharp is one of many {\Csharp} OpenCV's wrappers. It has been created by the japanies developer nicknamed "shimat". This project is opensource and licensed under BSD 3-Clause License. This wrapper is good for its similarity to the classical C++ \ac{API} of \ac{OpenCV} though it easy to translate C++ samples to {\Csharp} without major changes. It was modelled close to the native C++ \ac{API} as much as possible.
 
 Almost all classes of this library implements $IDisposable$ interface and that means there is no need to think of unmanaged resources as in C++, no memory leaks and etc. OpenCvSharp does not force users to stick to object-oriented work flow, if user wants to, it is possible to use functional style that is native for \ac{OpenCV}. Library also includes transformation of \ac{OpenCV} images to .NET bitmaps that simplifies image manipulations.
 
@@ -39,34 +39,27 @@ It can be used on both Windows and Linux but for Linux it is only possible via M
   \centering    
     \lstset{style=cplusplus}
         \begin{lstlisting}
-        #include <opencv2/core/core.hpp>
-        #include <opencv2/imgcodecs.hpp>
-        #include <opencv2/highgui/highgui.hpp>
+        #include ...
+        using ...
         
-        #include <iostream>
-        #include <string>
-        
-        using namespace cv;
-        using namespace std;
-        
-        int main( int argc, char** argv )
+        int main(int arg, char** argv)
         {
-            string imageName = "image.png";
+            string image_name = "someimage.jpg";
         
-            Mat src, src_gray;
-            Mat dst, detected_edges;
+            Mat source, source_gray;
+            Mat target, detected_edges;
             
-            src = imread(imageName.c_str(), IMREAD_COLOR);
-            cvtColor(src, src_gray, COLOR_BGR2GRAY);
+            source = imread(image_name.c_str(), IMREAD_COLOR);
+            cvtColor(source, source_gray, COLOR_BGR2GRAY);
         
-            Canny(src_gray, detected_edges, ...);
-            dst = Scalar::all(0);
+            Canny(source_gray, detected_edges, ...);
+            target = Scalar::all(0);
         
-            src.copyTo(dst, detected_edges);
+            source.copyTo(target, detected_edges);
         
             namedWindow( "Display window", WINDOW_AUTOSIZE); 
-            imshow("Source image", image);                
-            imshow("Target image", dst);
+            imshow("Source image", source);                
+            imshow("Target image", target);
         
             waitKey(0);
             return 0;

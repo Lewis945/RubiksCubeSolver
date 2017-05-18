@@ -190,6 +190,8 @@
 
 \begin{document}
 
+%TODO: Add Estonian abstract, add keywords to abstract
+
 %\maketitle
 
 % Section without numbering http://tex.stackexchange.com/questions/30122/generate-table-of-contents-when-section-sections-without-numbering-has-been
@@ -204,6 +206,11 @@
 \section*{Abstract}
 \addcontentsline{toc}{section}{\protect\numberline{}Abstract}
 \subfile{sections/abstract}
+\newpage
+
+\section*{Abstraktne}
+\addcontentsline{toc}{section}{\protect\numberline{}Abstraktne}
+\subfile{sections/resume}
 \newpage
 
 \section*{Acknowledgements}
@@ -241,6 +248,11 @@
 \newpage
 
 \printbibliography[heading=bibintoc]
+\newpage
+
+\section*{License}
+\addcontentsline{toc}{section}{\protect\numberline{}License} 
+\subfile{sections/license}
 \newpage
 
 \end{document}
