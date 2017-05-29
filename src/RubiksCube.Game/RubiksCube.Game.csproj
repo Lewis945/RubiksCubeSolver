@@ -119,6 +119,16 @@
     <Content Include="Videos\Readme.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Videos\temp\VID_20170527_224412.mp4" />
+    <Content Include="Videos\temp\VID_20170527_225418.mp4" />
+    <Content Include="Videos\temp\VID_20170528_152424.mp4" />
+    <Content Include="Videos\temp\VID_20170528_153259.mp4" />
+    <Content Include="Videos\temp\VID_20170528_153339.mp4" />
+    <Content Include="Videos\temp\VID_20170528_160123.mp4" />
+    <Content Include="Videos\temp\VID_20170528_162020.mp4" />
+    <Content Include="Videos\temp\VID_20170528_163552.mp4" />
+    <Content Include="Videos\temp\VID_20170528_164056.mp4" />
+    <Content Include="Videos\temp\VID_20170528_164154.mp4" />
     <Content Include="Videos\video_21s %28webcamera.io%29.avi">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -131,6 +141,7 @@
     <Content Include="Videos\video_58s %28webcamera.io%29.mp4">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Videos\VID_20170528_163552.mp4" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RubiksCube.OpenCV\RubiksCube.OpenCV.csproj">

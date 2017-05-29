@@ -81,7 +81,15 @@ namespace RubiksCube.OpenCV
                     var c2 = ClosestColorHue(color);
                     var c3 = ClosestColorHsb(color);
 
+                    var list = new List<Color> { c1, c2, c3 };
+                    var max = list.GroupBy(s => s)
+                                 .OrderByDescending(s => s.Count())
+                                 .First().Key;
+
                     var newColor = FileColorExtractor.GetColor(FileColorExtractor.GetColor(color.ToHexString()));
+
+                    //if (max == Color.Orange && newColor != Color.Orange)
+                    //    newColor = Color.Orange;
 
                     result.SetColor(i.ToString() + "-" + j.ToString(), newColor);
 
@@ -120,8 +128,16 @@ namespace RubiksCube.OpenCV
             var c2 = ClosestColorHue(color);
             var c3 = ClosestColorHsb(color);
 
+            var list = new List<Color> { c1, c2, c3 };
+            var max = list.GroupBy(s => s)
+                         .OrderByDescending(s => s.Count())
+                         .First().Key;
+
             var cl = FileColorExtractor.GetColor(color.ToHexString());
             var newColor = FileColorExtractor.GetColor(cl);
+
+            //if (max == Color.Orange && newColor != Color.Orange)
+            //    newColor = Color.Orange;
 
             return newColor;
         }
