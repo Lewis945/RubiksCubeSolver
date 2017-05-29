@@ -40,6 +40,8 @@ namespace RubiksCube.Game
             this.solutionListBox = new System.Windows.Forms.ListBox();
             this.rubicsCubeControl = new RubiksCubeSolver.Cube.Rendering.Controls.RubicsCubeControl();
             this.recognizeButton = new System.Windows.Forms.Button();
+            this.fileRecognizeButton = new System.Windows.Forms.Button();
+            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.groupBoxDimensions.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -148,11 +150,26 @@ namespace RubiksCube.Game
             this.recognizeButton.UseVisualStyleBackColor = true;
             this.recognizeButton.Click += new System.EventHandler(this.recognizeButton_Click);
             // 
+            // fileRecognizeButton
+            // 
+            this.fileRecognizeButton.Location = new System.Drawing.Point(399, 114);
+            this.fileRecognizeButton.Name = "fileRecognizeButton";
+            this.fileRecognizeButton.Size = new System.Drawing.Size(75, 23);
+            this.fileRecognizeButton.TabIndex = 10;
+            this.fileRecognizeButton.Text = "Recog. file";
+            this.fileRecognizeButton.UseVisualStyleBackColor = true;
+            this.fileRecognizeButton.Click += new System.EventHandler(this.fileRecognizeButton_Click);
+            // 
+            // openFileDialog
+            // 
+            this.openFileDialog.FileName = "openFileDialog";
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(646, 372);
+            this.Controls.Add(this.fileRecognizeButton);
             this.Controls.Add(this.recognizeButton);
             this.Controls.Add(this.solutionListBox);
             this.Controls.Add(this.resetButton);
@@ -181,6 +198,8 @@ namespace RubiksCube.Game
         private System.Windows.Forms.Button resetButton;
         private System.Windows.Forms.ListBox solutionListBox;
         private System.Windows.Forms.Button recognizeButton;
+        private System.Windows.Forms.Button fileRecognizeButton;
+        private System.Windows.Forms.OpenFileDialog openFileDialog;
     }
 }
 

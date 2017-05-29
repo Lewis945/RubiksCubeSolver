@@ -32,7 +32,8 @@ namespace RubiksCube.OpenCV.Auxiliary
         {
             get
             {
-                m_Gradient = (P1.Y - P2.Y) / (P1.X - P2.X);
+                var div = (P1.X - P2.X);
+                m_Gradient = div != 0 ? (P1.Y - P2.Y) / (P1.X - P2.X) : 0;
                 return m_Gradient;
             }
         }

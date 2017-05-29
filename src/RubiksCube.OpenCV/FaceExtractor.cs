@@ -2,6 +2,7 @@
 using RubiksCube.OpenCV.Auxiliary;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,7 +11,7 @@ namespace RubiksCube.OpenCV
 {
     public static class FaceExtractor
     {
-        public static Mat Extract(Mat src, FaceCorners corners)
+        public static Mat Extract(Mat src, FaceCorners corners, Guid jobId)
         {
             var widthA = Math.Sqrt(Math.Pow(corners.BottomRight.X - corners.BottomLeft.X, 2) + Math.Pow(corners.BottomRight.Y - corners.BottomLeft.Y, 2));
             var widthB = Math.Sqrt(Math.Pow(corners.TopRight.X - corners.TopLeft.X, 2) + Math.Pow(corners.TopRight.Y - corners.TopLeft.Y, 2));
@@ -29,6 +30,10 @@ namespace RubiksCube.OpenCV
 
             Mat warped = new Mat(new Size((float)maxWidth, (float)maxHeight), MatType.CV_16S);
             Cv2.WarpPerspective(src, warped, perspectiveTransformationMatrix, new Size((float)maxWidth, (float)maxHeight));
+
+            var bitmap = OpenCvSharp.Extensions.BitmapConverter.ToBitmap(warped);
+            bitmap.Save($"Results\\{jobId}\\Extracted\\face-corners-" + Guid.NewGuid() + ".jpg", ImageFormat.Jpeg);
+
             return warped;
         }
     }

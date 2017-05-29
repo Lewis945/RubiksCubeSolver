@@ -19,7 +19,7 @@ namespace RubiksCube.OpenCV
             return massCenter;
         }
 
-        public static FaceCorners GetFaceCorners(Mat src, Mat tresh, Window w = null)
+        public static FaceCorners GetFaceCorners(Mat src, Mat tresh, Guid jobId, Window w = null)
         {
             FaceCorners result = null;
 
@@ -52,15 +52,17 @@ namespace RubiksCube.OpenCV
             int i = 1;
             foreach (var group in cts)
             {
+                var count = group.Count();
+
                 //foreach (var c in group)
                 //{
                 //    Cv2.PutText(dst, "g" + ((int)i).ToString() + " " + group.Key, new Point2f(c[0].X + 20, c[0].Y + 20), HersheyFonts.HersheyPlain, 1, Scalar.SpringGreen);
                 //}
                 //i++;
 
-                var all = group.SelectMany(g => g);
+                var all = group.SelectMany(g => g).ToList();
 
-                if (group.Count() == 9)
+                if (count == 9)
                 {
                     //tl
                     var p1 = all.FirstOrDefault(pt => pt.X + pt.Y == all.Min(p => p.X + p.Y));
@@ -108,7 +110,23 @@ namespace RubiksCube.OpenCV
                     Cv2.Circle(dst, p4, 10, Scalar.Red);
 
                     var bitmap = OpenCvSharp.Extensions.BitmapConverter.ToBitmap(dst);
-                    bitmap.Save("Results\\face-corners-" + Guid.NewGuid() + ".jpg", ImageFormat.Jpeg);
+                    bitmap.Save($"Results\\{jobId}\\Detected\\face-corners-" + Guid.NewGuid() + ".jpg", ImageFormat.Jpeg);
+                }
+
+                if (count >= 5 && count < 9)
+                {
+                    result = FindFaceCornersForContour(group.FirstOrDefault(), all.ToArray());
+
+                    if (result != null)
+                    {
+                        Cv2.Circle(dst, result.TopLeft, 10, Scalar.Red);
+                        Cv2.Circle(dst, result.BottomLeft, 10, Scalar.Red);
+                        Cv2.Circle(dst, result.TopRight, 10, Scalar.Red);
+                        Cv2.Circle(dst, result.BottomRight, 10, Scalar.Red);
+
+                        var bitmap = OpenCvSharp.Extensions.BitmapConverter.ToBitmap(dst);
+                        bitmap.Save($"Results\\{jobId}\\Detected\\face-corners-" + Guid.NewGuid() + ".jpg", ImageFormat.Jpeg);
+                    }
                 }
             }
 
@@ -116,6 +134,111 @@ namespace RubiksCube.OpenCV
             else w.ShowImage(dst);
 
             return result;
+        }
+
+        private static FaceCorners FindFaceCornersForContour(Point[] contour, Point[] contours)
+        {
+            var rect = Cv2.BoundingRect(contour);
+
+            int cubieWidth = rect.Width;
+            int cubieHeight = rect.Height;
+
+            int minX = contours.Min(p => p.X);
+            int maxX = contours.Max(p => p.X);
+
+            if (!(maxX - minX > 2.9 * rect.Width))
+                return null;
+
+            int minY = contours.Min(p => p.Y);
+            int maxY = contours.Max(p => p.Y);
+
+            if (!(maxY - minY > 2.9 * rect.Height))
+                return null;
+
+            while (true)
+            {
+                bool sutisfied = contours.All(p => p.X > rect.X && p.Y > rect.Y && p.X < (rect.X + rect.Width) && p.Y < (rect.Y + rect.Height));
+                if (sutisfied)
+                    break;
+
+                if (contours.Any(c => c.X <= rect.X))
+                    rect.X -= 5;
+
+                if (contours.Any(c => c.Y <= rect.Y))
+                    rect.Y -= 5;
+
+                if (contours.Any(c => c.X >= (rect.X + rect.Width)))
+                    rect.Width += 5;
+
+                if (contours.Any(c => c.Y >= (rect.Y + rect.Height)))
+                    rect.Height += 5;
+            }
+
+            var rectPoints = new[]
+            {
+                rect.Location,
+                new Point(rect.X, rect.Y + rect.Height),
+                new Point(rect.X + rect.Width, rect.Y),
+                new Point(rect.X + rect.Width, rect.Y + rect.Height)
+            };
+
+            var thresh = cubieWidth - cubieWidth / 10;
+
+            for (int i = 0; i < rectPoints.Length; i++)
+            {
+                var point = rectPoints[i];
+                var orderedByDistance = contours.OrderBy(x => GetDistance(x, point)).ToList();
+                var closest = orderedByDistance.FirstOrDefault();
+                var distance = GetDistance(closest, point);
+                //while (distance > thresh)
+                //{
+                //    var difY = closest.Y - point.Y;
+                //    var difX = closest.X - point.X;
+
+                //    if (difX < 0 && difY < 0)
+                //    {
+                //        point.X -= 5;
+                //        point.Y -= 5;
+                //    }
+                //    else if (difX > 0 && difY > 0)
+                //    {
+                //        point.X += 5;
+                //        point.Y += 5;
+                //    }
+                //    else if (difX < 0)
+                //    {
+                //        point.X -= 5;
+                //    }
+                //    else if (difY < 0)
+                //    {
+                //        point.Y -= 5;
+                //    }
+                //    else if (difX > 0)
+                //    {
+                //        point.X += 5;
+                //    }
+                //    else if (difY > 0)
+                //    {
+                //        point.Y += 5;
+                //    }
+
+                //    distance = GetDistance(closest, point);
+                //}
+
+                //rectPoints[i] = point;
+
+                if (distance > cubieWidth / 3)
+                    continue;
+
+                rectPoints[i] = closest;
+            }
+
+            return new FaceCorners(rectPoints);
+        }
+
+        private static Decimal GetDistance(Point p1, Point p2)
+        {
+            return Convert.ToDecimal(Math.Sqrt(Math.Pow(p1.X - p2.X, 2) + Math.Pow(p1.Y - p2.Y, 2)));
         }
     }
 }

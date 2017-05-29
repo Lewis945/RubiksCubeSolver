@@ -136,8 +136,46 @@ namespace RubiksCube.Game
         private void recognizeButton_Click(object sender, EventArgs e)
         {
             //Bootstrapper.Main();
-            var colors = Bootstrapper.GetFaceColors();
+            var colors = Bootstrapper.GetFaceColors(true);
             MessageBox.Show("6 faces found.");
+            MapFacesToModel(colors);
+        }
+
+        private void fileRecognizeButton_Click(object sender, EventArgs e)
+        {
+            string path = "C:\\Users\\lewis\\Desktop\\VID_20170528_163552.mp4";
+
+            var colors = Bootstrapper.GetFaceColors(false, path);
+
+            if (colors == null)
+            {
+                MessageBox.Show("Faces detection failed!.");
+                return;
+            }
+
+            //DialogResult result = openFileDialog.ShowDialog(); // Show the dialog.
+            //if (result == DialogResult.OK) // Test result.
+            //{
+            //    string file = openFileDialog.FileName;
+            //    try
+            //    {
+            //        var colors = Bootstrapper.GetFaceColors(false, file);
+            //        if (colors == null)
+            //        {
+            //            MessageBox.Show("Faces detection failed!.");
+            //            return;
+            //        }
+
+            //        MessageBox.Show("6 faces found.");
+            //        //MapFacesToModel(colors);
+            //    }
+            //    catch (IOException)
+            //    {
+            //    }
+            //}
+
+            //MessageBox.Show("6 faces found.");
+            MapFacesToModel(colors);
         }
 
         #region Face mappings

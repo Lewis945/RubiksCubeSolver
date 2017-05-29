@@ -61,7 +61,7 @@ namespace RubiksCube.OpenCV.Utils
 
             var l1 = new LineSegment(tl, br);
             if (dst != null)
-                Cv2.Line(dst, l1.P1, l1.P2, Scalar.Black);
+                Cv2.Line(dst, l1.P1, l1.P2, Scalar.Red, 5);
 
             var l2 = new LineSegment(new Point(0, 5), new Point(600, 5));
             if (dst != null)

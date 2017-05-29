@@ -50,5 +50,27 @@ namespace RubiksCube.OpenCV.Auxiliary
         /// Bottom most
         /// </summary>
         public Point BottomMost { get; set; }
+
+        public FaceCorners()
+        {
+
+        }
+
+        public FaceCorners(Point[] points)
+        {
+            //tl
+            var p1 = points.FirstOrDefault(pt => pt.X + pt.Y == points.Min(p => p.X + p.Y));
+            //br
+            var p2 = points.FirstOrDefault(pt => pt.X + pt.Y == points.Max(p => p.X + p.Y));
+            //tr
+            var p3 = points.FirstOrDefault(pt => pt.X - pt.Y == points.Min(p => p.X - p.Y));
+            //bl
+            var p4 = points.FirstOrDefault(pt => pt.X - pt.Y == points.Max(p => p.X - p.Y));
+
+            TopLeft = p1;
+            BottomRight = p2;
+            TopRight = p3;
+            BottomLeft = p4;
+        }
     }
 }

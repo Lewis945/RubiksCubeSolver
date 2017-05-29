@@ -21,8 +21,8 @@ namespace RubiksCube.OpenCV
 
         //private static Mat dst;
 
-        private static int t1 = 0;
-        private static int t2 = 255;
+        private static int t1 = 50;
+        private static int t2 = 60;
         private static int asize = 3;
 
         private static Mat GetTresh()
@@ -32,102 +32,114 @@ namespace RubiksCube.OpenCV
             return tr;
         }
 
-        private static void ReadImage()
+        //private static void ReadImage()
+        //{
+        //    src = new Mat("Images/IMG_20160315_222740.jpg", ImreadModes.Unchanged);
+        //    src = ImageUtil.ProportionalImageResize(src, 600);
+
+        //    grey = src.CvtColor(ColorConversionCodes.BGR2GRAY);
+        //    tresh = GetTresh();
+
+        //    using (var w = new Window("src", src))
+        //    {
+        //        using (var wd = new Window("dst", tresh))
+        //        {
+        //            wd.CreateTrackbar("t1", 0, 100, on_trackbart1);
+        //            wd.CreateTrackbar("t2", 100, 255, on_trackbart2);
+
+        //            Init();
+
+        //            Cv2.WaitKey();
+        //        }
+        //    }
+        //}
+
+        //private static void ReadVideo()
+        //{
+        //    // Opens MP4 file (ffmpeg is probably needed)
+        //    var capture = new VideoCapture("Videos/cube_003.avi");
+
+        //    int sleepTime = (int)Math.Round(1000 / capture.Fps);
+
+        //    using (var window = new Window("capture"))
+        //    {
+        //        using (var image = new Mat()) // Frame image buffer
+        //        {
+        //            // When the movie playback reaches end, Mat.data becomes NULL.
+        //            while (true)
+        //            {
+        //                capture.Read(image); // same as cvQueryFrame
+        //                if (image.Empty())
+        //                    break;
+
+        //                src = ImageUtil.GetCopy(image);
+        //                grey = image.CvtColor(ColorConversionCodes.BGR2GRAY);
+        //                tresh = GetTresh();
+
+        //                //window.ShowImage(tresh);
+
+        //                var corners = FaceDetector.GetFaceCorners(src, tresh, window);
+        //                if (corners != null && !corners.Rotated)
+        //                {
+        //                    var face = FaceExtractor.Extract(src, corners);
+        //                    if (FaceUniquenessDetector.IsUnique(face))
+        //                    {
+        //                        var bitmap = OpenCvSharp.Extensions.BitmapConverter.ToBitmap(face);
+        //                        bitmap.Save("Results\\face" + Guid.NewGuid() + ".jpg", ImageFormat.Jpeg);
+
+        //                        var colors = ColorsExtractor.Extract(face);
+
+        //                        var cs = new List<Color>();
+        //                        for (int i = 0; i < 3; i++)
+        //                        {
+        //                            for (int j = 0; j < 3; j++)
+        //                            {
+        //                                var t = colors.GetColor($"{i}-{j}");
+        //                                var closestColor = ColorsExtractor.ClosestColorHue(t);
+        //                                cs.Add(closestColor);
+        //                            }
+        //                        }
+        //                    }
+        //                }
+
+        //                var k = Cv2.WaitKey(sleepTime);
+        //                if (k == 27) break;
+        //            }
+        //        }
+        //    }
+        //}
+
+        //public static void Main()
+        //{
+        //    var resultDir = new DirectoryInfo("Results");
+        //    if (resultDir.Exists)
+        //    {
+        //        resultDir.Delete(true);
+        //        Thread.Sleep(2000);
+        //    }
+        //    resultDir.Create();
+
+        //    //ReadImage();
+        //    //ReadVideo();
+        //}
+
+        public static List<List<Color>> GetFaceColors(bool captureFromCamera, string path = null)
         {
-            src = new Mat("Images/IMG_20160315_222740.jpg", ImreadModes.Unchanged);
-            src = ImageUtil.ProportionalImageResize(src, 600);
+            var jobId = Guid.NewGuid();
 
-            grey = src.CvtColor(ColorConversionCodes.BGR2GRAY);
-            tresh = GetTresh();
+            var resultsDirectory = new DirectoryInfo($"Results\\{jobId}\\Detected");
+            if (!resultsDirectory.Exists) resultsDirectory.Create();
 
-            using (var w = new Window("src", src))
-            {
-                using (var wd = new Window("dst", tresh))
-                {
-                    wd.CreateTrackbar("t1", 0, 100, on_trackbart1);
-                    wd.CreateTrackbar("t2", 100, 255, on_trackbart2);
+            resultsDirectory = new DirectoryInfo($"Results\\{jobId}\\Extracted\\Unique");
+            if (!resultsDirectory.Exists) resultsDirectory.Create();
 
-                    Init();
+            FaceUniquenessDetector.Init();
 
-                    Cv2.WaitKey();
-                }
-            }
-        }
-
-        private static void ReadVideo()
-        {
-            // Opens MP4 file (ffmpeg is probably needed)
-            var capture = new VideoCapture("Videos/cube_003.avi");
-
-            int sleepTime = (int)Math.Round(1000 / capture.Fps);
-
-            using (var window = new Window("capture"))
-            {
-                using (var image = new Mat()) // Frame image buffer
-                {
-                    // When the movie playback reaches end, Mat.data becomes NULL.
-                    while (true)
-                    {
-                        capture.Read(image); // same as cvQueryFrame
-                        if (image.Empty())
-                            break;
-
-                        src = ImageUtil.GetCopy(image);
-                        grey = image.CvtColor(ColorConversionCodes.BGR2GRAY);
-                        tresh = GetTresh();
-
-                        //window.ShowImage(tresh);
-
-                        var corners = FaceDetector.GetFaceCorners(src, tresh, window);
-                        if (corners != null && !corners.Rotated)
-                        {
-                            var face = FaceExtractor.Extract(src, corners);
-                            if (FaceUniquenessDetector.IsUnique(face))
-                            {
-                                var bitmap = OpenCvSharp.Extensions.BitmapConverter.ToBitmap(face);
-                                bitmap.Save("Results\\face" + Guid.NewGuid() + ".jpg", ImageFormat.Jpeg);
-
-                                var colors = ColorsExtractor.Extract(face);
-
-                                var cs = new List<Color>();
-                                for (int i = 0; i < 3; i++)
-                                {
-                                    for (int j = 0; j < 3; j++)
-                                    {
-                                        var t = colors.GetColor($"{i}-{j}");
-                                        var closestColor = ColorsExtractor.ClosestColorHue(t);
-                                        cs.Add(closestColor);
-                                    }
-                                }
-                            }
-                        }
-
-                        var k = Cv2.WaitKey(sleepTime);
-                        if (k == 27) break;
-                    }
-                }
-            }
-        }
-
-        public static void Main()
-        {
-            var resultDir = new DirectoryInfo("Results");
-            if (resultDir.Exists)
-            {
-                resultDir.Delete(true);
-                Thread.Sleep(2000);
-            }
-            resultDir.Create();
-
-            //ReadImage();
-            ReadVideo();
-        }
-
-        public static List<List<Color>> GetFaceColors()
-        {
             var facesColors = new List<List<Color>>();
 
-            var capture = new VideoCapture(0);
+            var capture = captureFromCamera ? new VideoCapture(0) : new VideoCapture(path);
+            capture.Set(CaptureProperty.FrameWidth, 1280);
+            capture.Set(CaptureProperty.FrameHeight, 720);
 
             int sleepTime = (int)Math.Round(1000f / 60);
 
@@ -139,62 +151,74 @@ namespace RubiksCube.OpenCV
                     {
                         capture.Read(image);
                         if (image.Empty())
+                        {
+                            Cv2.DestroyAllWindows();
                             break;
+                        }
 
                         src = ImageUtil.GetCopy(image);
                         grey = image.CvtColor(ColorConversionCodes.BGR2GRAY);
                         tresh = GetTresh();
 
-                        var corners = FaceDetector.GetFaceCorners(src, tresh, window);
+                        var corners = FaceDetector.GetFaceCorners(src, tresh, jobId, window);
                         if (corners != null && !corners.Rotated)
                         {
-                            var face = FaceExtractor.Extract(src, corners);
+                            var face = FaceExtractor.Extract(src, corners, jobId);
                             if (FaceUniquenessDetector.IsUnique(face))
                             {
-                                var colors = ColorsExtractor.Extract(face);
+                                var colors = ColorsExtractor.Extract(face, jobId);
 
                                 var cs = new List<Color>();
                                 for (int i = 0; i < 3; i++)
                                 {
                                     for (int j = 0; j < 3; j++)
                                     {
-                                        var t = colors.GetColor($"{i}-{j}");
-                                        var closestColor = ColorsExtractor.ClosestColorHue(t);
-                                        cs.Add(closestColor);
+                                        var color = colors.GetColor($"{i}-{j}");
+                                        cs.Add(color);
                                     }
                                 }
                                 facesColors.Add(cs);
                             }
                         }
 
-                        if (facesColors.Count == 6) break;
+                        if (facesColors.Count == 6)
+                        {
+                            Cv2.DestroyAllWindows();
+                            break;
+                        }
 
                         var k = Cv2.WaitKey(sleepTime);
-                        if (k == 27) break;
+                        if (k == 27)
+                        {
+                            Cv2.DestroyAllWindows();
+                            break;
+                        }
                     }
                 }
             }
 
+            if (facesColors.Count != 6) return null;
+
             return facesColors;
         }
 
-        private static void Init()
-        {
-            tresh = GetTresh();
-            Cv2.ImShow("dst", tresh);
-            FaceDetector.GetFaceCorners(src, tresh);
-        }
+        //private static void Init()
+        //{
+        //    tresh = GetTresh();
+        //    Cv2.ImShow("dst", tresh);
+        //    FaceDetector.GetFaceCorners(src, tresh);
+        //}
 
-        private static void on_trackbart1(int pos, object userdata)
-        {
-            t1 = pos;
-            Init();
-        }
+        //private static void on_trackbart1(int pos, object userdata)
+        //{
+        //    t1 = pos;
+        //    Init();
+        //}
 
-        private static void on_trackbart2(int pos, object userdata)
-        {
-            t2 = pos;
-            Init();
-        }
+        //private static void on_trackbart2(int pos, object userdata)
+        //{
+        //    t2 = pos;
+        //    Init();
+        //}
     }
 }

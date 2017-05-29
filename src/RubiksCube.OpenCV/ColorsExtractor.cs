@@ -1,9 +1,11 @@
 ﻿using OpenCvSharp;
 using RubiksCube.OpenCV.Auxiliary;
+using RubiksCube.OpenCV.Colors;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +16,7 @@ namespace RubiksCube.OpenCV
     {
         public static List<Color> Colors = new List<Color>
         {
+            Color.Black,
             Color.Blue,
             Color.White,
             Color.Yellow,
@@ -22,8 +25,17 @@ namespace RubiksCube.OpenCV
             Color.Green
         };
 
-        public static FaceColors Extract(Mat face)
+        public static FaceColors Extract(Mat face, Guid jobId)
         {
+            var faceId = Guid.NewGuid();
+
+            var dir = new DirectoryInfo($"Results\\{jobId}\\Extracted\\Unique\\{faceId}");
+            if (!dir.Exists) dir.Create();
+
+            var bitmap = OpenCvSharp.Extensions.BitmapConverter.ToBitmap(face);
+            bitmap.Save($"Results\\{jobId}\\Extracted\\Unique\\{faceId}\\face.png", ImageFormat.Png);
+            bitmap.Save($"Results\\{jobId}\\Extracted\\Unique\\{faceId}.png", ImageFormat.Png);
+
             var result = new FaceColors();
 
             var subWidth = face.Width / Config.FaceDimension;
@@ -38,8 +50,24 @@ namespace RubiksCube.OpenCV
                 {
                     var sub = new Mat(face, new Rect(i * subWidth, j * subHeight, subWidth, subHeight));
 
-                    var bitmap = OpenCvSharp.Extensions.BitmapConverter.ToBitmap(sub);
-                    bitmap.Save("Results\\sub-" + i + j + ".png", ImageFormat.Png);
+                    //var colors = new List<Color>();
+                    //for (int k = centerX - 20; k < centerX + 20; k++)
+                    //    for (int p = centerY - 20; p < centerY + 20; p++)
+                    //    {
+                    //        var intensity = sub.At<Vec3b>(k, p);
+
+                    //        byte blue = intensity.Item0;
+                    //        byte green = intensity.Item1;
+                    //        byte red = intensity.Item2;
+
+                    //        var color1 = Color.FromArgb(red, green, blue);
+                    //        color1 = ClosestColorRgb(color1);
+                    //        colors.Add(color1);
+                    //    }
+
+                    //var color = colors.GroupBy(s => s)
+                    //         .OrderByDescending(s => s.Count())
+                    //         .First().Key;
 
                     var intensity = sub.At<Vec3b>(centerX, centerY);
 
@@ -48,14 +76,59 @@ namespace RubiksCube.OpenCV
                     byte red = intensity.Item2;
 
                     var color = Color.FromArgb(red, green, blue);
-                    result.SetColor(i.ToString() + "-" + j.ToString(), color);
+
+                    var c1 = ClosestColorRgb(color);
+                    var c2 = ClosestColorHue(color);
+                    var c3 = ClosestColorHsb(color);
+
+                    var newColor = FileColorExtractor.GetColor(FileColorExtractor.GetColor(color.ToHexString()));
+
+                    result.SetColor(i.ToString() + "-" + j.ToString(), newColor);
+
+                    bitmap = OpenCvSharp.Extensions.BitmapConverter.ToBitmap(sub);
+                    //bitmap.Save($"Results\\{jobId}\\Extracted\\Unique\\{faceId}\\sub-{i}-{j}({newColor.Name}).png", ImageFormat.Png);
+                    bitmap.Save($"Results\\{jobId}\\Extracted\\Unique\\{faceId}\\sub-{i}-{j}({newColor.Name})({c1.Name}-{c2.Name}-{c3.Name})({color.R}-{color.G}-{color.B}).png", ImageFormat.Png);
+
                 }
             }
 
             return result;
         }
 
+        public static Color ExtractMiddleColor(Mat face)
+        {
+            var subWidth = face.Width / Config.FaceDimension;
+            var subHeight = face.Height / Config.FaceDimension;
+
+            var centerX = subWidth / 2;
+            var centerY = subHeight / 2;
+
+            int i = (Config.FaceDimension - 1) / 2;
+            int j = (Config.FaceDimension - 1) / 2;
+
+            var sub = new Mat(face, new Rect(i * subWidth, j * subHeight, subWidth, subHeight));
+
+            var intensity = sub.At<Vec3b>(centerX, centerY);
+
+            byte blue = intensity.Item0;
+            byte green = intensity.Item1;
+            byte red = intensity.Item2;
+
+            var color = Color.FromArgb(red, green, blue);
+
+            var c1 = ClosestColorRgb(color);
+            var c2 = ClosestColorHue(color);
+            var c3 = ClosestColorHsb(color);
+
+            var cl = FileColorExtractor.GetColor(color.ToHexString());
+            var newColor = FileColorExtractor.GetColor(cl);
+
+            return newColor;
+        }
+
         #region Retrieve Color Methods
+
+        public static string ToHexString(this Color c) => $"#{c.R:X2}{c.G:X2}{c.B:X2}";
 
         /// <summary>
         /// Closed match for hues only
@@ -80,7 +153,8 @@ namespace RubiksCube.OpenCV
         {
             var colorDiffs = Colors.Select(n => ColorDiff(n, target)).Min(n => n);
             var index = Colors.FindIndex(n => ColorDiff(n, target) == colorDiffs);
-            return Colors[index];
+            var color = Colors[index];
+            return color == Color.Black ? Color.White : color;
         }
 
         /// <summary>

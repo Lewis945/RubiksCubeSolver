@@ -1,6 +1,7 @@
 ﻿using OpenCvSharp;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,13 +11,24 @@ namespace RubiksCube.OpenCV
     //http://docs.OpenCV.org/2.4/doc/tutorials/imgproc/histograms/histogram_comparison/histogram_comparison.html
     public static class FaceUniquenessDetector
     {
-        private static List<Mat> _faces = new List<Mat>();
+        private static List<Mat> _faces;
+        private static List<Color> _facesMiddleColors;
+
+        public static void Init()
+        {
+            _faces = new List<Mat>();
+            _facesMiddleColors = new List<Color>();
+        }
 
         public static bool IsUnique(Mat face)
         {
             if (_faces.Count == 0)
             {
+                var color1 = ColorsExtractor.ExtractMiddleColor(face);
+                color1 = ColorsExtractor.ClosestColorRgb(color1);
+
                 _faces.Add(face);
+                _facesMiddleColors.Add(color1);
                 return true;
             }
 
@@ -40,6 +52,8 @@ namespace RubiksCube.OpenCV
             Cv2.CalcHist(new Mat[] { faceHsv }, channels, new Mat(), faceHistogram, 2, histSize, ranges, true, false);
             Cv2.Normalize(faceHistogram, faceHistogram, 0, 1, NormTypes.MinMax, -1, new Mat());
 
+            var color = ColorsExtractor.ExtractMiddleColor(face);
+
             foreach (var f in _faces)
             {
                 var fHsv = f.CvtColor(ColorConversionCodes.BGR2HSV);
@@ -50,10 +64,16 @@ namespace RubiksCube.OpenCV
 
                 double correl = Cv2.CompareHist(faceHistogram, fHistogram, HistCompMethods.Correl);
 
-                if (correl > 0.5) return false;
+                //if (correl > 0.5) return false;
+                bool contains = _facesMiddleColors.Contains(color);
+                if (correl > 0.4 && contains) return false;
+                //if (correl > 0.65) return false;
             }
 
+            color = ColorsExtractor.ExtractMiddleColor(face);
+
             _faces.Add(face);
+            _facesMiddleColors.Add(color);
             return true;
         }
     }
